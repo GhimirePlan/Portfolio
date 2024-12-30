@@ -1,10 +1,13 @@
 const path = require('path')
  
 module.exports = {
+  reactStrictMode: true,
+  swcMinify: true,
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
   images: {
+    domains: ['media2.dev.to'],
     remotePatterns: [
       {
         protocol: 'https',

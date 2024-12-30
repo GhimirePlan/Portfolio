@@ -1,0 +1,14 @@
+// components/hoc/SectionWrapper.js
+import React from 'react';
+
+const SectionWrapper = (Component, sectionName) => {
+  return function WrappedComponent(props) {
+    return (
+      <section id={sectionName} className="py-20 px-10 bg-gray-900">
+        <Component {...props} />
+      </section>
+    );
+  };
+};
+
+export { SectionWrapper };

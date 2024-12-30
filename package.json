@@ -22,9 +22,13 @@
     "react-google-recaptcha": "^3.1.0",
     "react-icons": "^4.11.0",
     "react-toastify": "^10.0.4",
+    "react-typed": "^2.0.12",
+    "react-vertical-timeline-component": "^3.5.3",
     "sharp": "^0.33.5"
   },
   "devDependencies": {
+    "@types/node": "22.10.2",
+    "@types/react": "19.0.2",
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",

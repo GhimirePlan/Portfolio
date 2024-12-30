@@ -6,7 +6,7 @@ import { BsPersonWorkspace } from "react-icons/bs";
 import AnimationLottie from "../../helper/animation-lottie";
 import GlowCard from "../../helper/glow-card";
 import experience from '/public/lottie/code.json';
-
+import { personalData } from "@/utils/data/personal-data";
 function Experience() {
   return (
     <div id="experience" className="relative z-50 border-t my-12 lg:my-24 border-[#25213b]">
@@ -68,6 +68,7 @@ function Experience() {
                         </div>
                       </div>
                     </div>
+                    
                   </GlowCard>
                 ))
               }
