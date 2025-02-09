@@ -1,6 +1,8 @@
 const path = require('path');
 
 module.exports = {
+  basePath: '/Portfolio',
+  output: 'export',
   reactStrictMode: true,
   swcMinify: true,
   webpack: (config) => {
