@@ -45,13 +45,15 @@ function HeroSection() {
     <div className="grid grid-cols-1 items-start lg:grid-cols-2 lg:gap-12 gap-y-8">
         {/* Text Content */}
         <div className="order-2 lg:order-1 flex flex-col items-start justify-center px-4 pb-20 md:pb-10 lg:pt-10">
-          <h1 className="text-3xl font-bold leading-10 text-white md:font-extrabold lg:text-[2.6rem] lg:leading-[3.5rem]">
-            Hello, <br />
-            This is <span className="text-pink-500">{personalData.name}</span>, <br />
-            <span className="text-[#16f2b3]">
-              Student 
-            </span>
-          </h1>
+        <h1 className="text-3xl font-bold leading-10 text-white md:font-extrabold lg:text-[2.6rem] lg:leading-[3.5rem]">
+  Hello, <br />
+  This is <span className="text-red-400">{personalData.name}</span> 
+  <span className=" h-[3px] w-full bg-white my-4"></span> 
+  {`, a creator ignited by `}
+  <span className="text-[#16f2b3]">
+    Curiosity
+  </span>
+</h1>
           {/* Social Links */}
           <div className="my-8 flex items-center gap-5">
             {[ 
@@ -74,13 +76,13 @@ function HeroSection() {
           {/* Action Buttons */}
           <div className="flex items-center gap-4">
             <Link href="#contact">
-              <button className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-violet-600 px-6 py-3 rounded-full text-white text-sm font-semibold uppercase hover:shadow-lg transition-transform transform hover:scale-105">
+              <button className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-orange-400 px-6 py-3 rounded-full text-white text-sm font-semibold uppercase hover:shadow-lg transition-transform transform hover:scale-105">
                 Contact Me <RiContactsFill size={20} />
               </button>
             </Link>
 
             <Link href={personalData.resume} target="_blank">
-              <button className="flex items-center gap-2 bg-gradient-to-r from-violet-600 to-pink-500 px-6 py-3 rounded-full text-white text-sm font-semibold uppercase hover:shadow-lg transition-transform transform hover:scale-105">
+              <button className="flex items-center gap-2 bg-gradient-to-r from-orange-400 to-pink-500 px-6 py-3 rounded-full text-white text-sm font-semibold uppercase hover:shadow-lg transition-transform transform hover:scale-105">
                 Get Resume <MdDownload size={20} />
               </button>
             </Link>

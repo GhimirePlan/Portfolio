@@ -10,9 +10,9 @@ import ScrollToTop from "./components/helper/scroll-to-top";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Portfolio of Abu Said - Software Developer",
+  title: "Plan Ghimire - Developer",
   description:
-    "This is the portfolio of Abu Said. I am a full stack developer and a self taught developer. I love to learn new things and I am always open to collaborating with others. I am a quick learner and I am always looking for new challenges.",
+    "This is the portfolio Plan Ghimire. Plan Ghimire is a dedicated student pursuing a Bachelor's degree in Electronics Communication and Information Engineering at Tribhuvan University. He has a strong passion for blending creativity with technology and is skilled in graphic design, web development, and game development. Plan has a keen interest in continuously improving his skills and embracing new challenges.",
 };
 
 export default function RootLayout({ children }) {
