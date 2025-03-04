@@ -1,0 +1,5 @@
+User-agent: Googlebot-Image
+Disallow: /public/bg.gif/
+
+User-agent: Googlebot-Image
+Disallow: /bg.gif/
