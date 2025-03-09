@@ -22,17 +22,21 @@ async function getData() {
   return filtered;
 };
 
-export default async function Home() {
-  const blogs = await getData();
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
 
+export default function Home() {
   return (
     <>
       <HeroSection />
       <AboutSection />
-      {/* <Experience />
-      <Skills />
+     <Experience />
+     {/* <Education />
+       <Skills />
       <Projects />
-      <Education />
+      
       <Blog blogs={blogs} /> */}
       <ContactSection />
     </>

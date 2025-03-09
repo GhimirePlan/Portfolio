@@ -1,20 +1,16 @@
 export const educations = [
   {
     id: 1,
-    title: "",
-    duration: "",
-    institution: "",
+    title: "Bachelor in Electronics, Communication and Information Engineering",
+    duration: "Present",
+    institution: "Tribhuvan University",
   },
   {
     id: 2,
-    title: "",
-    duration: "",
-    institution: "",
+    title: "High School (+2) in Science",
+    duration: "Completed",
+    institution: "Pokhara Aadharsha Secondary School",
   },
-  {
-    id: 3,
-    title: "",
-    duration: "",
-    institution: "",
-  }
-]
+  
+ 
+];
