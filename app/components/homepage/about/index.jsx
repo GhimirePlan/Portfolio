@@ -49,7 +49,7 @@ function AboutSection() {
     <motion.div
       id="about"
       className="relative z-50 py-16"
-      initial="hidden"
+      initial="visible"
       whileInView="visible"
       viewport={{ once: true, margin: "-100px" }}
       variants={containerVariants}
@@ -65,7 +65,7 @@ function AboutSection() {
               {/* About Me Ribbon */}
               <motion.div
                 className="hidden lg:flex flex-col items-center absolute top-10 -right-8"
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 1, x: 0 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.4 }}

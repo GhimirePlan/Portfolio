@@ -42,7 +42,7 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
           onClick={onClick}
         >
           {/* Card base */}
-          <boxGeometry args={[3, 4, 0.2]} />
+          <boxGeometry args={[2.8, 3.8, 0.2]} />
           <meshPhysicalMaterial
             color={hovered ? '#60A5FA' : '#1e293b'}
             metalness={0.7}
@@ -57,10 +57,11 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
             {/* Company name */}
             <Text
               position={[0, 1.2, 0]}
-              fontSize={0.3}
+              fontSize={0.25}
               color="#ffffff"
               anchorX="center"
               anchorY="middle"
+              maxWidth={2.4}
               characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"
             >
               {experience.company}
@@ -69,10 +70,11 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
             {/* Role */}
             <Text
               position={[0, 0.6, 0]}
-              fontSize={0.2}
+              fontSize={0.18}
               color="#60A5FA"
               anchorX="center"
               anchorY="middle"
+              maxWidth={2.4}
               characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"
             >
               {experience.role}
@@ -81,10 +83,11 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
             {/* Duration */}
             <Text
               position={[0, 0, 0]}
-              fontSize={0.15}
+              fontSize={0.14}
               color="#94a3b8"
               anchorX="center"
               anchorY="middle"
+              maxWidth={2.4}
               characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"
             >
               {experience.duration}
@@ -93,11 +96,11 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
             {/* Description */}
             <Text
               position={[0, -0.8, 0]}
-              fontSize={0.12}
+              fontSize={0.11}
               color="#94a3b8"
               anchorX="center"
               anchorY="middle"
-              maxWidth={2.5}
+              maxWidth={2.4}
               textAlign="center"
               characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"
             >
@@ -107,8 +110,8 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
         </mesh>
 
         {/* Decorative elements */}
-        <mesh position={[-1.2, 1.6, 0.1]} rotation={[0, 0, Math.PI / 4]}>
-          <boxGeometry args={[0.3, 0.3, 0.1]} />
+        <mesh position={[-1.1, 1.5, 0.1]} rotation={[0, 0, Math.PI / 4]}>
+          <boxGeometry args={[0.25, 0.25, 0.1]} />
           <meshPhysicalMaterial
             color="#60A5FA"
             emissive="#60A5FA"
@@ -117,8 +120,8 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
           />
         </mesh>
 
-        <mesh position={[1.2, -1.6, 0.1]} rotation={[0, 0, Math.PI / 4]}>
-          <boxGeometry args={[0.3, 0.3, 0.1]} />
+        <mesh position={[1.1, -1.5, 0.1]} rotation={[0, 0, Math.PI / 4]}>
+          <boxGeometry args={[0.25, 0.25, 0.1]} />
           <meshPhysicalMaterial
             color="#60A5FA"
             emissive="#60A5FA"

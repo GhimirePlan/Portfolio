@@ -3,21 +3,36 @@
 import { Canvas } from '@react-three/fiber';
 import { Environment, OrbitControls, PerspectiveCamera, Stars } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ExperienceCard3D from './ExperienceCard3D';
 import { useInView } from 'react-intersection-observer';
 import { experiences } from '@/utils/data/experience';
 import Image from 'next/image';
 
+// WebGL support detection
+const hasWebGL = () => {
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+  } catch (e) {
+    return false;
+  }
+};
+
 export default function Experience() {
   const [selectedExperience, setSelectedExperience] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [webGLSupported, setWebGLSupported] = useState(true);
   const canvasRef = useRef();
   
   const { ref, inView } = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
+
+  useEffect(() => {
+    setWebGLSupported(hasWebGL());
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -51,7 +66,7 @@ export default function Experience() {
   };
 
   return (
-    <section ref={ref} className="py-20 relative overflow-hidden min-h-screen">
+    <section ref={ref} className="py-12 sm:py-20 relative overflow-hidden min-h-screen">
       {/* Background Image */}
       <Image
         src="/hero.svg"
@@ -93,67 +108,106 @@ export default function Experience() {
         animate={inView ? 'visible' : 'hidden'}
         className="container mx-auto px-4 relative z-10"
       >
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#60A5FA] to-[#34D399] mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#60A5FA] to-[#34D399] mb-4">
               Professional Journey
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto">
               Explore my professional experience through this interactive 3D timeline
             </p>
           </motion.div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8 items-start">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-start">
           {/* 3D Experience Cards */}
-          <div className="h-[510px] relative bg-[#1E293B]/50 rounded-2xl overflow-hidden backdrop-blur-sm border border-[#60A5FA]/10">
-            <Canvas
-              ref={canvasRef}
-              dpr={[1, 2]}
-              camera={{ position: [0, 0, 12], fov: 50 }}
-              gl={{ antialias: true }}
-            >
-              <color attach="background" args={['#0f172a']} />
-              <fog attach="fog" args={['#0f172a', 5, 25]} />
-              <ambientLight intensity={0.5} />
-              <pointLight position={[10, 10, 10]} intensity={1} />
-              <spotLight
-                position={[0, 10, 0]}
-                angle={0.3}
-                penumbra={1}
-                intensity={2}
-                castShadow
-              />
+          <div className="h-[400px] sm:h-[510px] relative bg-[#1E293B]/50 rounded-2xl overflow-hidden backdrop-blur-sm border border-[#60A5FA]/10">
+            {webGLSupported ? (
+              <Canvas
+                ref={canvasRef}
+                dpr={[1, 2]}
+                camera={{ position: [0, 0, 12], fov: 50 }}
+                gl={{ 
+                  antialias: true,
+                  powerPreference: "high-performance",
+                  failIfMajorPerformanceCaveat: true,
+                  stencil: false,
+                  depth: true,
+                }}
+              >
+                <color attach="background" args={['#0f172a']} />
+                <fog attach="fog" args={['#0f172a', 5, 25]} />
+                <ambientLight intensity={0.5} />
+                <pointLight position={[10, 10, 10]} intensity={1} />
+                <spotLight
+                  position={[0, 10, 0]}
+                  angle={0.3}
+                  penumbra={1}
+                  intensity={2}
+                  castShadow
+                />
 
-              <group position={[0, 0, 0]}>
-                {experiences.map((exp, index) => (
-                  <ExperienceCard3D
-                    key={exp.company}
-                    experience={exp}
-                    position={[index * 4 - (experiences.length - 1) * 2, 0, 0]}
-                    rotation={[0, 0, 0]}
-                    onClick={() => {
-                      setSelectedExperience(exp);
-                      setActiveIndex(index);
-                    }}
-                  />
-                ))}
-              </group>
+                <group position={[0, 0, 0]}>
+                  {experiences.map((exp, index) => (
+                    <ExperienceCard3D
+                      key={exp.company}
+                      experience={exp}
+                      position={[index * 4 - (experiences.length - 1) * 2, 0, 0]}
+                      rotation={[0, 0, 0]}
+                      onClick={() => {
+                        setSelectedExperience(exp);
+                        setActiveIndex(index);
+                      }}
+                    />
+                  ))}
+                </group>
 
-              <OrbitControls
-                enableZoom={false}
-                minPolarAngle={Math.PI / 2.5}
-                maxPolarAngle={Math.PI / 2.5}
-                minAzimuthAngle={-Math.PI / 4}
-                maxAzimuthAngle={Math.PI / 4}
-              />
-              <Stars count={1000} depth={50} fade speed={1.5} />
-              <Environment preset="city" />
-            </Canvas>
+                <OrbitControls
+                  enableZoom={false}
+                  minPolarAngle={Math.PI / 2.5}
+                  maxPolarAngle={Math.PI / 2.5}
+                  minAzimuthAngle={-Math.PI / 4}
+                  maxAzimuthAngle={Math.PI / 4}
+                  enablePan={false}
+                  enableDamping={true}
+                  dampingFactor={0.05}
+                  rotateSpeed={0.5}
+                  touchThreshold={10}
+                  mouseThreshold={10}
+                  target={[0, 0, 0]}
+                  makeDefault={false}
+                />
+                <Stars count={1000} depth={50} fade speed={1.5} />
+                <Environment preset="city" />
+              </Canvas>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center p-8">
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold text-[#60A5FA] mb-4">Experience Timeline</h3>
+                  <p className="text-gray-400 mb-6">Your device doesn't support 3D rendering. Here's a static view of my experience.</p>
+                  <div className="space-y-4">
+                    {experiences.map((exp, index) => (
+                      <div
+                        key={exp.company}
+                        className="bg-[#1E293B]/80 backdrop-blur-xl rounded-xl p-6 border border-[#60A5FA]/10 hover:border-[#60A5FA]/30 transition-all duration-300"
+                        onClick={() => {
+                          setSelectedExperience(exp);
+                          setActiveIndex(index);
+                        }}
+                      >
+                        <h4 className="text-lg font-semibold text-white mb-2">{exp.company}</h4>
+                        <p className="text-[#60A5FA] mb-2">{exp.role}</p>
+                        <p className="text-gray-400 text-sm">{exp.duration}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Navigation dots */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
@@ -181,22 +235,22 @@ export default function Experience() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="p-8 bg-[#1E293B]/50 backdrop-blur-xl rounded-2xl border border-[#60A5FA]/10 shadow-xl"
+                  className="p-6 sm:p-8 bg-[#1E293B]/50 backdrop-blur-xl rounded-2xl border border-[#60A5FA]/10 shadow-xl"
                 >
-                  <h3 className="text-3xl font-bold text-white mb-2">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
                     {selectedExperience.company}
                   </h3>
-                  <p className="text-[#60A5FA] text-xl mb-4">{selectedExperience.role}</p>
+                  <p className="text-[#60A5FA] text-lg sm:text-xl mb-4">{selectedExperience.role}</p>
                   <p className="text-gray-400 mb-6">{selectedExperience.duration}</p>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     <div>
-                      <h4 className="text-lg font-semibold text-white mb-2">Overview</h4>
-                      <p className="text-gray-400">{selectedExperience.description}</p>
+                      <h4 className="text-base sm:text-lg font-semibold text-white mb-2">Overview</h4>
+                      <p className="text-gray-400 text-sm sm:text-base">{selectedExperience.description}</p>
                     </div>
 
                     <div>
-                      <h4 className="text-lg font-semibold text-white mb-2">Key Highlights</h4>
+                      <h4 className="text-base sm:text-lg font-semibold text-white mb-2">Key Highlights</h4>
                       <ul className="space-y-2">
                         {selectedExperience.highlights.map((highlight, index) => (
                           <motion.li
@@ -204,7 +258,7 @@ export default function Experience() {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="flex items-center text-gray-400"
+                            className="flex items-center text-gray-400 text-sm sm:text-base"
                           >
                             <span className="w-2 h-2 bg-[#60A5FA] rounded-full mr-2" />
                             {highlight}
@@ -214,12 +268,12 @@ export default function Experience() {
                     </div>
 
                     <div>
-                      <h4 className="text-lg font-semibold text-white mb-2">Technologies</h4>
+                      <h4 className="text-base sm:text-lg font-semibold text-white mb-2">Technologies</h4>
                       <div className="flex flex-wrap gap-2">
                         {selectedExperience.technologies.map((tech) => (
                           <span
                             key={tech}
-                            className="px-3 py-1 bg-[#60A5FA]/20 text-[#60A5FA] rounded-full text-sm"
+                            className="px-2 sm:px-3 py-1 bg-[#60A5FA]/20 text-[#60A5FA] rounded-full text-xs sm:text-sm"
                           >
                             {tech}
                           </span>
@@ -235,7 +289,7 @@ export default function Experience() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="absolute inset-0 flex items-center justify-center text-gray-500"
+                className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm sm:text-base"
               >
                 👈 Select a card to view details
               </motion.div>
@@ -248,7 +302,7 @@ export default function Experience() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="text-center text-gray-500 mt-8"
+          className="text-center text-gray-500 mt-6 sm:mt-8 text-sm sm:text-base"
         >
           ✨ Drag to rotate the view and click cards to explore
         </motion.p>
