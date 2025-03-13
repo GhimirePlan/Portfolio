@@ -2,7 +2,7 @@ export const personalData = {
   name: "Plan Ghimire",
   profile: '/bg.gif',
   Designations: "Curiosity",
-  description: "A self-motivated developer with a strong problem-solving mindset and a constant desire to explore new technologies. Always eager to embrace challenges and open to exciting opportunities! 🌟",
+  description: "A self-motivated Electronics Communication & Information Engineering Student with a strong problem-solving mindset and a constant desire to explore new technologies. Always eager to embrace challenges and open to exciting opportunities! 🌟",
   email: 'contact@plan.com.np',
   phone: '+977 9843391507',
   address: 'Lamjung, Nepal',

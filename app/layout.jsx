@@ -2,12 +2,12 @@ import './globals.css';
 import ClientLayout from './ClientLayout';
 
 export const metadata = {
-  title: 'Your Portfolio',
-  description: 'Your personal portfolio with an offline-capable 3D game',
+  title: 'Plan Ghimire - Developer',
+  description: 'Personal portfolio of Plan Ghimire with an offline-capable 3D game',
   themeColor: '#0f172a',
   manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/profile.png',
   },
 };
 

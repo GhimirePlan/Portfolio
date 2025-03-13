@@ -1,8 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -23,10 +24,28 @@ module.exports = {
           light: '#1e293b',
         },
       },
+      keyframes: {
+        wave: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        },
+        'gradient-x': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center',
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center',
+          },
+        },
+      },
       animation: {
         'glow': 'glow 2s ease-in-out infinite',
         'float': 'float 3s ease-in-out infinite',
         'bounce-slow': 'bounce 3s ease-in-out infinite',
+        'wave': 'wave 2s ease-in-out infinite',
+        'gradient-x': 'gradient-x 3s ease infinite',
       },
       backdropFilter: {
         'none': 'none',

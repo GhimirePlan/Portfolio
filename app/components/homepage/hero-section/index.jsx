@@ -6,8 +6,31 @@ import { FaFacebook, FaTwitterSquare } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
 import { RiContactsFill } from "react-icons/ri";
 import Typed from "react-typed";
+import { useEffect } from 'react';
 
-function HeroSection() {
+function HeroSection({ onLoad }) {
+  useEffect(() => {
+    // Call onLoad when the component mounts
+    const handleLoad = () => {
+      if (onLoad) onLoad();
+    };
+
+    // Check if the hero image is loaded
+    const heroImage = document.querySelector('img[src="/hero.svg"]');
+    
+    if (heroImage) {
+      if (heroImage.complete) {
+        handleLoad();
+      } else {
+        heroImage.addEventListener('load', handleLoad);
+        return () => heroImage.removeEventListener('load', handleLoad);
+      }
+    } else {
+      // If no hero image found, just call onLoad
+      handleLoad();
+    }
+  }, [onLoad]);
+
   return (
     <section className="relative flex flex-col items-center justify-between py-6 lg:py-14 overflow-hidden">
       {/* Background Image */}
@@ -52,8 +75,9 @@ function HeroSection() {
               {personalData.name}
             </span>
             <div className="h-[2px] w-full bg-gradient-to-r from-[#60A5FA]/80 via-[#34D399]/80 to-[#3730A3]/80 my-4 rounded-full"></div>
-            {` a creator ignited by `}
-            <span className="text-[#34D399] font-semibold">Curiosity</span>
+            {`ECE `}
+            <span className="text-[#34D399] font-semibold"> Student</span>
+            <span className="text-[#60A5FA] font-semibold">  from Nepal</span>
           </h1>
 
           {/* Social Links */}

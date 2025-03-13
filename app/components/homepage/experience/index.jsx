@@ -7,6 +7,7 @@ import { useState, useRef } from 'react';
 import ExperienceCard3D from './ExperienceCard3D';
 import { useInView } from 'react-intersection-observer';
 import { experiences } from '@/utils/data/experience';
+import Image from 'next/image';
 
 export default function Experience() {
   const [selectedExperience, setSelectedExperience] = useState(null);
@@ -51,9 +52,40 @@ export default function Experience() {
 
   return (
     <section ref={ref} className="py-20 relative overflow-hidden min-h-screen">
+      {/* Background Image */}
+      <Image
+        src="/hero.svg"
+        alt="Background"
+        width={1572}
+        height={795}
+        className="absolute -top-[100px] -z-10 opacity-80"
+      />
+
+      {/* Background Animated Nodes */}
+      <div className="absolute inset-0 -z-20">
+        <svg className="w-full h-full animate-spin-slow" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="grad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#ff6ec7" />
+              <stop offset="100%" stopColor="#5b68ff" />
+            </radialGradient>
+          </defs>
+          <circle cx="50%" cy="50%" r="200" fill="url(#grad)" opacity="0.1" />
+        </svg>
+        {Array.from({ length: 12 }).map((_, index) => (
+          <div
+            key={index}
+            className={`absolute rounded-full blur-xl opacity-75 animate-pulse transition-transform duration-1000 ${
+              index % 2 === 0 ? "bg-gradient-to-r from-pink-500 to-indigo-600" : "bg-gradient-to-r from-green-400 to-blue-500"
+            } ${index === 0 ? "top-10 left-20 w-24 h-24" : index === 1 ? "top-40 left-10 w-20 h-20" : index === 2 ? "bottom-20 right-10 w-16 h-16" : index === 3 ? "bottom-30 left-10 w-18 h-18" : index === 4 ? "top-40 right-20 w-22 h-22" : index === 5 ? "top-60 left-60 w-28 h-28" : index === 6 ? "top-30 right-30 w-18 h-18" : index === 7 ? "bottom-30 left-50 w-14 h-14" : index === 8 ? "top-50 left-10 w-20 h-20" : index === 9 ? "bottom-10 right-20 w-16 h-16" : index === 10 ? "top-5 right-5 w-22 h-22" : "bottom-20 right-40 w-16 h-16"}`}
+          ></div>
+        ))}
+      </div>
+
       {/* Background gradient and effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-indigo-900/20 to-gray-900" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500/10 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] to-[#1e293b]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_800px_at_100%_200px,#60A5FA12,transparent)]" />
 
       <motion.div
         variants={containerVariants}
@@ -67,7 +99,7 @@ export default function Experience() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#60A5FA] to-[#34D399] mb-4">
               Professional Journey
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
@@ -78,15 +110,15 @@ export default function Experience() {
 
         <div className="grid lg:grid-cols-2 gap-8 items-start">
           {/* 3D Experience Cards */}
-          <div className="h-[510px] relative bg-black/20 rounded-2xl overflow-hidden backdrop-blur-sm border border-white/10">
+          <div className="h-[510px] relative bg-[#1E293B]/50 rounded-2xl overflow-hidden backdrop-blur-sm border border-[#60A5FA]/10">
             <Canvas
               ref={canvasRef}
               dpr={[1, 2]}
               camera={{ position: [0, 0, 12], fov: 50 }}
               gl={{ antialias: true }}
             >
-              <color attach="background" args={['#000']} />
-              <fog attach="fog" args={['#000', 5, 25]} />
+              <color attach="background" args={['#0f172a']} />
+              <fog attach="fog" args={['#0f172a', 5, 25]} />
               <ambientLight intensity={0.5} />
               <pointLight position={[10, 10, 10]} intensity={1} />
               <spotLight
@@ -130,7 +162,7 @@ export default function Experience() {
                   key={index}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     activeIndex === index
-                      ? 'bg-indigo-500 w-4'
+                      ? 'bg-[#60A5FA] w-4'
                       : 'bg-gray-600 hover:bg-gray-500'
                   }`}
                   onClick={() => setActiveIndex(index)}
@@ -149,12 +181,12 @@ export default function Experience() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="p-6 bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10"
+                  className="p-8 bg-[#1E293B]/50 backdrop-blur-xl rounded-2xl border border-[#60A5FA]/10 shadow-xl"
                 >
                   <h3 className="text-3xl font-bold text-white mb-2">
                     {selectedExperience.company}
                   </h3>
-                  <p className="text-indigo-400 text-xl mb-4">{selectedExperience.role}</p>
+                  <p className="text-[#60A5FA] text-xl mb-4">{selectedExperience.role}</p>
                   <p className="text-gray-400 mb-6">{selectedExperience.duration}</p>
                   
                   <div className="space-y-6">
@@ -174,7 +206,7 @@ export default function Experience() {
                             transition={{ delay: index * 0.1 }}
                             className="flex items-center text-gray-400"
                           >
-                            <span className="w-2 h-2 bg-indigo-500 rounded-full mr-2" />
+                            <span className="w-2 h-2 bg-[#60A5FA] rounded-full mr-2" />
                             {highlight}
                           </motion.li>
                         ))}
@@ -187,7 +219,7 @@ export default function Experience() {
                         {selectedExperience.technologies.map((tech) => (
                           <span
                             key={tech}
-                            className="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-sm"
+                            className="px-3 py-1 bg-[#60A5FA]/20 text-[#60A5FA] rounded-full text-sm"
                           >
                             {tech}
                           </span>

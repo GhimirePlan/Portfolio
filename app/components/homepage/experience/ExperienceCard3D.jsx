@@ -44,7 +44,7 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
           {/* Card base */}
           <boxGeometry args={[3, 4, 0.2]} />
           <meshPhysicalMaterial
-            color={hovered ? '#4f46e5' : '#1e1b4b'}
+            color={hovered ? '#60A5FA' : '#1e293b'}
             metalness={0.7}
             roughness={0.2}
             clearcoat={1.0}
@@ -70,7 +70,7 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
             <Text
               position={[0, 0.6, 0]}
               fontSize={0.2}
-              color="#94a3b8"
+              color="#60A5FA"
               anchorX="center"
               anchorY="middle"
               characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"
@@ -82,7 +82,7 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
             <Text
               position={[0, 0, 0]}
               fontSize={0.15}
-              color="#64748b"
+              color="#94a3b8"
               anchorX="center"
               anchorY="middle"
               characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?"
@@ -110,8 +110,8 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
         <mesh position={[-1.2, 1.6, 0.1]} rotation={[0, 0, Math.PI / 4]}>
           <boxGeometry args={[0.3, 0.3, 0.1]} />
           <meshPhysicalMaterial
-            color="#4f46e5"
-            emissive="#4f46e5"
+            color="#60A5FA"
+            emissive="#60A5FA"
             emissiveIntensity={hovered ? 2 : 1}
             toneMapped={false}
           />
@@ -120,8 +120,8 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
         <mesh position={[1.2, -1.6, 0.1]} rotation={[0, 0, Math.PI / 4]}>
           <boxGeometry args={[0.3, 0.3, 0.1]} />
           <meshPhysicalMaterial
-            color="#4f46e5"
-            emissive="#4f46e5"
+            color="#60A5FA"
+            emissive="#60A5FA"
             emissiveIntensity={hovered ? 2 : 1}
             toneMapped={false}
           />
@@ -140,7 +140,7 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
             </bufferGeometry>
             <pointsMaterial
               size={0.05}
-              color="#4f46e5"
+              color="#60A5FA"
               transparent
               opacity={0.6}
               sizeAttenuation

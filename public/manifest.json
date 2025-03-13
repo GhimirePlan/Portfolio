@@ -1,7 +1,7 @@
 {
-  "name": "Your Portfolio",
-  "short_name": "Portfolio",
-  "description": "Your personal portfolio with an offline-capable 3D game",
+  "name": "Plan Ghimire",
+  "short_name": "Plan Ghimire",
+  "description": "Personal portfolio of Plan Ghimire with an offline-capable 3D game",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",

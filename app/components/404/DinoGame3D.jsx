@@ -16,6 +16,7 @@ import {
   useDetectGPU
 } from '@react-three/drei';
 import * as THREE from 'three';
+import OscilloscopeLoader from '../OscilloscopeLoader';
 
 // Sound effects
 const SOUNDS = {
@@ -444,6 +445,27 @@ function Scene({ isPlaying, onScoreUpdate, onGameOver }) {
 }
 
 export default function DinoGame3D({ isPlaying, onScoreUpdate, onGameOver }) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time for assets
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Show loader for 2 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-background">
+        <div className="w-full max-w-md">
+          <OscilloscopeLoader />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Canvas shadows dpr={[1, 2]}>
       <Scene 
