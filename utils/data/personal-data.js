@@ -1,0 +1,17 @@
+export const personalData = {
+  name: "Plan Ghimire",
+  profile: '/bg.gif',
+  Designations: "Curiosity",
+  description: "A self-motivated Electronics Communication & Information Engineering Student with a strong problem-solving mindset and a constant desire to explore new technologies. Always eager to embrace challenges and open to exciting opportunities! 🌟",
+  email: 'contact@plan.com.np',
+  phone: '+977 9843391507',
+  address: 'Lamjung, Nepal',
+  github: 'https://github.com/ghimireplan',
+  facebook: 'https://www.facebook.com/plan.com.np',
+  linkedIn: 'https://www.linkedin.com/in/plan-ghimire/',
+  twitter: 'https://twitter.com/PlanGhimire',
+  stackOverflow: 'https://stackoverflow.com/users/your-stackoverflow',
+  leetcode: "https://leetcode.com/your-leetcode",
+  devUsername: "your-dev-username",
+  resume: "https://docs.google.com/document/d/1a40abi-tFr2AjfnkP6ACAeo_A40EvbKWjgc9ZyxN3z8/edit?tab=t.0",
+};

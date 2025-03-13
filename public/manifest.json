@@ -1,0 +1,33 @@
+{
+  "name": "Plan Ghimire",
+  "short_name": "Plan Ghimire",
+  "description": "Personal portfolio of Plan Ghimire with an offline-capable 3D game",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "orientation": "portrait",
+  "categories": ["portfolio", "games"],
+  "shortcuts": [
+    {
+      "name": "Play Game",
+      "url": "/offline",
+      "description": "Play the 3D game"
+    }
+  ],
+  "offline_enabled": true
+} 
