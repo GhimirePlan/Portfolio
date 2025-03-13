@@ -10,7 +10,7 @@ import ScrollToTop from "./components/helper/scroll-to-top";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Plan Ghimire - Developer",
+  title: "Plan Ghimire",
   description:
     "This is the portfolio of Plan Ghimire. Plan Ghimire is a dedicated student pursuing a Bachelor's degree in Electronics Communication and Information Engineering at Tribhuvan University. He has a strong passion for blending creativity with technology and is skilled in graphic design, web development, and game development. Plan has a keen interest in continuously improving his skills and embracing new challenges.",
 };

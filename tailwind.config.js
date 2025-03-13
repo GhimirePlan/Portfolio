@@ -39,6 +39,10 @@ module.exports = {
             'background-position': 'right center',
           },
         },
+        'pulse-slow': {
+          '0%, 100%': { opacity: 0.75, transform: 'scale(1)' },
+          '50%': { opacity: 1, transform: 'scale(1.1)' },
+        },
       },
       animation: {
         'glow': 'glow 2s ease-in-out infinite',
@@ -46,6 +50,7 @@ module.exports = {
         'bounce-slow': 'bounce 3s ease-in-out infinite',
         'wave': 'wave 2s ease-in-out infinite',
         'gradient-x': 'gradient-x 3s ease infinite',
+        'pulse-slow': 'pulse-slow 2s ease-in-out infinite',
       },
       backdropFilter: {
         'none': 'none',

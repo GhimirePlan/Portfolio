@@ -56,9 +56,9 @@ function HeroSection({ onLoad }) {
         {Array.from({ length: 12 }).map((_, index) => (
           <div
             key={index}
-            className={`absolute rounded-full blur-xl opacity-75 animate-pulse transition-transform duration-1000 ${
+            className={`absolute rounded-full blur-xl opacity-75 animate-pulse-slow transition-transform duration-500 ${
               index % 2 === 0 ? "bg-gradient-to-r from-pink-500 to-indigo-600" : "bg-gradient-to-r from-green-400 to-blue-500"
-            } ${index === 0 ? "top-10 left-20 w-24 h-24" : index === 1 ? "top-40 left-10 w-20 h-20" : index === 2 ? "bottom-20 right-10 w-16 h-16" : index === 3 ? "bottom-30 left-10 w-18 h-18" : index === 4 ? "top-40 right-20 w-22 h-22" : index === 5 ? "top-60 left-60 w-28 h-28" : index === 6 ? "top-30 right-30 w-18 h-18" : index === 7 ? "bottom-30 left-50 w-14 h-14" : index === 8 ? "top-50 left-10 w-20 h-20" : index === 9 ? "bottom-10 right-20 w-16 h-16" : index === 10 ? "top-5 right-5 w-22 h-22" : "bottom-20 right-40 w-16 h-16"}`}
+            } ${index === 0 ? "top-10 left-20 w-32 h-32" : index === 1 ? "top-40 left-10 w-28 h-28" : index === 2 ? "bottom-20 right-10 w-24 h-24" : index === 3 ? "bottom-30 left-10 w-26 h-26" : index === 4 ? "top-40 right-20 w-30 h-30" : index === 5 ? "top-60 left-60 w-36 h-36" : index === 6 ? "top-30 right-30 w-26 h-26" : index === 7 ? "bottom-30 left-50 w-22 h-22" : index === 8 ? "top-50 left-10 w-28 h-28" : index === 9 ? "bottom-10 right-20 w-24 h-24" : index === 10 ? "top-5 right-5 w-30 h-30" : "bottom-20 right-40 w-24 h-24"}`}
           ></div>
         ))}
       </div>
@@ -116,29 +116,66 @@ function HeroSection({ onLoad }) {
         </div>
 
         {/* Code-like Section */}
-        <div className="order-1 lg:order-2 relative bg-gradient-to-r from-[#0d1224] to-[#0a0d37] rounded-lg p-6">
-          <div className="flex items-center mb-4 space-x-2">
-            <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-            <div className="w-3 h-3 bg-orange-400 rounded-full"></div>
-            <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+        <div className="order-1 lg:order-2 relative bg-gradient-to-r from-[#0d1224] to-[#0a0d37] rounded-lg p-3 sm:p-4 md:p-6 w-full overflow-x-auto shadow-xl border border-[#60A5FA]/10">
+          <div className="flex items-center mb-2 sm:mb-4 space-x-2">
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-400 rounded-full hover:bg-red-500 transition-colors"></div>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-orange-400 rounded-full hover:bg-orange-500 transition-colors"></div>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full hover:bg-green-500 transition-colors"></div>
           </div>
 
-          <pre className="text-xs md:text-sm lg:text-base font-mono leading-relaxed text-white">
-    <code>
-        {`class Coder:
-    def __init__(self, name, skills, hard_worker, quick_learner,
-     problem_solver):
-        self.name = Plan Ghimire
-        self.skills = ['JavaScript', 'React', 'Python', 'C++', 'C']
-        self.hard_worker = true
-        self.quick_learner = true
-        self.problem_solver = true
+          <div className="relative">
+            <div className="absolute left-0 top-0 bottom-0 w-8 text-gray-500 select-none text-[10px] xs:text-xs sm:text-sm lg:text-base">
+              <div className="flex flex-col items-end pr-2 space-y-[0.3rem]">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                  <span key={num}>{num}</span>
+                ))}
+              </div>
+            </div>
 
-    def is_hireable(self):
-        return self.hard_worker and self.problem_solver >= 5
-`}
-            </code>
-          </pre>
+            <pre className="text-[10px] xs:text-xs sm:text-sm lg:text-base font-mono leading-relaxed text-white pl-10">
+              <code className="block">
+                <span className="text-[#60A5FA]">class</span>{" "}
+                <span className="text-[#34D399]">Coder</span>:
+                <br />
+                <span className="text-[#60A5FA]">    def</span>{" "}
+                <span className="text-[#34D399]">__init__</span>(
+                <span className="text-[#FCD34D]">self</span>, name, skills, hard_worker, quick_learner,
+                <br />
+                {"     problem_solver"})<span>:</span>
+                <br />
+                <span className="text-[#60A5FA]">        self</span>.name ={" "}
+                <span className="text-[#FCD34D]">Plan Ghimire</span>
+                <br />
+                <span className="text-[#60A5FA]">        self</span>.skills = [
+                <span className="text-[#FCD34D]">'JavaScript'</span>,{" "}
+                <span className="text-[#FCD34D]">'React'</span>,{" "}
+                <span className="text-[#FCD34D]">'Python'</span>,{" "}
+                <span className="text-[#FCD34D]">'C++'</span>,{" "}
+                <span className="text-[#FCD34D]">'C'</span>]
+                <br />
+                <span className="text-[#60A5FA]">        self</span>.hard_worker ={" "}
+                <span className="text-[#34D399]">true</span>
+                <br />
+                <span className="text-[#60A5FA]">        self</span>.quick_learner ={" "}
+                <span className="text-[#34D399]">true</span>
+                <br />
+                <span className="text-[#60A5FA]">        self</span>.problem_solver ={" "}
+                <span className="text-[#34D399]">true</span>
+                <br />
+                <br />
+                <span className="text-[#60A5FA]">    def</span>{" "}
+                <span className="text-[#34D399]">is_hireable</span>(
+                <span className="text-[#FCD34D]">self</span>):
+                <br />
+                <span className="text-[#60A5FA]">        return</span>{" "}
+                <span className="text-[#60A5FA]">self</span>.hard_worker{" "}
+                <span className="text-[#60A5FA]">and</span>{" "}
+                <span className="text-[#60A5FA]">self</span>.problem_solver{" "}
+                <span className="text-[#60A5FA]">&gt;=</span>{" "}
+                <span className="text-[#FCD34D]">5</span>
+              </code>
+            </pre>
+          </div>
         </div>
       </div>
     </section>

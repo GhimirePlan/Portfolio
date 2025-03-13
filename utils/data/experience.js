@@ -1,6 +1,6 @@
 export const experiences = [
   { 
-    company: "Freelance Developer", 
+    company: "Freelance Development", 
     role: "Frontend & Game Developer", 
     duration: "2021 - Present", 
     description: "Build responsive web apps and 2D/3D games.", 

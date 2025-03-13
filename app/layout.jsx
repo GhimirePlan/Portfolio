@@ -2,7 +2,7 @@ import './globals.css';
 import ClientLayout from './ClientLayout';
 
 export const metadata = {
-  title: 'Plan Ghimire - Developer',
+  title: 'Plan Ghimire',
   description: 'Personal portfolio of Plan Ghimire with an offline-capable 3D game',
   themeColor: '#0f172a',
   manifest: '/manifest.json',
