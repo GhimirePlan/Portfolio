@@ -1,51 +1,70 @@
-// @flow strict
-import Link from 'next/link';
-import { FaArrowRight } from 'react-icons/fa';
-import BlogCard from './blog-card';
+'use client';
 
-function Blog({ blogs }) {
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { BsArrowRight } from 'react-icons/bs';
+import BlogCard from '../../blog/BlogCard';
+
+export default function Blog() {
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await fetch('/api/blogs?published=true&limit=3');
+        const data = await res.json();
+        setBlogs(data.blogs || []);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+        setBlogs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   return (
-    <div id='blogs' className="relative z-50 border-t my-12 lg:my-24 border-[#25213b]">
-      <div className="w-[100px] h-[100px] bg-violet-100 rounded-full absolute top-6 left-[42%] translate-x-1/2 filter blur-3xl  opacity-20"></div>
-
-      <div className="flex justify-center -translate-y-[1px]">
-        <div className="w-3/4">
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-violet-500 to-transparent  w-full" />
+    <div id="blog" className="relative z-50 py-16">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-center my-5 lg:py-8">
+          <div className="flex items-center">
+            <span className="w-24 h-[2px] bg-[#1a1443]"></span>
+            <span className="bg-[#1a1443] w-fit text-white p-2 px-5 text-2xl rounded-md">
+              Latest Blog Posts
+            </span>
+            <span className="w-24 h-[2px] bg-[#1a1443]"></span>
+          </div>
         </div>
-      </div>
 
-      <div className="flex justify-center my-5 lg:py-8">
-        <div className="flex  items-center">
-          <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-          <span className="bg-[#1a1443] w-fit text-white p-2 px-5 text-xl rounded-md">
-            Blogs
-          </span>
-          <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-5 lg:gap-8 xl:gap-10">
-        {
-          blogs.slice(0, 6).map((blog, i) => (
-            blog?.cover_image &&
-            <BlogCard blog={blog} key={i} />
-          ))
-        }
-      </div>
-
-      <div className="flex justify-center  mt-5 lg:mt-12">
-        <Link
-          className="flex items-center gap-1 hover:gap-3 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 px-3 md:px-8 py-3 md:py-4 text-center text-xs md:text-sm font-medium uppercase tracking-wider text-white no-underline transition-all duration-200 ease-out hover:text-white hover:no-underline md:font-semibold"
-          role="button"
-          href="/blog"
-        >
-          <span>View More</span>
-          <FaArrowRight size={16} />
-        </Link>
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#60A5FA]"></div>
+          </div>
+        ) : blogs && blogs.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+              {blogs.map((blog) => (
+                <BlogCard key={blog._id} blog={blog} />
+              ))}
+            </div>
+            <div className="flex justify-center mt-8">
+              <Link 
+                href="/blog" 
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#60A5FA] to-[#34D399] text-white rounded-md hover:from-[#34D399] hover:to-[#60A5FA] transition-all duration-300"
+              >
+                View All Posts <BsArrowRight className="ml-2" />
+              </Link>
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-400 text-lg">No blog posts yet. Check back soon!</p>
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default Blog;
+}
