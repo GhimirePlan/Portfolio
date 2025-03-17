@@ -32,7 +32,7 @@ function HeroSection({ onLoad }) {
   }, [onLoad]);
 
   return (
-    <section className="relative flex flex-col items-center justify-between py-6 lg:py-14 overflow-hidden">
+    <div className="relative flex flex-col items-center justify-between w-full mt-10">
       {/* Background Image */}
       <Image
         src="/hero.svg"
@@ -64,8 +64,7 @@ function HeroSection({ onLoad }) {
       </div>
 
       {/* Main Content */}
-    {/* Main Content */}
-    <div className="grid grid-cols-1 items-start lg:grid-cols-2 lg:gap-12 gap-y-8">
+      <div className="grid grid-cols-1 items-start lg:grid-cols-2 lg:gap-12 gap-y-8">
         {/* Text Content */}
         <div className="order-2 lg:order-1 flex flex-col items-start justify-center px-4 pb-20 md:pb-10 lg:pt-10">
           <h1 className="text-3xl font-bold leading-10 text-white/95 md:font-extrabold lg:text-[2.6rem] lg:leading-[3.5rem]">
@@ -178,7 +177,7 @@ function HeroSection({ onLoad }) {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 

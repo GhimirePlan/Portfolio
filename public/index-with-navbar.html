@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan Ghimire - Portfolio with Navbar</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    #navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 70px;
+      background-color: #141b2d;
+      border-bottom: 4px solid #16f2b3;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      box-sizing: border-box;
+    }
+    
+    .navbar-brand {
+      color: #16f2b3;
+      font-size: 1.875rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .navbar-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .navbar-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.875rem;
+      padding: 0.5rem 0.75rem;
+    }
+    
+    .navbar-links a:hover {
+      color: #16f2b3;
+    }
+    
+    .content-frame {
+      width: 100%;
+      height: calc(100% - 70px);
+      margin-top: 70px;
+      border: none;
+    }
+    
+    .instructions {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 70px;
+      color: white;
+      background-color: #1e293b;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: #16f2b3;
+      color: #0f172a;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      text-decoration: none;
+      margin: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Fixed Navbar -->
+  <nav id="navbar">
+    <a href="/" class="navbar-brand">Plan Ghimire</a>
+    <div class="navbar-links">
+      <a href="https://games.plan.com.np" target="_parent">PlanGames</a>
+      <a href="/blog" target="_parent">Blog</a>
+      <a href="/test" target="_parent">Test</a>
+      <a href="/test-navbar" target="_parent">Test Navbar</a>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <div class="instructions">
+    <h1>Portfolio with Guaranteed Navbar</h1>
+    <p>This page displays a navbar at the top and will load the main site content below.</p>
+    <p>Use the links in the navbar to navigate, or click one of these buttons:</p>
+    <a href="javascript:loadFrame('/');" class="btn">Load Homepage</a>
+    <a href="javascript:loadFrame('/blog');" class="btn">Load Blog</a>
+    <a href="javascript:loadFrame('/test-navbar');" class="btn">Test Navbar</a>
+  </div>
+  
+  <iframe id="content-frame" class="content-frame" style="display:none;"></iframe>
+  
+  <script>
+    function loadFrame(url) {
+      const frame = document.getElementById('content-frame');
+      const instructions = document.querySelector('.instructions');
+      
+      // Show loading indicator
+      instructions.innerHTML = '<h2>Loading content...</h2>';
+      
+      // Load the URL
+      frame.src = url;
+      
+      // Hide instructions and show frame when loaded
+      frame.onload = function() {
+        instructions.style.display = 'none';
+        frame.style.display = 'block';
+      };
+    }
+  </script>
+</body>
+</html> 
