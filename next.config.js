@@ -5,8 +5,15 @@ module.exports = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['via.placeholder.com', 'media.istockphoto.com'],
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'media.istockphoto.com',
+      },
       {
         protocol: 'https',
         hostname: '**',
