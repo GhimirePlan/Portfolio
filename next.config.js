@@ -29,6 +29,17 @@ module.exports = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname),
     };
+    
+    // Handle Node.js modules in browser environment
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      path: false,
+      child_process: false,
+      net: false,
+      tls: false,
+    };
+    
     return config;
   },
 }

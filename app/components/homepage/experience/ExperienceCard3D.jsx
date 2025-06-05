@@ -1,5 +1,3 @@
-'use client';
-
 import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Center } from '@react-three/drei';
@@ -153,4 +151,4 @@ export default function ExperienceCard3D({ position, rotation, experience, onCli
       </Center>
     </group>
   );
-} 
+}

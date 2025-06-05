@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Suspense } from 'react';
+import Chatbot from './components/Chatbot';
 
 export default function ClientLayout({ children }) {
   const [isOnline, setIsOnline] = useState(true);
@@ -57,6 +58,7 @@ export default function ClientLayout({ children }) {
       </div>
     }>
       {children}
+      {isOnline && <Chatbot />}
     </Suspense>
   );
-} 
+}
