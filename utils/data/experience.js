@@ -1,5 +1,21 @@
 export const experiences = [
-  { 
+ 
+ {
+  company: "AI & Data Initiatives",
+  role: "AI Explorer",
+  duration: "2023 - Present",
+  description: "Build AI tools with focus on EDA, data cleaning, and feature engineering.",
+  technologies: ["Python", "TensorFlow", "PyTorch", "BeautifulSoup", "Pandas"],
+  highlights: [
+    "Developed Nepali handwritten OCR and news authenticity detector.",
+    "Created web scrapers and an advanced forest fire prediction system."
+  ],
+  links: {
+    github: "https://github.com/PlanGhimire/ai-projects",
+    live: "https://plandot.tech"
+  }
+},
+ { 
     company: "Freelance Development", 
     role: "Frontend & Game Developer", 
     duration: "2021 - Present", 
@@ -15,21 +31,7 @@ export const experiences = [
       demo: "https://demo.planghimire.com.np"
     }
   },
-  { 
-    company: "AI & Data Initiatives", 
-    role: "AI Explorer", 
-    duration: "2023 - Present", 
-    description: "Develop AI tools and data pipelines.", 
-    technologies: ["Python", "TensorFlow", "Pytorch", "BeautifulSoup", "Pandas"], 
-    highlights: [
-      "Built news authenticity detector.",
-      "Created web scraper."
-    ],
-    links: {
-      github: "https://github.com/PlanGhimire/ai-projects",
-      live: "https://ai.planghimire.com.np"
-    }
-  },
+  
   { 
     company: "Open Source", 
     role: "Contributor", 

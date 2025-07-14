@@ -10,6 +10,7 @@ A modern portfolio website with an integrated blog system built with Next.js, Mo
 - Authentication with NextAuth.js
 - MongoDB integration for data storage
 - Image optimization with Next.js Image component
+- PlanBot - AI assistant powered by Groq's LLaMA3-70b model
 
 ## Getting Started
 
@@ -92,6 +93,7 @@ vercel --prod
 - `MONGODB_URI`: MongoDB connection string
 - `NEXTAUTH_SECRET`: Secret for NextAuth.js
 - `NEXTAUTH_URL`: URL of your application (in production, this should be your deployment URL)
+- `GROQ_API_KEY`: API key for Groq AI (used by PlanBot)
 
 ## Admin Setup
 
@@ -102,7 +104,9 @@ After deployment, visit `/admin/setup` to create your admin account. This page i
 - `/app`: Next.js app directory
   - `/admin`: Admin panel pages
   - `/api`: API routes
+    - `/planbot`: PlanBot API endpoint
   - `/blog`: Blog pages
+  - `/planbot`: PlanBot chat interface
   - `/components`: Reusable components
 - `/public`: Static assets
 - `/lib`: Utility functions and database connection

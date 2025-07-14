@@ -1,0 +1,73 @@
+
+## **Plan Ghimire**
+
+**Location:** Lamjung, Nepal
+**Profession:** Aspiring AI & Web Developer | ECE Student | Python & Game‑Dev Enthusiast
+
+---
+
+### 🔧 **Technical Skills**
+
+* **Frontend:** React, Next.js, Tailwind CSS
+* **Languages & Tools:** Python (pandas, scikit‑learn, PyTorch), Django, Vite.js, HTML/CSS, BeautifulSoup, Selenium, Google Translate API
+* **Game Dev & WebAssembly:** C++, Raylib, Godot, Emscripten
+* **IoT & Connectivity:** LoRaWAN, environmental sensor networks
+
+---
+
+### 🏆 **Recent Highlights**
+
+* **Orbit Engineering Hacks 2.0 (48‑hr Hackathon):**
+  Developed an **AI‑powered news authenticity detector** as a browser extension & web platform with multilingual (Nepali/English) support—featuring source credibility insights and user‑flagging of misinformation ([LinkedIn][1], [LinkedIn][2], [GitHub][3]).
+
+---
+
+### 💻 **Projects & Portfolio**
+
+#### • **GitHub Portfolio & Games**
+
+* **Portfolio‑Website‑Plan‑Ghimire:** Showcases electronics, info‑engineering and web dev skills ([GitHub][4]).
+* **Web\_Based\_games:** A browser game platform (Snake, Pong, custom 2D) built in C++/Raylib (WASM-compiled), Godot & web frontend—hosted at games.plan.com.np ([GitHub][3]).
+
+#### • **LoRaWAN & IoT Deployments**
+
+* Deployed LoRaWAN networks across rural Nepal for environmental and agricultural monitoring.
+* Designed sensor-driven web dashboards for real-time data visualization in mountainous communities.
+
+#### • **AI/ML Tools**
+
+* Built an “AI‑Powered News Authenticity Detector” using pandas, sklearn, PyTorch, Django, Selenium, and deployed as both website and extension ([LinkedIn][2]).
+
+---
+
+### 🎓 **Education & Certifications**
+
+* **Bachelor’s in Electronics & Communication Engineering** – Tribhuvan University
+* Certified in **Web Development**, **Internet of Things**, and **Machine Learning** (via various online platforms)
+
+---
+
+### 🌱 **Areas of Interest**
+
+* Sustainable technology for rural development
+* Open-source software contributions
+* Hiking in the Himalayas & photography
+* Emerging AI technologies & digital literacy tools
+
+---
+
+### 📞 **Contact & Profiles**
+
+* **Email:** [contact@plan.com.np](mailto:contact@plan.com.np)
+* **Website:** [plan.com.np](https://www.plan.com.np/)
+* **GitHub:** [github.com/ghimireplan](https://github.com/ghimireplan) ([sudipghimire.com.np][5], [GitHub][6], [GitHub][3], [GitHub][4])
+* **LinkedIn:** [linkedin.com/in/plan‑ghimire](https://www.linkedin.com/in/plan-ghimire/) ([LinkedIn][2])
+* **Facebook:** facebook.com/plan.com.np
+
+---
+
+
+[2]: https://www.linkedin.com/posts/plan-ghimire_hackathon-ai-digitalliteracy-activity-7271065099321118720-A0lb?utm_source=chatgpt.com "Hackathon Achievement: Orbit Engineering Hacks 2.0 | Plan Ghimire"
+[3]: https://github.com/GhimirePlan/Web_Based_games?utm_source=chatgpt.com "GhimirePlan/Web_Based_games: A platform hosting ... - GitHub"
+[4]: https://github.com/ghimireplan?utm_source=chatgpt.com "Plan Ghimire GhimirePlan - GitHub"
+

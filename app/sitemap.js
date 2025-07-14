@@ -34,6 +34,12 @@ export default async function sitemap() {
       changeFrequency: 'monthly',
       priority: 0.7,
     },
+    {
+      url: `${baseUrl}/planbot`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
   ];
 
   // Add blog posts if you have them
@@ -46,4 +52,4 @@ export default async function sitemap() {
   // }));
 
   return [...routes];
-} 
+}
