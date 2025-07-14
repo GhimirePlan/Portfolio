@@ -39,6 +39,7 @@ function HeroSection({ onLoad }) {
         alt="Hero"
         width={1572}
         height={795}
+        priority
         className="absolute -top-[100px] -z-10 opacity-80"
       />
 

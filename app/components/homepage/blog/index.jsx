@@ -13,8 +13,20 @@ export default function Blog() {
     const fetchBlogs = async () => {
       try {
         const res = await fetch('/api/blogs?published=true&limit=3');
-        const data = await res.json();
-        setBlogs(data.blogs || []);
+        if (!res.ok) {
+          throw new Error(`API responded with status: ${res.status}`);
+        }
+        const text = await res.text();
+        if (!text) {
+          throw new Error('Empty response from API');
+        }
+        try {
+          const data = JSON.parse(text);
+          setBlogs(data.blogs || []);
+        } catch (parseError) {
+          console.error('Error parsing JSON:', parseError);
+          setBlogs([]);
+        }
       } catch (error) {
         console.error('Error fetching blogs:', error);
         setBlogs([]);

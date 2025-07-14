@@ -46,7 +46,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('Error fetching blogs:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch blogs' },
+      { error: 'Failed to fetch blogs', message: error.message },
       { status: 500 }
     );
   }
@@ -107,4 +107,4 @@ export async function POST(request) {
       { status: 500 }
     );
   }
-} 
+}

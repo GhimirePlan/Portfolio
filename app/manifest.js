@@ -11,6 +11,11 @@ export default function manifest() {
     theme_color: "#141b2d",
     icons: [
       {
+        src: "/favicon.jpg",
+        sizes: "any",
+        type: "image/jpeg"
+      },
+      {
         src: "/icons/icon-72x72.png",
         sizes: "72x72",
         type: "image/png"

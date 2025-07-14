@@ -39,6 +39,9 @@ export const metadata = {
   authors: [{ name: "Plan Ghimire" }],
   creator: "Plan Ghimire",
   publisher: "Plan Ghimire",
+  icons: {
+    icon: '/favicon.jpg',
+  },
   formatDetection: {
     email: false,
     address: false,
@@ -79,7 +82,7 @@ export const metadata = {
     },
   },
   verification: {
-    google: "YOUR_GOOGLE_VERIFICATION_CODE", // Replace with your actual Google verification code
+    google: "google-site-verification", // Replace with your actual Google verification code when you have one
   },
   alternates: {
     canonical: "https://planghimire.com",
@@ -97,7 +100,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.jpg" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         {/* Theme color is handled by the viewport export */}

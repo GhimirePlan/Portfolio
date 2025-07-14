@@ -446,15 +446,27 @@ function Scene({ isPlaying, onScoreUpdate, onGameOver }) {
 
 export default function DinoGame3D({ isPlaying, onScoreUpdate, onGameOver }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [webGLSupported, setWebGLSupported] = useState(true);
+  const gpuTier = useDetectGPU();
 
   useEffect(() => {
+    // Check for WebGL support
+    try {
+      const canvas = document.createElement('canvas');
+      const hasWebGL = !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+      setWebGLSupported(hasWebGL && !gpuTier.isMobile && gpuTier.tier > 0);
+    } catch (e) {
+      console.error('WebGL detection error:', e);
+      setWebGLSupported(false);
+    }
+
     // Simulate loading time for assets
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 2000); // Show loader for 2 seconds
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [gpuTier]);
 
   if (isLoading) {
     return (
@@ -466,8 +478,37 @@ export default function DinoGame3D({ isPlaying, onScoreUpdate, onGameOver }) {
     );
   }
 
+  if (!webGLSupported) {
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center bg-background p-6">
+        <div className="bg-gray-800/80 backdrop-blur-sm rounded-xl p-8 max-w-md w-full border border-gray-700/30 shadow-xl">
+          <h2 className="text-2xl font-bold text-[#60A5FA] mb-4">3D Game Not Available</h2>
+          <p className="text-gray-300 mb-6">Your device doesn't support WebGL or has limited 3D capabilities. Try using a different browser or device with better graphics support.</p>
+          <div className="flex justify-center">
+            <button 
+              onClick={() => window.location.href = '/'}
+              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-400 rounded-lg font-medium text-white hover:from-blue-600 hover:to-teal-500 transition-all duration-300 shadow-lg"
+            >
+              Return Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Canvas shadows dpr={[1, 2]}>
+    <Canvas 
+      shadows 
+      dpr={[1, 2]}
+      gl={{ 
+        antialias: true,
+        powerPreference: "high-performance",
+        failIfMajorPerformanceCaveat: false,
+        stencil: false,
+        depth: true,
+      }}
+    >
       <Scene 
         isPlaying={isPlaying} 
         onScoreUpdate={onScoreUpdate}
@@ -475,4 +516,4 @@ export default function DinoGame3D({ isPlaying, onScoreUpdate, onGameOver }) {
       />
     </Canvas>
   );
-} 
+}
