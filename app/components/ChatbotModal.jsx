@@ -4,6 +4,20 @@ import { useState, useRef, useEffect } from 'react';
 import { FaRobot, FaPaperPlane, FaTimes } from 'react-icons/fa';
 import axios from 'axios';
 
+// Function to get or create a session ID
+const getSessionId = () => {
+  // Check if we have a session ID in localStorage
+  const storedSessionId = localStorage.getItem('chatSessionId');
+  if (storedSessionId) {
+    return storedSessionId;
+  }
+  
+  // If not, create a new one
+  const newSessionId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+  localStorage.setItem('chatSessionId', newSessionId);
+  return newSessionId;
+};
+
 // Typing animation component
 const TypingAnimation = ({ text }) => {
   const [displayedText, setDisplayedText] = useState('');
@@ -28,6 +42,7 @@ export default function ChatbotModal({ isOpen, onClose }) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [newMessageId, setNewMessageId] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
   const messagesEndRef = useRef(null);
   const modalRef = useRef(null);
 
@@ -57,33 +72,103 @@ export default function ChatbotModal({ isOpen, onClose }) {
     scrollToBottom();
   }, [messages]);
 
-  // Add welcome message when component mounts
+  // Initialize session and load chat history when modal opens
   useEffect(() => {
-    if (messages.length === 0) {
+    if (isOpen) {
+      const currentSessionId = getSessionId();
+      setSessionId(currentSessionId);
+      
+      // Load chat history if we have a session ID
+      if (currentSessionId && messages.length === 0) {
+        fetchChatHistory(currentSessionId);
+      } else if (messages.length === 0) {
+        // Add welcome message if no history
+        const welcomeMessageId = Date.now();
+        setMessages([
+          {
+            id: welcomeMessageId,
+            text: "Hey! PlanBot here 😏 Powered by Plan Ghimire's brain and way too many late nights. Ask me anything — I dare you.",
+            sender: 'bot',
+            timestamp: new Date(),
+            animate: true,
+          },
+        ]);
+        setNewMessageId(welcomeMessageId);
+        
+        // After animation completes, remove the animation flag
+        const welcomeText = "Hey! PlanBot here 😏 Powered by Plan Ghimire's brain and way too many late nights. Ask me anything — I dare you.";
+        setTimeout(() => {
+          setNewMessageId(null);
+          setMessages(prev => 
+            prev.map(msg => 
+              msg.id === welcomeMessageId ? {...msg, animate: false} : msg
+            )
+          );
+        }, welcomeText.length * 15 + 500);
+      }
+    }
+  }, [isOpen, messages.length]);
+  
+  // Function to fetch chat history
+  const fetchChatHistory = async (sid) => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`/api/chatbot/history?sessionId=${sid}`);
+      const data = response.data;
+      
+      if (data.success && data.data.messages && data.data.messages.length > 0) {
+        // Convert messages from DB format to component format
+        const formattedMessages = data.data.messages.map((msg, index) => ({
+          id: index + 1,
+          text: msg.text,
+          sender: msg.sender,
+          timestamp: new Date(msg.timestamp || Date.now()),
+          animate: false
+        }));
+        setMessages(formattedMessages);
+      } else {
+        // If no history, add welcome message
+        const welcomeMessageId = Date.now();
+        setMessages([
+          {
+            id: welcomeMessageId,
+            text: "Hey! PlanBot here 😏 Powered by Plan Ghimire's brain and way too many late nights. Ask me anything — I dare you.",
+            sender: 'bot',
+            timestamp: new Date(),
+            animate: true,
+          },
+        ]);
+        setNewMessageId(welcomeMessageId);
+        
+        // After animation completes, remove the animation flag
+        const welcomeText = "Hey! PlanBot here 😏 Powered by Plan Ghimire's brain and way too many late nights. Ask me anything — I dare you.";
+        setTimeout(() => {
+          setNewMessageId(null);
+          setMessages(prev => 
+            prev.map(msg => 
+              msg.id === welcomeMessageId ? {...msg, animate: false} : msg
+            )
+          );
+        }, welcomeText.length * 15 + 500);
+      }
+    } catch (error) {
+      console.error('Error fetching chat history:', error);
+      // Add welcome message if history fetch fails
       const welcomeMessageId = Date.now();
       setMessages([
         {
           id: welcomeMessageId,
-          text: "Hey! PlanBot here 😏 Powered by Plan Ghimire’s brain and way too many late nights. Ask me anything — I dare you.",
+          text: "Hey! PlanBot here 😏 Powered by Plan Ghimire's brain and way too many late nights. Ask me anything — I dare you.",
           sender: 'bot',
           timestamp: new Date(),
           animate: true,
         },
       ]);
       setNewMessageId(welcomeMessageId);
-      
-      // After animation completes, remove the animation flag
-      const welcomeText = "Hey! PlanBot here 😏 Powered by Plan Ghimire’s brain and way too many late nights. Ask me anything — I dare you.";
-      setTimeout(() => {
-        setNewMessageId(null);
-        setMessages(prev => 
-          prev.map(msg => 
-            msg.id === welcomeMessageId ? {...msg, animate: false} : msg
-          )
-        );
-      }, welcomeText.length * 15 + 500);
+    } finally {
+      setIsLoading(false);
     }
-  }, [messages.length]);
+  };
 
   // Handle sending a message
   const handleSendMessage = async (e) => {
@@ -103,11 +188,18 @@ export default function ChatbotModal({ isOpen, onClose }) {
     setIsLoading(true);
 
     try {
-      // Call the PlanBot API
+      // Call the PlanBot API with session ID
       const response = await axios.post('/api/planbot', {
         message: input,
+        sessionId: sessionId
       });
 
+      // Store the session ID if it was returned
+      if (response.data.data.sessionId) {
+        setSessionId(response.data.data.sessionId);
+        localStorage.setItem('chatSessionId', response.data.data.sessionId);
+      }
+      
       // Add bot response to chat
       const botMessageId = Date.now();
       const botMessage = {
