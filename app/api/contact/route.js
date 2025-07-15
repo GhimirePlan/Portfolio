@@ -38,6 +38,8 @@ async function verifyRecaptcha(token) {
     // The secret key should be stored in environment variables in production
     const secretKey = process.env.RECAPTCHA_SECRET_KEY || '6LdpK4QrAAAAAPggiOL3tUjYMr8AmihTvlCEa4F2'; // Production secret key
     
+    console.log('Verifying reCAPTCHA v3 token with secret key:', secretKey.substring(0, 5) + '...');
+    
     const response = await axios.post(
       `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`,
       {},
@@ -48,7 +50,18 @@ async function verifyRecaptcha(token) {
       }
     );
     
-    return response.data.success;
+    console.log('reCAPTCHA verification response:', response.data);
+    
+    // For reCAPTCHA v3, we need to check the score
+    // Score ranges from 0.0 to 1.0, where 1.0 is very likely a good interaction
+    // and 0.0 is very likely a bot. Typically, scores above 0.5 are considered good.
+    if (response.data.success && response.data.score >= 0.5) {
+      console.log('reCAPTCHA score:', response.data.score, '- Verification passed');
+      return true;
+    } else {
+      console.log('reCAPTCHA score:', response.data.score, '- Verification failed');
+      return false;
+    }
   } catch (error) {
     console.error('reCAPTCHA verification error:', error);
     return false;

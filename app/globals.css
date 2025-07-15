@@ -116,6 +116,21 @@ body {
   transform-origin: left top;
 }
 
+/* reCAPTCHA badge customization */
+.grecaptcha-badge {
+  transform: scale(0.9) !important;
+  
+  bottom: 80px !important;
+}
+
+/* Hide reCAPTCHA badge on mobile devices */
+@media (max-width: 768px) {
+  .grecaptcha-badge {
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
 /* Make reCAPTCHA responsive on small screens */
 @media (max-width: 400px) {
   .recaptcha-container {

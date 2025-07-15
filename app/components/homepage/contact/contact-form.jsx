@@ -8,9 +8,9 @@ import { FiUser, FiMail, FiMessageSquare, FiSend, FiCheck, FiShield } from "reac
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
 import { personalData } from '@/utils/data/personal-data';
-import ReCAPTCHA from "react-google-recaptcha";
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
-function ContactForm() {
+function ContactFormContent() {
   const [formState, setFormState] = useState({
     name: { value: "", focused: false, valid: true },
     email: { value: "", focused: false, valid: true },
@@ -21,7 +21,7 @@ function ContactForm() {
   const [recaptchaToken, setRecaptchaToken] = useState("");
   const [recaptchaError, setRecaptchaError] = useState(false);
   const formRef = useRef(null);
-  const recaptchaRef = useRef(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Validate form fields
   const validateField = (field, value) => {
@@ -66,15 +66,23 @@ function ContactForm() {
     }));
   };
 
-  // Handle reCAPTCHA change
-  const handleRecaptchaChange = (token) => {
-    setRecaptchaToken(token);
-    setRecaptchaError(false);
-  };
-
-  // Handle reCAPTCHA expiration
-  const handleRecaptchaExpired = () => {
-    setRecaptchaToken("");
+  // Generate reCAPTCHA token
+  const generateRecaptchaToken = async () => {
+    if (!executeRecaptcha) {
+      console.log('Execute recaptcha not yet available');
+      return false;
+    }
+    
+    try {
+      const token = await executeRecaptcha('contact_form');
+      setRecaptchaToken(token);
+      setRecaptchaError(false);
+      return token;
+    } catch (error) {
+      console.error('reCAPTCHA error:', error);
+      setRecaptchaError(true);
+      return false;
+    }
   };
 
   // Handle form submission
@@ -98,10 +106,11 @@ function ContactForm() {
       return;
     }
 
-    // Validate reCAPTCHA
-    if (!recaptchaToken) {
+    // Generate reCAPTCHA token
+    const token = await generateRecaptchaToken();
+    if (!token) {
       setRecaptchaError(true);
-      toast.error("Please verify that you are not a robot");
+      toast.error("reCAPTCHA verification failed. Please try again.");
       return;
     }
 
@@ -111,7 +120,7 @@ function ContactForm() {
         name: formState.name.value,
         email: formState.email.value,
         message: formState.message.value,
-        recaptchaToken: recaptchaToken
+        recaptchaToken: token
       };
       
       const response = await axios.post(
@@ -132,9 +141,6 @@ function ContactForm() {
           });
           setRecaptchaToken("");
           setRecaptchaError(false);
-          if (recaptchaRef.current) {
-            recaptchaRef.current.reset();
-          }
           setFormSubmitted(false);
         }, 5000);
       } else {
@@ -143,11 +149,9 @@ function ContactForm() {
     } catch (error) {
       console.error("Contact form error:", error);
       toast.error(error?.response?.data?.message || error.message || "Failed to send message. Please try again later.");
-      // Reset reCAPTCHA on error
-      if (recaptchaRef.current) {
-        recaptchaRef.current.reset();
-        setRecaptchaToken("");
-      }
+      // Reset reCAPTCHA state on error
+      setRecaptchaToken("");
+      setRecaptchaError(true);
     } finally {
       setIsLoading(false);
     }
@@ -332,33 +336,19 @@ function ContactForm() {
                 </AnimatePresence>
               </div>
               
-              {/* reCAPTCHA */}
-              <div className="mt-4">
-                <div className={`flex flex-col items-center ${recaptchaError ? 'shake-animation' : ''}`}>
-                  <div className="recaptcha-container overflow-hidden max-w-full">
-                    <ReCAPTCHA
-                      ref={recaptchaRef}
-                      sitekey="6LdpK4QrAAAAALnxdawCj2mCYTvLiz-fYzKmzyqt" // Production site key
-                      onChange={handleRecaptchaChange}
-                      onExpired={handleRecaptchaExpired}
-                      theme="dark"
-                      size="normal"
-                    />
-                  </div>
-                  <AnimatePresence>
-                    {recaptchaError && (
-                      <motion.p 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="text-sm text-red-400 mt-2 flex items-center"
-                      >
-                        <FiShield className="mr-1" /> Please verify that you're not a robot
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
+              {/* reCAPTCHA v3 is invisible, no UI component needed */}
+              <AnimatePresence>
+                {recaptchaError && (
+                  <motion.p 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="text-sm text-red-400 mt-1"
+                  >
+                    reCAPTCHA verification failed. Please try again.
+                  </motion.p>
+                )}
+              </AnimatePresence>
               
               {/* Submit Button */}
               <motion.button
@@ -400,5 +390,21 @@ function ContactForm() {
     </div>
   );
 };
+
+// Wrapper component with GoogleReCaptchaProvider
+function ContactForm() {
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+      scriptProps={{
+        async: true,
+        defer: true,
+        appendTo: 'head',
+      }}
+    >
+      <ContactFormContent />
+    </GoogleReCaptchaProvider>
+  );
+}
 
 export default ContactForm;
