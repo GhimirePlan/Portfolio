@@ -338,7 +338,7 @@ function ContactForm() {
                   <div className="recaptcha-container overflow-hidden max-w-full">
                     <ReCAPTCHA
                       ref={recaptchaRef}
-                      sitekey="6LdpK4QrAAAAAAPggiOL3tUjYMr8AmihTvlCEa4F2" // Production site key
+                      sitekey="6LdpK4QrAAAAALnxdawCj2mCYTvLiz-fYzKmzyqt" // Production site key
                       onChange={handleRecaptchaChange}
                       onExpired={handleRecaptchaExpired}
                       theme="dark"
