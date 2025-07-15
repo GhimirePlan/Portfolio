@@ -98,6 +98,39 @@ body {
   transition: all 0.3s ease;
 }
 
+/* reCAPTCHA shake animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake-animation {
+  animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* reCAPTCHA responsive container */
+.recaptcha-container {
+  display: flex;
+  justify-content: center;
+  transform-origin: left top;
+}
+
+/* Make reCAPTCHA responsive on small screens */
+@media (max-width: 400px) {
+  .recaptcha-container {
+    transform: scale(0.85);
+    margin-bottom: -10px;
+  }
+}
+
+@media (max-width: 320px) {
+  .recaptcha-container {
+    transform: scale(0.75);
+    margin-bottom: -15px;
+  }
+}
+
 .history-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(96, 165, 250, 0.1);

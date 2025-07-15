@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import axios from 'axios';
 
 // Create and configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -31,6 +32,29 @@ const generateEmailTemplate = (name, email, userMessage) => `
   </div>
 `;
 
+// Helper function to verify reCAPTCHA token
+async function verifyRecaptcha(token) {
+  try {
+    // The secret key should be stored in environment variables in production
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY || '6LdpK4QrAAAAAPggiOL3tUjYMr8AmihTvlCEa4F2'; // Production secret key
+    
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`,
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    );
+    
+    return response.data.success;
+  } catch (error) {
+    console.error('reCAPTCHA verification error:', error);
+    return false;
+  }
+}
+
 // Helper function to send an email via Nodemailer
 async function sendEmail(payload) {
   const { name, email, message: userMessage } = payload;
@@ -55,13 +79,30 @@ async function sendEmail(payload) {
 export async function POST(request) {
   try {
     const payload = await request.json();
-    const { name, email, message: userMessage } = payload;
+    const { name, email, message: userMessage, recaptchaToken } = payload;
 
     // Validate required fields
     if (!name || !email || !userMessage) {
       return NextResponse.json({
         success: false,
         message: 'Name, email, and message are required.',
+      }, { status: 400 });
+    }
+
+    // Validate reCAPTCHA token
+    if (!recaptchaToken) {
+      return NextResponse.json({
+        success: false,
+        message: 'reCAPTCHA verification is required.',
+      }, { status: 400 });
+    }
+
+    // Verify reCAPTCHA token
+    const isRecaptchaValid = await verifyRecaptcha(recaptchaToken);
+    if (!isRecaptchaValid) {
+      return NextResponse.json({
+        success: false,
+        message: 'reCAPTCHA verification failed. Please try again.',
       }, { status: 400 });
     }
 

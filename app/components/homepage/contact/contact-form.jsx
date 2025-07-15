@@ -4,10 +4,11 @@ import { isValidEmail } from "@/utils/check-email";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { TbMailForward } from "react-icons/tb";
-import { FiUser, FiMail, FiMessageSquare, FiSend, FiCheck } from "react-icons/fi";
+import { FiUser, FiMail, FiMessageSquare, FiSend, FiCheck, FiShield } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
 import { personalData } from '@/utils/data/personal-data';
+import ReCAPTCHA from "react-google-recaptcha";
 
 function ContactForm() {
   const [formState, setFormState] = useState({
@@ -17,7 +18,10 @@ function ContactForm() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const [recaptchaError, setRecaptchaError] = useState(false);
   const formRef = useRef(null);
+  const recaptchaRef = useRef(null);
 
   // Validate form fields
   const validateField = (field, value) => {
@@ -62,6 +66,17 @@ function ContactForm() {
     }));
   };
 
+  // Handle reCAPTCHA change
+  const handleRecaptchaChange = (token) => {
+    setRecaptchaToken(token);
+    setRecaptchaError(false);
+  };
+
+  // Handle reCAPTCHA expiration
+  const handleRecaptchaExpired = () => {
+    setRecaptchaToken("");
+  };
+
   // Handle form submission
   const handleSendMail = async (e) => {
     e.preventDefault();
@@ -83,12 +98,20 @@ function ContactForm() {
       return;
     }
 
+    // Validate reCAPTCHA
+    if (!recaptchaToken) {
+      setRecaptchaError(true);
+      toast.error("Please verify that you are not a robot");
+      return;
+    }
+
     try {
       setIsLoading(true);
       const payload = {
         name: formState.name.value,
         email: formState.email.value,
-        message: formState.message.value
+        message: formState.message.value,
+        recaptchaToken: recaptchaToken
       };
       
       const response = await axios.post(
@@ -107,6 +130,11 @@ function ContactForm() {
             email: { value: "", focused: false, valid: true },
             message: { value: "", focused: false, valid: true },
           });
+          setRecaptchaToken("");
+          setRecaptchaError(false);
+          if (recaptchaRef.current) {
+            recaptchaRef.current.reset();
+          }
           setFormSubmitted(false);
         }, 5000);
       } else {
@@ -115,6 +143,11 @@ function ContactForm() {
     } catch (error) {
       console.error("Contact form error:", error);
       toast.error(error?.response?.data?.message || error.message || "Failed to send message. Please try again later.");
+      // Reset reCAPTCHA on error
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+        setRecaptchaToken("");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -297,6 +330,34 @@ function ContactForm() {
                     </motion.p>
                   )}
                 </AnimatePresence>
+              </div>
+              
+              {/* reCAPTCHA */}
+              <div className="mt-4">
+                <div className={`flex flex-col items-center ${recaptchaError ? 'shake-animation' : ''}`}>
+                  <div className="recaptcha-container overflow-hidden max-w-full">
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey="6LdpK4QrAAAAAAPggiOL3tUjYMr8AmihTvlCEa4F2" // Production site key
+                      onChange={handleRecaptchaChange}
+                      onExpired={handleRecaptchaExpired}
+                      theme="dark"
+                      size="normal"
+                    />
+                  </div>
+                  <AnimatePresence>
+                    {recaptchaError && (
+                      <motion.p 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="text-sm text-red-400 mt-2 flex items-center"
+                      >
+                        <FiShield className="mr-1" /> Please verify that you're not a robot
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
               
               {/* Submit Button */}
