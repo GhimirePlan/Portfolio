@@ -124,6 +124,7 @@ function AboutSection() {
                         onDragStart={(e) => e.preventDefault()}
                         onContextMenu={(e) => e.preventDefault()}
                         priority
+                        unoptimized={true}
                         style={{ width: "280px", height: "auto" }}
                       />
                     </div>
