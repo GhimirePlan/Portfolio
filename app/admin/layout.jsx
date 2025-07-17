@@ -94,10 +94,10 @@ function AdminDashboard({ children }) {
         <div className="flex flex-col h-full">
           {/* Sidebar header */}
           <div className="flex items-center justify-center h-16 px-4 border-b border-[#1d293a]">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/admin" className="flex items-center space-x-2">
               <Image 
-                src="/logo.png" 
-                alt="Logo" 
+                src="/admin-logo.svg" 
+                alt="Admin Logo" 
                 width={40} 
                 height={40} 
               />
@@ -167,4 +167,4 @@ function AdminDashboard({ children }) {
       </div>
     </div>
   );
-} 
+}

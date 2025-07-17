@@ -69,10 +69,10 @@ export default function LoginPage() {
         <div className="text-center">
           <Link href="/" className="inline-block">
             <Image 
-              src="/logo.png" 
-              alt="Logo" 
-              width={80} 
-              height={80} 
+              src="/admin-logo.svg" 
+              alt="Admin Logo" 
+              width={100} 
+              height={100} 
               className="mx-auto"
             />
           </Link>
@@ -84,10 +84,11 @@ export default function LoginPage() {
           </p>
         </div>
         
-        <div className="mt-8 bg-[#1b203e] rounded-lg shadow-xl p-8 border border-[#1d293a]">
+        <div className="mt-8 bg-gradient-to-br from-[#1b203e] to-[#2d3250] rounded-lg shadow-xl p-8 border border-[#1d293a]">
           {error && (
-            <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-md text-red-300 text-sm">
-              {error}
+            <div className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-md text-red-300 text-sm flex items-center">
+              <BsInfoCircle className="text-red-400 mr-2 flex-shrink-0" />
+              <span>{error}</span>
             </div>
           )}
           
@@ -96,9 +97,9 @@ export default function LoginPage() {
               <label htmlFor="email" className="block text-sm font-medium text-gray-300">
                 Email address
               </label>
-              <div className="mt-1 relative">
+              <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <BsEnvelope className="text-gray-500" />
+                  <BsEnvelope className="text-[#60A5FA]" />
                 </div>
                 <input
                   id="email"
@@ -108,19 +109,19 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-[#1d293a] rounded-md bg-[#0f172a] placeholder-gray-500 text-white focus:outline-none focus:ring-[#60A5FA] focus:border-[#60A5FA] sm:text-sm"
-                  placeholder="admin@example.com"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-[#1d293a] rounded-md bg-[#2d3250]/70 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#60A5FA] focus:border-[#60A5FA] sm:text-sm transition-all duration-300 shadow-inner"
+                  placeholder="Enter your email"
                 />
               </div>
             </div>
-            
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-300">
                 Password
               </label>
-              <div className="mt-1 relative">
+              <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <BsLock className="text-gray-500" />
+                  <BsLock className="text-[#60A5FA]" />
                 </div>
                 <input
                   id="password"
@@ -130,19 +131,24 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-2 border border-[#1d293a] rounded-md bg-[#0f172a] placeholder-gray-500 text-white focus:outline-none focus:ring-[#60A5FA] focus:border-[#60A5FA] sm:text-sm"
-                  placeholder="••••••••"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-[#1d293a] rounded-md bg-[#2d3250]/70 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-[#60A5FA] focus:border-[#60A5FA] sm:text-sm transition-all duration-300 shadow-inner"
+                  placeholder="Enter your password"
                 />
               </div>
             </div>
-            
-            <div>
+
+            <div className="pt-2">
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent rounded-md text-white bg-gradient-to-r from-[#60A5FA] to-[#34D399] hover:from-[#34D399] hover:to-[#60A5FA] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#60A5FA] transition-all duration-300"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-md text-sm font-medium text-white bg-gradient-to-r from-[#60A5FA] to-[#34D399] hover:from-[#34D399] hover:to-[#60A5FA] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#60A5FA] focus:ring-offset-[#0f172a] transition-all duration-300 hover:shadow-[#60A5FA]/20"
               >
-                {loading ? 'Signing in...' : 'Sign in'}
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-3"></div>
+                    Signing in...
+                  </>
+                ) : 'Sign in'}
               </button>
             </div>
           </form>
@@ -174,4 +180,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-} 
+}
