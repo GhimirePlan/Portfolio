@@ -31,7 +31,7 @@ const jsonLd = {
 export const metadata = {
   metadataBase: new URL('https://planghimire.com'),
   title: {
-    default: "Plan Ghimire |  Developer Portfolio",
+    default: "Plan Ghimire | Developer Portfolio",
     template: "%s | Plan Ghimire"
   },
   description: "Aspiring AI & Web Developer | ECE Student || Python & Game Dev Enthusiast",
@@ -66,7 +66,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Plan Ghimire | Developer Portfolio",
-    description: "Full Stack Developer specializing in React, Next.js, Node.js, and modern web technologies.",
+    description: "Aspiring AI & Web Developer | ECE Student || Python & Game Dev Enthusiast",
     images: ["/og-image.jpg"],
     creator: "@planghimire",
   },
