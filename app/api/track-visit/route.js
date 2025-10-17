@@ -32,7 +32,7 @@ export async function POST(request) {
       );
     }
     
-    // Create Discord embed
+    // Create Discord embed with direct link in description
     const embed = {
       title: "🚨 Footprints detected! 🐾",
       color: 5814783,
@@ -43,16 +43,19 @@ export async function POST(request) {
         { name: "⏰ Time", value: timestamp || new Date().toISOString(), inline: true },
         { name: "📊 Total Visits", value: visitCounter.toString(), inline: true },
         { name: "🔗 Page URL", value: url || "Unknown", inline: false }
-      ]
+      ],
+      description: `**[View more](https://ipinfo.io/${ip})**`
     };
     
-    // Send webhook to Discord
+    // Send webhook to Discord with embed only (no components)
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ embeds: [embed] }),
+      body: JSON.stringify({ 
+        embeds: [embed]
+      }),
     });
     
     if (!response.ok) {
