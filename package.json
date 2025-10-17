@@ -43,7 +43,8 @@
     "react-typed": "^2.0.12",
     "react-vertical-timeline-component": "^3.5.3",
     "sharp": "^0.33.5",
-    "three": "^0.162.0"
+    "three": "^0.162.0",
+    "ua-parser-js": "^2.0.6"
   },
   "devDependencies": {
     "@types/node": "22.10.2",

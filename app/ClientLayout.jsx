@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Suspense } from 'react';
 import FloatingChatbot from './components/FloatingChatbot';
+import VisitorTracker from './components/VisitorTracker';
 
 export default function ClientLayout({ children }) {
   const [isOnline, setIsOnline] = useState(true);
@@ -59,6 +60,7 @@ export default function ClientLayout({ children }) {
     }>
       {children}
       <FloatingChatbot />
+      <VisitorTracker showStatus={false} />
     </Suspense>
   );
 }
