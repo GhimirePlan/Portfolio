@@ -4,6 +4,10 @@ import { getToken } from 'next-auth/jwt';
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
   
+  if (!process.env.NEXTAUTH_SECRET) {
+    return NextResponse.next();
+  }
+
   // Check if the path starts with /admin (except for /admin/login)
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
     const token = await getToken({ 
@@ -52,4 +56,4 @@ export const config = {
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
-}; 
+};
