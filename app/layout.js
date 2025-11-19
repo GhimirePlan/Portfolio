@@ -1,4 +1,5 @@
 import { GoogleTagManager } from "@next/third-parties/google";
+import { headers } from "next/headers";
 import { Inter } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -99,6 +100,8 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
+  const ua = headers().get('user-agent') || '';
+  const isBot = /bot|crawler|spider|crawling|googlebot/i.test(ua);
   return (
     <html lang="en" className="dark">
       <head>
@@ -120,16 +123,26 @@ export default function RootLayout({ children }) {
         }} />
       </head>
       <body className={inter.className}>
-        <Providers>
-          <Navbar />
-          <main className="min-h-screen relative mx-auto px-6 sm:px-12 lg:max-w-[70rem] xl:max-w-[76rem] 2xl:max-w-[92rem] text-white">
-            {children}
-            <ScrollToTop />
-          </main>
-          <Footer />
-          <ToastContainer />
-        </Providers>
-        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM} />
+        {isBot ? (
+          <>
+            <Navbar />
+            <main className="min-h-screen relative mx-auto px-6 sm:px-12 lg:max-w-[70rem] xl:max-w-[76rem] 2xl:max-w-[92rem] text-white">
+              {children}
+            </main>
+            <Footer />
+          </>
+        ) : (
+          <Providers>
+            <Navbar />
+            <main className="min-h-screen relative mx-auto px-6 sm:px-12 lg:max-w-[70rem] xl:max-w-[76rem] 2xl:max-w-[92rem] text-white">
+              {children}
+              <ScrollToTop />
+            </main>
+            <Footer />
+            <ToastContainer />
+          </Providers>
+        )}
+        {process.env.NEXT_PUBLIC_GTM ? <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM} /> : null}
       </body>
     </html>
   );

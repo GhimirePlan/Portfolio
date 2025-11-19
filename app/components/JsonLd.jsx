@@ -1,5 +1,3 @@
-'use client';
-
 export default function JsonLd({ data }) {
   return (
     <script
@@ -7,4 +5,4 @@ export default function JsonLd({ data }) {
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
   );
-} 
+}
