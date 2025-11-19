@@ -33,6 +33,7 @@ export async function generateMetadata({ params }) {
 
 // Revalidate the page every hour
 export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export const viewport = {
   themeColor: "#16f2b3",
@@ -41,6 +42,9 @@ export const viewport = {
 };
 
 async function getBlog(slug) {
+  if (!process.env.MONGODB_URI) {
+    return null;
+  }
   await connectToDatabase();
   
   const blog = await Blog.findOne({ 

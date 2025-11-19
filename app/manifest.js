@@ -1,5 +1,3 @@
-import { MetadataRoute } from 'next';
-
 export default function manifest() {
   return {
     name: "Plan Ghimire Portfolio",
