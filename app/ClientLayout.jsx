@@ -7,10 +7,14 @@ import VisitorTracker from './components/VisitorTracker';
 
 export default function ClientLayout({ children }) {
   const [isOnline, setIsOnline] = useState(true);
+  const [isBot, setIsBot] = useState(false);
 
   useEffect(() => {
     // Set initial online status
-    setIsOnline(navigator.onLine);
+    try {
+      setIsOnline(navigator.onLine);
+      setIsBot(/bot|crawler|spider|crawling/i.test(navigator.userAgent || ''));
+    } catch {}
 
     // Register service worker
     const registerServiceWorker = async () => {
@@ -30,25 +34,33 @@ export default function ClientLayout({ children }) {
       setIsOnline(isNavigatorOnline);
       
       if (isNavigatorOnline) {
-        localStorage.setItem('lastOnlineTime', new Date().toISOString());
+        try {
+          localStorage.setItem('lastOnlineTime', new Date().toISOString());
+        } catch {}
       }
     };
 
     // Add event listeners
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    window.addEventListener('load', registerServiceWorker);
+    if (!isBot) {
+      window.addEventListener('online', updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+      window.addEventListener('load', registerServiceWorker);
+    }
     
     // Set initial online time
     if (navigator.onLine) {
-      localStorage.setItem('lastOnlineTime', new Date().toISOString());
+      try {
+        localStorage.setItem('lastOnlineTime', new Date().toISOString());
+      } catch {}
     }
 
     // Cleanup
     return () => {
-      window.removeEventListener('online', updateOnlineStatus);
-      window.removeEventListener('offline', updateOnlineStatus);
-      window.removeEventListener('load', registerServiceWorker);
+      if (!isBot) {
+        window.removeEventListener('online', updateOnlineStatus);
+        window.removeEventListener('offline', updateOnlineStatus);
+        window.removeEventListener('load', registerServiceWorker);
+      }
     };
   }, []);
 
@@ -59,8 +71,8 @@ export default function ClientLayout({ children }) {
       </div>
     }>
       {children}
-      <FloatingChatbot />
-      <VisitorTracker showStatus={false} />
+      {!isBot && <FloatingChatbot />}
+      {!isBot && <VisitorTracker showStatus={false} />}
     </Suspense>
   );
 }
