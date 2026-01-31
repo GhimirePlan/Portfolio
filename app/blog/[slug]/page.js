@@ -1,7 +1,5 @@
-// @flow strict
-import { personalData } from "@/utils/data/personal-data";
 import Image from 'next/image';
-import DOMPurify from 'isomorphic-dompurify';
+import sanitizeHtml from 'sanitize-html';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BsCalendar, BsClock, BsArrowLeft } from 'react-icons/bs';
@@ -122,7 +120,14 @@ export default async function BlogDetails({ params }) {
           )}
           
           <div className="prose prose-invert prose-lg max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(blog.content || '') }} />
+            <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(blog.content || '', {
+              allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'h1', 'h2', 'span' ]),
+              allowedAttributes: {
+                ...sanitizeHtml.defaults.allowedAttributes,
+                '*': ['style', 'class', 'className'],
+                'img': ['src', 'alt', 'width', 'height']
+              }
+            }) }} />
           </div>
         </div>
       </article>
