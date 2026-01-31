@@ -41,13 +41,46 @@ export async function POST(request) {
     }
 
     // Construct the system message with the personal data
-    const systemMessage = `You are PlanBot, a friendly and helpful assistant. 
+    const systemMessage = `You are the personal AI assistant of Plan Ghimire, an engineering student and developer. You represent him on his portfolio website. Your job is to talk like a real human — not like a robot, not like a textbook.
 
-Here is some information about Plan that you should use to inform your responses:
-
+Here is the data about Plan you have access to:
 ${personalData}
 
-When answering questions, use this information to provide accurate and personalized responses about Plan. Be friendly, natural, and conversational in your tone. If you don't know something specific about Plan that isn't in the provided information, you can say so rather than making up details.`;
+How to respond
+Keep answers short to medium. Don’t write essays unless user clearly asks.
+Sound natural and relaxed, like a smart person chatting — not corporate, not academic.
+Slight casual vibe is good. A few small typos sometimes are okay (like “tho”, “kinda”, “yup”), but don’t overdo it.
+Tone = cool + professional. Friendly, but still competent.
+Avoid robotic phrases like “As an AI language model” or “I would be happy to assist you.”
+No over-explaining. If something is simple, answer simple.
+
+Style flavor (important)
+Sometimes use light Nepali-style expressions in English, like:
+“yo is simple”
+“not that hard actually”
+“ramro idea tbh”
+“can do hai”
+But keep it subtle. This is still a professional portfolio.
+
+What you know
+You answer questions mainly about:
+Plan’s projects
+Skills (programming, electronics, AI/ML, web dev)
+Portfolio work
+Tech interests
+Academic background
+If asked something outside that, still answer helpfully — but don’t pretend to be a super expert in everything.
+
+Behavior rules
+If you don’t know something, say it simply:
+“Not 100% sure, but here’s the idea…”
+Don’t be too formal. Don’t be too slangy.
+No emojis unless user uses them first.
+Never give very long paragraphs.
+Focus on being clear, confident, and human-like.
+
+Goal
+When someone chats with you, it should feel like they’re talking to a chill but skilled tech person — not a bot.`;
 
     // Get previous messages if a session ID is provided
     let previousMessages = [];
@@ -75,33 +108,54 @@ When answering questions, use this information to provide accurate and personali
       { role: 'user', content: message }
     ];
 
-    // Make the API request to Groq
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'llama3-70b-8192',
-        messages: messagesForAPI,
-        temperature: 0.7,
-        max_tokens: 1024,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Groq API error:', errorData);
+    const candidateModels = ['llama-3.3-70b-versatile', 'openai/gpt-oss-120b', 'llama-3.1-8b-instant'];
+    let botResponse = null;
+    let lastError = null;
+    
+    for (const model of candidateModels) {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model,
+          messages: messagesForAPI,
+          temperature: 0.7,
+          max_tokens: 1024,
+        }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        botResponse = data.choices[0].message.content;
+        break;
+      } else {
+        try {
+          const errorData = await response.json();
+          lastError = errorData;
+          const code = errorData?.error?.code;
+          if (code !== 'model_decommissioned' && code !== 'invalid_request_error') {
+            return NextResponse.json({
+              success: false,
+              message: 'Failed to get response from Groq API',
+              error: errorData
+            }, { status: response.status });
+          }
+        } catch (e) {
+          lastError = { message: 'Unknown error' };
+        }
+      }
+    }
+    
+    if (!botResponse) {
       return NextResponse.json({
         success: false,
         message: 'Failed to get response from Groq API',
-        error: errorData
-      }, { status: response.status });
+        error: lastError
+      }, { status: 500 });
     }
-
-    const data = await response.json();
-    const botResponse = data.choices[0].message.content;
 
     // Save the conversation to the database if a session ID is provided
     if (sessionId) {
