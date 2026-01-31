@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { BsArrowRight, BsSearch } from 'react-icons/bs';
 import { FaFilter } from 'react-icons/fa6';
 import BlogCard from "../components/blog/BlogCard";
+import BlogNavbar from "../components/blog/BlogNavbar";
+import ContactSection from "../components/homepage/contact";
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState([]);
@@ -70,7 +72,8 @@ export default function BlogPage() {
 
   return (
     <div className="py-8">
-      <div className="mb-10">
+      <BlogNavbar />
+      <div className="mb-10 pt-16">
         <h1 className="text-4xl font-bold text-white mb-4 text-center">Blog</h1>
         <p className="text-gray-400 text-center max-w-2xl mx-auto">
           Explore my thoughts, tutorials, and insights on web development, technology, and more.
@@ -132,6 +135,7 @@ export default function BlogPage() {
           ) : null}
         </div>
       )}
+      <ContactSection />
     </div>
   );
 }
