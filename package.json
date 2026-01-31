@@ -25,6 +25,8 @@
     "dotenv": "^16.4.7",
     "framer-motion": "^11.0.8",
     "gsap": "^3.12.5",
+    "isomorphic-dompurify": "^2.7.0",
+    "jsdom": "^27.4.0",
     "lottie-react": "^2.4.0",
     "mongoose": "^8.12.1",
     "next": "14.2.33",
@@ -40,7 +42,6 @@
     "react-icons": "^5.5.0",
     "react-intersection-observer": "^9.8.1",
     "react-quill": "^2.0.0",
-    "isomorphic-dompurify": "^2.7.0",
     "react-toastify": "^10.0.4",
     "react-typed": "^2.0.12",
     "react-vertical-timeline-component": "^3.5.3",
@@ -59,8 +60,7 @@
     "postcss": "8.4.41",
     "sass": "^1.69.5",
     "tailwindcss": "latest"
-  }
-  ,
+  },
   "overrides": {
     "glob": "^10.3.10",
     "json5": "2.2.3",
