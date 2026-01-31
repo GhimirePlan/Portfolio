@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: blog.title,
       description: blog.description,
-      images: [{ url: blog.coverImage }]
+      images: blog.coverImage ? [{ url: blog.coverImage }] : []
     }
   };
 }
@@ -43,17 +43,22 @@ export const viewport = {
 };
 
 async function getBlog(slug) {
-  if (!process.env.MONGODB_URI) {
+  try {
+    if (!process.env.MONGODB_URI) {
+      return null;
+    }
+    await connectToDatabase();
+    
+    const blog = await Blog.findOne({ 
+      slug: slug,
+      published: true
+    }).lean();
+    
+    return blog;
+  } catch (error) {
+    console.error('Error fetching blog:', error);
     return null;
   }
-  await connectToDatabase();
-  
-  const blog = await Blog.findOne({ 
-    slug: slug,
-    published: true
-  }).lean();
-  
-  return blog;
 };
 
 export default async function BlogDetails({ params }) {
