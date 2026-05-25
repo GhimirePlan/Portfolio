@@ -1,4 +1,4 @@
-const CACHE_NAME = 'portfolio-cache-v1';
+const CACHE_NAME = 'portfolio-cache-v2';
 
 // Assets to cache
 const ASSETS_TO_CACHE = [
@@ -7,7 +7,7 @@ const ASSETS_TO_CACHE = [
   '/sounds/jump.mp3',
   '/sounds/collision.mp3',
   '/sounds/point.mp3',
-  '/favicon.ico',
+  '/favicon.jpg',
   // Fonts
   '/fonts/**/*',
   // Images and Icons
