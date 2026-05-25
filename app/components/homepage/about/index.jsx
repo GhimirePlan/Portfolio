@@ -123,7 +123,7 @@ function AboutSection() {
                         className="rounded-lg transition-all duration-700 grayscale hover:grayscale-0 group-hover:scale-105 no-drag shadow-xl"
                         onDragStart={(e) => e.preventDefault()}
                         onContextMenu={(e) => e.preventDefault()}
-                        priority
+                        loading="lazy"
                         unoptimized={true}
                         style={{ width: "280px", height: "auto" }}
                       />

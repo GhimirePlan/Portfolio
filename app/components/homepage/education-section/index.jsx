@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef, useState, Suspense, useEffect } from "react";
 import { FaGraduationCap, FaUniversity } from "react-icons/fa";
 import { BsCalendarDate } from "react-icons/bs";
@@ -19,6 +19,7 @@ const hasWebGL = () => {
 
 function EducationSection() {
   const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
   const [isHovered, setIsHovered] = useState(false);
   const [webGLSupported, setWebGLSupported] = useState(true);
   const { scrollYProgress } = useScroll({
@@ -63,7 +64,7 @@ function EducationSection() {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            {webGLSupported ? (
+            {webGLSupported && isInView ? (
               <Canvas
                 camera={{ position: [0, 2, 5], fov: 45 }}
                 className="w-full h-full"

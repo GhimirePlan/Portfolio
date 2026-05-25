@@ -19,6 +19,7 @@ function BlogCard({ blog }) {
           width={1920}
           alt=""
           className='h-full w-full group-hover:scale-110 transition-all duration-300'
+          loading="lazy"
         />
       </div>
       <div className="p-2 sm:p-3 flex flex-col">

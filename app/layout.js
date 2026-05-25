@@ -13,7 +13,11 @@ import ScrollToTop from "./components/helper/scroll-to-top";
 import Providers from "./providers";
 import JsonLd from "./components/JsonLd";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -114,13 +118,8 @@ export default function RootLayout({ children }) {
         <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
         <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
         <JsonLd data={jsonLd} />
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            // Force dark mode and add debug indicator
-            document.documentElement.classList.add('dark');
-            console.log('DEBUG: Dark mode enforced in layout.js');
-          `
-        }} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={inter.className}>
         {isBot ? (

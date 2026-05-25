@@ -1,17 +1,34 @@
 'use client';
 
 import { personalData } from "@/utils/data/personal-data";
-import AboutSection from "./components/homepage/about";
-import ContactSection from "./components/homepage/contact";
-import Experience from "./components/homepage/experience";
-import HeroSection from "./components/homepage/hero-section";
-import Blog from "./components/homepage/blog";
 import { useTheme } from 'next-themes';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { FaSun, FaMoon, FaSearch, FaUser, FaBars, FaTimes, 
          FaHome, FaInfo, FaCode, FaBlog, FaEnvelope, 
          FaUserCircle, FaChartBar, FaCog, FaSignOutAlt, FaSignInAlt, FaUserPlus } from "react-icons/fa";
 import Link from 'next/link';
+
+// Eagerly load Hero as it's above the fold
+import HeroSection from "./components/homepage/hero-section";
+
+// Lazy load heavy components and sections below the fold
+const AboutSection = dynamic(() => import("./components/homepage/about"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen animate-pulse bg-slate-900/20" />
+});
+const Experience = dynamic(() => import("./components/homepage/experience"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen animate-pulse bg-slate-900/20" />
+});
+const Blog = dynamic(() => import("./components/homepage/blog"), {
+  ssr: false,
+  loading: () => <div className="min-h-[400px] animate-pulse bg-slate-900/20" />
+});
+const ContactSection = dynamic(() => import("./components/homepage/contact"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen animate-pulse bg-slate-900/20" />
+});
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -551,10 +568,18 @@ export default function HomePage() {
 
       {/* Your existing homepage content */}
       <HeroSection />
-      <AboutSection />
-      <Experience />
-      <Blog />
-      <ContactSection />
+      <Suspense fallback={<div className="min-h-screen animate-pulse bg-slate-900/20" />}>
+        <AboutSection />
+      </Suspense>
+      <Suspense fallback={<div className="min-h-screen animate-pulse bg-slate-900/20" />}>
+        <Experience />
+      </Suspense>
+      <Suspense fallback={<div className="min-h-[400px] animate-pulse bg-slate-900/20" />}>
+        <Blog />
+      </Suspense>
+      <Suspense fallback={<div className="min-h-screen animate-pulse bg-slate-900/20" />}>
+        <ContactSection />
+      </Suspense>
     </>
   );
 }

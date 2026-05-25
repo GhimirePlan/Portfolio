@@ -74,6 +74,7 @@ export default function Experience() {
         width={1572}
         height={795}
         className="absolute -top-[100px] -z-10 opacity-80"
+        loading="lazy"
       />
 
       {/* Background Animated Nodes */}
@@ -126,7 +127,7 @@ export default function Experience() {
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-start">
           {/* 3D Experience Cards */}
           <div className="h-[400px] sm:h-[510px] relative bg-[#1E293B]/50 rounded-2xl overflow-hidden backdrop-blur-sm border border-[#60A5FA]/10">
-            {webGLSupported ? (
+            {webGLSupported && inView ? (
               <Canvas
                 ref={canvasRef}
                 dpr={[1, 2]}
