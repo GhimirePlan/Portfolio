@@ -7,7 +7,7 @@ export const metadata = {
   themeColor: '#0f172a',
   manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.jpg',
+    icon: '/favicon.png',
   },
   openGraph: {
     description: 'Personal portfolio of Plan Ghimire, Electronics Communication & Information Engineering student from Nepal',
@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
       <head>
         <meta name="theme-color" content="#0f172a" />
         <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" href="/favicon.jpg" />
+        <link rel="icon" href="/favicon.png" />
       </head>
       <body suppressHydrationWarning>
         <ClientLayout>{children}</ClientLayout>
