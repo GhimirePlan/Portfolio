@@ -3,11 +3,17 @@ import ClientLayout from './ClientLayout';
 
 export const metadata = {
   title: 'Plan Ghimire',
-  description: 'Personal portfolio of Plan Ghimire with an offline-capable 3D game',
+  description: 'Personal portfolio of Plan Ghimire, Electronics Communication & Information Engineering student from Nepal',
   themeColor: '#0f172a',
   manifest: '/manifest.json',
   icons: {
-    icon: '/profile.png',
+    icon: '/favicon.jpg',
+  },
+  openGraph: {
+    description: 'Personal portfolio of Plan Ghimire, Electronics Communication & Information Engineering student from Nepal',
+  },
+  twitter: {
+    description: 'Personal portfolio of Plan Ghimire, Electronics Communication & Information Engineering student from Nepal',
   },
 };
 
@@ -24,6 +30,7 @@ export default function RootLayout({ children }) {
       <head>
         <meta name="theme-color" content="#0f172a" />
         <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/favicon.jpg" />
       </head>
       <body suppressHydrationWarning>
         <ClientLayout>{children}</ClientLayout>

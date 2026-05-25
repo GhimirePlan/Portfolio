@@ -21,7 +21,7 @@ const jsonLd = {
   "name": "Plan Ghimire",
   "url": "https://planghimire.com",
   "jobTitle": "Developer",
-  "description": "Aspiring AI & Web Developer | ECE Student || Python & Game Dev Enthusiast",
+  "description": "Personal portfolio of Plan Ghimire",
   "sameAs": [
     "https://github.com/planghimire",
     "https://linkedin.com/in/planghimire",
@@ -35,7 +35,7 @@ export const metadata = {
     default: "Plan Ghimire | Developer Portfolio",
     template: "%s | Plan Ghimire"
   },
-  description: "Aspiring AI & Web Developer | ECE Student || Python & Game Dev Enthusiast",
+  description: "Personal portfolio of Plan Ghimire",
   keywords: ["Developer", "React Developer", "Next.js", "Node.js", "Web Development", "Portfolio"],
   authors: [{ name: "Plan Ghimire" }],
   creator: "Plan Ghimire",
@@ -54,7 +54,7 @@ export const metadata = {
     url: "https://planghimire.com",
     siteName: "Plan Ghimire Portfolio",
     title: "Plan Ghimire | Developer Portfolio",
-    description: "Aspiring AI & Web Developer | ECE Student || Python & Game Dev Enthusiast",
+    description: "Personal portfolio of Plan Ghimire",
     images: [
       {
         url: "/og-image.jpg",
@@ -67,7 +67,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Plan Ghimire | Developer Portfolio",
-    description: "Aspiring AI & Web Developer | ECE Student || Python & Game Dev Enthusiast",
+    description: "Personal portfolio of Plan Ghimire",
     images: ["/og-image.jpg"],
     creator: "@planghimire",
   },

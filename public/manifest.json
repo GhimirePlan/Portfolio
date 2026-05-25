@@ -1,7 +1,7 @@
 {
   "name": "Plan Ghimire Portfolio",
   "short_name": "PG Portfolio",
-  "description": "Full Stack Developer specializing in React, Next.js, Node.js, and modern web technologies",
+  "description": "Personal portfolio of Plan Ghimire",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#141b2d",

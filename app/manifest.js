@@ -2,7 +2,7 @@ export default function manifest() {
   return {
     name: "Plan Ghimire Portfolio",
     short_name: "PG Portfolio",
-    description: "Aspiring AI & Web Developer | ECE Student || Python & Game Dev Enthusiast",
+    description: "Personal portfolio of Plan Ghimire",
     start_url: "/",
     display: "standalone",
     background_color: "#141b2d",
