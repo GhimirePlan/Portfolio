@@ -62,6 +62,7 @@ function AdminDashboard({ children }) {
     { name: 'Dashboard', href: '/admin', icon: <BsHouseDoor /> },
     { name: 'All Posts', href: '/admin/posts', icon: <BsFilePost /> },
     { name: 'New Post', href: '/admin/posts/new', icon: <BsPlus /> },
+    { name: 'LinkedIn Posts', href: '/admin/linkedin-posts', icon: <BsFilePost /> },
   ];
   
   const toggleSidebar = () => {

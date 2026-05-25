@@ -120,8 +120,8 @@ function Navbar() {
 
               {/* Navigation links */}
               <div className="flex items-center space-x-1">
-                {['Home', 'About', 'Projects', 'Blog', 'Contact', 'PlanBot'].map((item, index) => {
-                  const icons = [FaHome, FaInfo, FaCode, FaBlog, FaEnvelope, FaRobot];
+                {['Home', 'About', 'Blog', 'Contact', 'PlanBot'].map((item, index) => {
+                  const icons = [FaHome, FaInfo, FaBlog, FaEnvelope, FaRobot];
                   const Icon = icons[index];
                   const href = item === 'Home' ? '/' : `/${item.toLowerCase()}`;
                   
@@ -319,8 +319,8 @@ function Navbar() {
           </div>
 
           {/* Mobile links */}
-          {['Home', 'About', 'Projects', 'Blog', 'Contact', 'PlanBot'].map((item, index) => {
-            const icons = [FaHome, FaInfo, FaCode, FaBlog, FaEnvelope, FaRobot];
+          {['Home', 'About', 'Blog', 'Contact', 'PlanBot'].map((item, index) => {
+            const icons = [FaHome, FaInfo, FaBlog, FaEnvelope, FaRobot];
             const Icon = icons[index];
             const href = item === 'Home' ? '/' : `/${item.toLowerCase()}`;
             

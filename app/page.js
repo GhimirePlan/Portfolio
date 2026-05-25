@@ -21,6 +21,10 @@ const Experience = dynamic(() => import("./components/homepage/experience"), {
   ssr: false,
   loading: () => <div className="min-h-screen animate-pulse bg-slate-900/20" />
 });
+const LinkedInSection = dynamic(() => import("./components/homepage/LinkedInSection"), {
+  ssr: false,
+  loading: () => <div className="min-h-[400px] animate-pulse bg-slate-900/20" />
+});
 const Blog = dynamic(() => import("./components/homepage/blog"), {
   ssr: false,
   loading: () => <div className="min-h-[400px] animate-pulse bg-slate-900/20" />
@@ -175,18 +179,6 @@ export default function HomePage() {
                     >
                       <FaBlog className="inline mr-2" size={12} />
                       JavaScript Tips & Tricks
-                    </a>
-                    <a 
-                      href="/projects/web-development" 
-                      className="block px-4 py-2 text-sm hover:bg-opacity-10 transition-colors duration-150"
-                      style={{
-                        color: theme === 'dark' ? '#fff' : '#1a202c',
-                        backgroundColor: searchQuery.toLowerCase().includes('web') ? 
-                          (theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)') : 'transparent'
-                      }}
-                    >
-                      <FaCode className="inline mr-2" size={12} />
-                      Web Development Projects
                     </a>
                     <a 
                       href="/about" 
@@ -576,6 +568,9 @@ export default function HomePage() {
       </Suspense>
       <Suspense fallback={<div className="min-h-[400px] animate-pulse bg-slate-900/20" />}>
         <Blog />
+      </Suspense>
+      <Suspense fallback={<div className="min-h-[400px] animate-pulse bg-slate-900/20" />}>
+        <LinkedInSection />
       </Suspense>
       <Suspense fallback={<div className="min-h-screen animate-pulse bg-slate-900/20" />}>
         <ContactSection />
