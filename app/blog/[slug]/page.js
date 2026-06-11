@@ -23,6 +23,7 @@ import ClientWrapper from './ClientWrapper';
 import ReadingProgress from './ReadingProgress';
 import ScrollToTop from './ScrollToTop';
 import TableOfContents from './TableOfContents';
+import BlogAnimate from './BlogAnimate';
 
 // Generate metadata for the page
 export async function generateMetadata({ params }) {
@@ -156,7 +157,28 @@ export default async function BlogDetails({ params }) {
       return url;
     }
   };
- 
+
+  // Split content to insert video before "Why This Research Matters"
+  const getContentParts = () => {
+    if (blog.slug !== 'bridging-gap-low-resource-nlp-fake-news-detection') {
+      return { before: sanitizedContent, after: null };
+    }
+
+    const target = '--';
+    const index = sanitizedContent.indexOf(target);
+    
+    if (index === -1) {
+      return { before: sanitizedContent, after: null };
+    }
+
+    return {
+      before: sanitizedContent.substring(0, index),
+      after: sanitizedContent.substring(index)
+    };
+  };
+
+  const { before, after } = getContentParts();
+
   return (
     <>
       {/* Reading Progress Bar */}
@@ -258,10 +280,31 @@ export default async function BlogDetails({ params }) {
               {/* Article Content */}
               <div className="bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-2xl overflow-hidden shadow-xl mb-8">
                 <div className="p-6 md:p-10 lg:p-12">
-                  <div 
-                    className="blog-content"
-                    dangerouslySetInnerHTML={{ __html: sanitizedContent }} 
-                  />
+                  <BlogAnimate>
+                    <div className="blog-content">
+                      <div dangerouslySetInnerHTML={{ __html: before }} />
+                      
+                      {after && (
+                        <div className="my-12 animate-scale-in animation-delay-300">
+                          <div className="flex items-center gap-2 mb-4">
+                            <span className="w-2 h-6 bg-gradient-to-b from-[#16f2b3] to-[#60A5FA] rounded-full"></span>
+                            <h4 className="text-xl font-bold text-white">Project Video Demo</h4>
+                          </div>
+                          <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#1d293a] bg-[#0d1224] shadow-2xl">
+                            <iframe
+                              src="https://drive.google.com/file/d/1pw7xRPn5Mr7j6e4TjP9QwWZsbzkm-tzh/preview"
+                              className="absolute inset-0 w-full h-full border-0"
+                              allowFullScreen
+                              loading="lazy"
+                              title="Bridging Gap Project Demo"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      {after && <div dangerouslySetInnerHTML={{ __html: after }} />}
+                    </div>
+                  </BlogAnimate>
                 </div>
               </div>
 
@@ -335,25 +378,6 @@ export default async function BlogDetails({ params }) {
                       </div>
                     </div>
                   ))}
-                </div>
-              )}
-
-              {/* Special Embedded Video for Bridging Gap Blog */}
-              {blog.slug === 'bridging-gap-low-resource-nlp-fake-news-detection' && (
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-center gap-2 px-2">
-                    <span className="w-2 h-6 bg-[#16f2b3] rounded-full"></span>
-                    <h4 className="text-lg font-bold text-white">Project Video Demo</h4>
-                  </div>
-                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#1d293a] bg-[#0d1224] shadow-2xl">
-                    <iframe
-                      src="https://drive.google.com/file/d/1pw7xRPn5Mr7j6e4TjP9QwWZsbzkm-tzh/preview"
-                      className="absolute inset-0 w-full h-full"
-                      allowFullScreen
-                      loading="lazy"
-                      title="Bridging Gap Project Demo"
-                    />
-                  </div>
                 </div>
               )}
 
