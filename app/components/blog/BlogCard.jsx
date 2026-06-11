@@ -3,7 +3,7 @@
 import { timeConverter } from '@/utils/time-converter';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BsCalendar, BsClock, BsArrowRight } from 'react-icons/bs';
+import { BsCalendar, BsClock, BsArrowRight, BsTag } from 'react-icons/bs';
 
 export default function BlogCard({ blog }) {
   return (
@@ -57,7 +57,7 @@ export default function BlogCard({ blog }) {
           </div>
           <div className="flex items-center gap-1">
             <BsClock />
-            <span>{blog.readingTime} min read</span>
+            <span>{blog.readingTime || 5} min read</span>
           </div>
         </div>
         

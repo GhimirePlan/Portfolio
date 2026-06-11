@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { BsArrowLeft, BsCheck, BsEye, BsImage } from 'react-icons/bs';
+import { BsArrowLeft, BsCheck, BsEye, BsImage, BsPlus, BsTrash, BsLink45Deg } from 'react-icons/bs';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the editor to avoid SSR issues
@@ -21,6 +21,7 @@ export default function PostEditor({ params }) {
     content: '',
     coverImage: '',
     tags: '',
+    relatedDocs: [],
     published: false
   });
   const [loading, setLoading] = useState(!isNewPost);
@@ -39,9 +40,16 @@ export default function PostEditor({ params }) {
           }
           
           const data = await res.json();
+          // Ensure relatedDocs have embed property
+          const sanitizedRelatedDocs = (data.relatedDocs || []).map(doc => ({
+            ...doc,
+            embed: doc.embed || false
+          }));
+
           setPost({
             ...data,
-            tags: data.tags.join(', ')
+            tags: data.tags.join(', '),
+            relatedDocs: sanitizedRelatedDocs
           });
         } catch (error) {
           console.error('Error fetching post:', error);
@@ -61,6 +69,24 @@ export default function PostEditor({ params }) {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handleRelatedDocChange = (index, field, value) => {
+    const updatedDocs = [...post.relatedDocs];
+    updatedDocs[index] = { ...updatedDocs[index], [field]: value };
+    setPost(prev => ({ ...prev, relatedDocs: updatedDocs }));
+  };
+
+  const addRelatedDoc = () => {
+    setPost(prev => ({
+      ...prev,
+      relatedDocs: [...prev.relatedDocs, { name: '', url: '', embed: false }]
+    }));
+  };
+
+  const removeRelatedDoc = (index) => {
+    const updatedDocs = post.relatedDocs.filter((_, i) => i !== index);
+    setPost(prev => ({ ...prev, relatedDocs: updatedDocs }));
   };
 
   const handleContentChange = (content) => {
@@ -274,6 +300,78 @@ export default function PostEditor({ params }) {
                   className="w-full px-4 py-2 bg-[#0f172a] border border-[#1d293a] rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#60A5FA] focus:border-[#60A5FA]"
                   placeholder="web, development, tutorial"
                 />
+              </div>
+
+              {/* Related Documents */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-300">
+                    Related Documents (PDF, Video, Google Drive)
+                  </label>
+                  <button
+                    type="button"
+                    onClick={addRelatedDoc}
+                    className="inline-flex items-center px-2 py-1 bg-[#2d3250] text-[#60A5FA] text-xs rounded hover:bg-[#3d4260] transition-colors"
+                  >
+                    <BsPlus className="mr-1" /> Add Document
+                  </button>
+                </div>
+                
+                <div className="space-y-3">
+                  {post.relatedDocs.map((doc, index) => (
+                    <div key={index} className="flex gap-2 items-start bg-[#0f172a] p-3 rounded-md border border-[#1d293a]">
+                      <div className="flex-1 space-y-2">
+                        <input
+                          type="text"
+                          value={doc.name}
+                          onChange={(e) => handleRelatedDocChange(index, 'name', e.target.value)}
+                          className="w-full px-3 py-1.5 bg-[#1b203e] border border-[#1d293a] rounded text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#60A5FA]"
+                          placeholder="Document Name (e.g., Research Paper PDF)"
+                        />
+                        <div className="flex items-center gap-4">
+                          <div className="flex-1 flex items-center">
+                            <div className="pl-3 pr-2 py-1.5 bg-[#1b203e] border border-[#1d293a] border-r-0 rounded-l flex items-center">
+                              <BsLink45Deg className="text-gray-400" />
+                            </div>
+                            <input
+                              type="text"
+                              value={doc.url}
+                              onChange={(e) => handleRelatedDocChange(index, 'url', e.target.value)}
+                              className="w-full px-3 py-1.5 bg-[#1b203e] border border-[#1d293a] rounded-r text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#60A5FA]"
+                              placeholder="Google Drive URL or Link"
+                            />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              id={`embed-${index}`}
+                              checked={!!doc.embed}
+                              onChange={(e) => handleRelatedDocChange(index, 'embed', e.target.checked)}
+                              className="h-4 w-4 text-[#60A5FA] bg-[#0f172a] border-[#1d293a] rounded focus:ring-[#60A5FA]"
+                            />
+                            <label htmlFor={`embed-${index}`} className="text-xs text-gray-400 cursor-pointer">
+                              Embed
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeRelatedDoc(index)}
+                        className="p-2 text-red-400 hover:bg-red-500/10 rounded transition-colors"
+                        title="Remove Document"
+                      >
+                        <BsTrash size={16} />
+                      </button>
+                    </div>
+                  ))}
+                  
+                  {post.relatedDocs.length === 0 && (
+                    <p className="text-xs text-gray-500 italic text-center py-2">
+                      No related documents added.
+                    </p>
+                  )}
+                </div>
               </div>
               
               {/* Published Status */}

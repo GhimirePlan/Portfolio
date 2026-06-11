@@ -18,4 +18,4 @@ export default function BlogLayout({ children }) {
       {children}
     </div>
   );
-} 
+}

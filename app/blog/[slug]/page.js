@@ -2,7 +2,20 @@ import Image from 'next/image';
 import sanitizeHtml from 'sanitize-html';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { BsCalendar, BsClock, BsArrowLeft, BsEye, BsPersonCircle, BsBookmark } from 'react-icons/bs';
+import { 
+  BsCalendar, 
+  BsClock, 
+  BsArrowLeft, 
+  BsEye, 
+  BsPersonCircle, 
+  BsBookmark, 
+  BsLink45Deg, 
+  BsFileEarmarkText,
+  BsFilePdf,
+  BsPlayCircle,
+  BsYoutube
+} from 'react-icons/bs';
+import { SiGoogledrive } from 'react-icons/si';
 import { timeConverter } from '@/utils/time-converter';
 import connectToDatabase from '@/lib/mongodb';
 import Blog from '@/models/Blog';
@@ -17,13 +30,13 @@ export async function generateMetadata({ params }) {
   
   if (!blog) {
     return {
-      title: 'Blog Not Found | Plan Ghimire',
+      title: 'Blog Not Found | Sajesan Ghimire',
       description: 'The requested blog post could not be found.'
     };
   }
   
   return {
-    title: `${blog.title} | Plan Ghimire`,
+    title: `${blog.title} | Sajesan Ghimire`,
     description: blog.description,
     openGraph: {
       title: blog.title,
@@ -62,6 +75,28 @@ async function getBlog(slug) {
   }
 }
 
+async function getRelatedBlogs(tags, currentId) {
+  try {
+    if (!process.env.MONGODB_URI || !tags || tags.length === 0) {
+      return [];
+    }
+    await connectToDatabase();
+    
+    const relatedBlogs = await Blog.find({
+      _id: { $ne: currentId },
+      published: true,
+      tags: { $in: tags }
+    })
+    .limit(3)
+    .lean();
+    
+    return JSON.parse(JSON.stringify(relatedBlogs));
+  } catch (error) {
+    console.error('Error fetching related blogs:', error);
+    return [];
+  }
+}
+
 // Sanitize HTML with extended options for blog content
 function sanitizeBlogContent(content) {
   return sanitizeHtml(content || '', {
@@ -95,8 +130,32 @@ export default async function BlogDetails({ params }) {
     notFound();
   }
 
+  const relatedBlogs = await getRelatedBlogs(blog.tags, blog._id);
   const sanitizedContent = sanitizeBlogContent(blog.content);
   const wordCount = blog.content ? blog.content.replace(/<[^>]*>/g, '').split(/\s+/).length : 0;
+
+  const getEmbedUrl = (url) => {
+    try {
+      if (url.includes('drive.google.com')) {
+        return url.replace('/view', '/preview').replace('/edit', '/preview');
+      }
+      if (url.includes('youtube.com/watch?v=')) {
+        const id = url.split('v=')[1].split('&')[0];
+        return `https://www.youtube.com/embed/${id}`;
+      }
+      if (url.includes('youtu.be/')) {
+        const id = url.split('youtu.be/')[1].split('?')[0];
+        return `https://www.youtube.com/embed/${id}`;
+      }
+      if (url.includes('vimeo.com/')) {
+        const id = url.split('vimeo.com/')[1].split('?')[0];
+        return `https://player.vimeo.com/video/${id}`;
+      }
+      return url;
+    } catch (e) {
+      return url;
+    }
+  };
  
   return (
     <>
@@ -146,7 +205,6 @@ export default async function BlogDetails({ params }) {
                           key={index} 
                           className="inline-flex items-center gap-1 text-xs font-medium bg-gradient-to-r from-[#16f2b3]/10 to-[#60A5FA]/10 text-[#16f2b3] px-3 py-1.5 rounded-full border border-[#16f2b3]/20 hover:border-[#16f2b3]/40 transition-colors"
                         >
-                          <BsBookmark className="text-[10px]" />
                           {tag}
                         </span>
                       ))}
@@ -158,19 +216,20 @@ export default async function BlogDetails({ params }) {
                     {blog.title}
                   </h1>
                   
-                  {/* Description */}
-                  {blog.description && (
-                    <p className="text-lg text-[#94a3b8] mb-8 leading-relaxed border-l-4 border-[#16f2b3]/30 pl-4">
-                      {blog.description}
-                    </p>
-                  )}
-                  
                   {/* Meta Information */}
                   <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-[#1d293a]">
                     {/* Author */}
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#16f2b3] to-[#60A5FA] flex items-center justify-center">
-                        <BsPersonCircle className="text-white text-2xl" />
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#16f2b3] to-[#60A5FA] p-0.5 overflow-hidden">
+                        <div className="w-full h-full rounded-full bg-[#0d1224] flex items-center justify-center overflow-hidden">
+                          <Image
+                            src="/favicon.jpg"
+                            alt="Plan Ghimire"
+                            width={48}
+                            height={48}
+                            className="object-cover"
+                          />
+                        </div>
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-white">Plan Ghimire</p>
@@ -192,18 +251,12 @@ export default async function BlogDetails({ params }) {
                       <BsClock className="text-[#60A5FA]" />
                       <span className="text-sm">{blog.readingTime || Math.ceil(wordCount / 200)} min read</span>
                     </div>
-                    
-                    {/* Word Count */}
-                    <div className="flex items-center gap-2 text-[#94a3b8]">
-                      <BsEye className="text-[#a78bfa]" />
-                      <span className="text-sm">{wordCount.toLocaleString()} words</span>
-                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Article Content */}
-              <div className="bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-2xl overflow-hidden shadow-xl">
+              <div className="bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-2xl overflow-hidden shadow-xl mb-8">
                 <div className="p-6 md:p-10 lg:p-12">
                   <div 
                     className="blog-content"
@@ -211,49 +264,132 @@ export default async function BlogDetails({ params }) {
                   />
                 </div>
               </div>
+
+              {/* Related Documents Section */}
+              {blog.relatedDocs && blog.relatedDocs.length > 0 && (
+                <div className="space-y-8 mb-8">
+                  <div className="p-8 bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-2xl">
+                    <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                      <BsFileEarmarkText className="text-[#16f2b3]" />
+                      Related Documents
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {blog.relatedDocs.map((doc, index) => {
+                        const url = doc.url.toLowerCase();
+                        let Icon = BsLink45Deg;
+                        let typeLabel = 'Link';
+
+                        if (url.includes('drive.google.com')) {
+                          Icon = SiGoogledrive;
+                          typeLabel = 'Google Drive';
+                        } else if (url.endsWith('.pdf')) {
+                          Icon = BsFilePdf;
+                          typeLabel = 'PDF Document';
+                        } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                          Icon = BsYoutube;
+                          typeLabel = 'YouTube Video';
+                        } else if (url.includes('vimeo.com')) {
+                          Icon = BsPlayCircle;
+                          typeLabel = 'Vimeo Video';
+                        } else if (url.match(/\.(mp4|webm|ogg)$/)) {
+                          Icon = BsPlayCircle;
+                          typeLabel = 'Video File';
+                        }
+
+                        return (
+                          <a 
+                            key={index}
+                            href={doc.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-4 p-4 bg-[#1a1443]/50 border border-[#1d293a] rounded-xl hover:border-[#16f2b3]/50 transition-all group"
+                          >
+                            <div className="w-12 h-12 rounded-lg bg-[#0d1224] flex items-center justify-center text-[#16f2b3] group-hover:scale-110 transition-transform">
+                              <Icon className="text-2xl" />
+                            </div>
+                            <div>
+                              <p className="text-white font-medium group-hover:text-[#16f2b3] transition-colors line-clamp-1">{doc.name}</p>
+                              <p className="text-xs text-gray-400">{typeLabel}</p>
+                            </div>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Embedded Views */}
+                  {blog.relatedDocs.filter(doc => doc.embed).map((doc, index) => (
+                    <div key={`embed-${index}`} className="space-y-4">
+                      <div className="flex items-center gap-2 px-2">
+                        <span className="w-2 h-6 bg-[#16f2b3] rounded-full"></span>
+                        <h4 className="text-lg font-bold text-white">{doc.name} (Preview)</h4>
+                      </div>
+                      <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#1d293a] bg-[#0d1224] shadow-2xl">
+                        <iframe
+                          src={getEmbedUrl(doc.url)}
+                          className="absolute inset-0 w-full h-full"
+                          allowFullScreen
+                          loading="lazy"
+                          title={doc.name}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Special Embedded Video for Bridging Gap Blog */}
+              {blog.slug === 'bridging-gap-low-resource-nlp-fake-news-detection' && (
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-center gap-2 px-2">
+                    <span className="w-2 h-6 bg-[#16f2b3] rounded-full"></span>
+                    <h4 className="text-lg font-bold text-white">Project Video Demo</h4>
+                  </div>
+                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#1d293a] bg-[#0d1224] shadow-2xl">
+                    <iframe
+                      src="https://drive.google.com/file/d/1pw7xRPn5Mr7j6e4TjP9QwWZsbzkm-tzh/preview"
+                      className="absolute inset-0 w-full h-full"
+                      allowFullScreen
+                      loading="lazy"
+                      title="Bridging Gap Project Demo"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Comments & Sharing */}
+              <div className="bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-2xl p-6 md:p-10 shadow-xl">
+                <ClientWrapper blogSlug={params.slug} />
+              </div>
             </article>
 
             {/* Sidebar Column */}
-            <aside className="lg:col-span-4 xl:col-span-4">
+            <aside className="lg:col-span-4">
               <div className="sticky top-24 space-y-6">
                 {/* Table of Contents */}
                 <TableOfContents content={blog.content || ''} />
                 
-                {/* Quick Stats Card */}
-                <div className="bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-xl p-6 shadow-lg">
-                  <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#16f2b3]"></span>
-                    Quick Info
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center py-2 border-b border-[#1d293a]/50">
-                      <span className="text-sm text-[#94a3b8]">Published</span>
-                      <span className="text-sm text-white font-medium">{timeConverter(blog.createdAt)}</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2 border-b border-[#1d293a]/50">
-                      <span className="text-sm text-[#94a3b8]">Reading time</span>
-                      <span className="text-sm text-white font-medium">{blog.readingTime || Math.ceil(wordCount / 200)} min</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-sm text-[#94a3b8]">Word count</span>
-                      <span className="text-sm text-white font-medium">{wordCount.toLocaleString()}</span>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Author Card */}
                 <div className="bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-xl p-6 shadow-lg">
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#16f2b3] to-[#60A5FA] flex items-center justify-center shadow-lg shadow-[#16f2b3]/20">
-                      <BsPersonCircle className="text-white text-3xl" />
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#16f2b3] to-[#60A5FA] p-0.5 shadow-lg shadow-[#16f2b3]/20 overflow-hidden">
+                      <div className="w-full h-full rounded-full bg-[#0d1224] flex items-center justify-center overflow-hidden">
+                        <Image
+                          src="/favicon.jpg"
+                          alt="Plan Ghimire"
+                          width={64}
+                          height={64}
+                          className="object-cover"
+                        />
+                      </div>
                     </div>
                     <div>
                       <h3 className="font-semibold text-white">Plan Ghimire</h3>
-                      <p className="text-sm text-[#94a3b8]">Developer & Writer</p>
+                      <p className="text-sm text-[#94a3b8]">Author</p>
                     </div>
                   </div>
                   <p className="text-sm text-[#94a3b8] leading-relaxed">
-                    Passionate about technology and sharing knowledge through writing. Building modern web experiences.
+                    ECE Student | Aspiring AI & Web Developer
                   </p>
                   <Link 
                     href="/"
@@ -263,13 +399,44 @@ export default async function BlogDetails({ params }) {
                     <BsArrowLeft className="rotate-180" />
                   </Link>
                 </div>
+
+                {/* Related Posts Sidebar */}
+                {relatedBlogs.length > 0 && (
+                  <div className="bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-xl p-6 shadow-lg">
+                    <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#16f2b3]"></span>
+                      Related Posts
+                    </h3>
+                    <div className="space-y-4">
+                      {relatedBlogs.map((rBlog) => (
+                        <Link 
+                          href={`/blog/${rBlog.slug}`} 
+                          key={rBlog._id}
+                          className="flex gap-4 group"
+                        >
+                          <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 relative">
+                            <Image
+                              src={rBlog.coverImage}
+                              alt={rBlog.title}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          </div>
+                          <div className="flex flex-col justify-center">
+                            <h4 className="text-xs font-bold text-white group-hover:text-[#16f2b3] transition-colors line-clamp-2 leading-snug">
+                              {rBlog.title}
+                            </h4>
+                            <p className="text-[10px] text-gray-500 mt-1">
+                              {timeConverter(rBlog.createdAt)}
+                            </p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </aside>
-          </div>
-
-          {/* Client Components (Share & Comments) */}
-          <div className="lg:col-span-8 xl:col-span-8 max-w-4xl">
-            <ClientWrapper blogSlug={params.slug} />
           </div>
         </div>
       </div>

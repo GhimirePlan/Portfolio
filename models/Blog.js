@@ -28,6 +28,19 @@ const BlogSchema = new mongoose.Schema({
     type: [String],
     default: []
   },
+  relatedDocs: {
+    type: [
+      {
+        name: String,
+        url: String,
+        embed: {
+          type: Boolean,
+          default: false
+        }
+      }
+    ],
+    default: []
+  },
   readingTime: {
     type: Number,
     default: 5
