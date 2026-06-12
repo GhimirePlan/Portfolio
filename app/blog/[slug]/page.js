@@ -279,30 +279,36 @@ export default async function BlogDetails({ params }) {
 
               {/* Article Content */}
               <div className="bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-2xl overflow-hidden shadow-xl mb-8">
-                <div className="p-6 md:p-10 lg:p-12">
+                <div className="p-4 sm:p-6 md:p-10 lg:p-12">
                   <BlogAnimate>
                     <div className="blog-content">
                       <div dangerouslySetInnerHTML={{ __html: before }} />
                       
                       {after && (
-                        <div className="my-12 animate-scale-in animation-delay-300">
-                          <div className="flex items-center gap-2 mb-4">
-                            <span className="w-2 h-6 bg-gradient-to-b from-[#16f2b3] to-[#60A5FA] rounded-full"></span>
-                            <h4 className="text-xl font-bold text-white">Project Video Demo</h4>
+                        <>
+                          <div className="my-12 sm:my-16 -mx-4 sm:-mx-6 md:-mx-10 lg:-mx-12 animate-scale-in animation-delay-300">
+                            <div className="px-4 sm:px-6 md:px-10 lg:px-12 mb-4 sm:mb-6 flex items-center gap-2">
+                              <span className="w-2 h-6 bg-gradient-to-b from-[#16f2b3] to-[#60A5FA] rounded-full"></span>
+                              <h4 className="text-xl sm:text-2xl font-bold text-white">Project Video Demo</h4>
+                            </div>
+                            <div className="relative w-full">
+                              <div className="relative w-full pb-[56.25%] sm:rounded-xl md:rounded-2xl overflow-hidden border border-[#1d293a] shadow-xl sm:shadow-2xl bg-[#0d1224]">
+                                <iframe
+                                  src="https://www.youtube.com/embed/BhmyHWwM_HM?controls=1&modestbranding=1&rel=0"
+                                  className="absolute inset-0 w-full h-full border-0"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                  loading="lazy"
+                                  title="Bridging Gap Project Demo"
+                                />
+                              </div>
+                            </div>
                           </div>
-                          <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#1d293a] bg-[#0d1224] shadow-2xl">
-                            <iframe
-                              src="https://drive.google.com/file/d/1pw7xRPn5Mr7j6e4TjP9QwWZsbzkm-tzh/preview"
-                              className="absolute inset-0 w-full h-full border-0"
-                              allowFullScreen
-                              loading="lazy"
-                              title="Bridging Gap Project Demo"
-                            />
-                          </div>
-                        </div>
+                          <div dangerouslySetInnerHTML={{ __html: after }} />
+                        </>
                       )}
                       
-                      {after && <div dangerouslySetInnerHTML={{ __html: after }} />}
+                      {!after && <div dangerouslySetInnerHTML={{ __html: before }} />}
                     </div>
                   </BlogAnimate>
                 </div>

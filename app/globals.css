@@ -601,7 +601,6 @@ body {
 .blog-content iframe {
   max-width: 100%;
   border-radius: 12px;
-  margin: 2rem auto;
   display: block;
 }
 
