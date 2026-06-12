@@ -21,6 +21,7 @@ export default function PostEditor({ params }) {
     content: '',
     coverImage: '',
     tags: '',
+    youtubeVideo: '',
     relatedDocs: [],
     published: false
   });
@@ -49,6 +50,7 @@ export default function PostEditor({ params }) {
           setPost({
             ...data,
             tags: data.tags.join(', '),
+            youtubeVideo: data.youtubeVideo || '',
             relatedDocs: sanitizedRelatedDocs
           });
         } catch (error) {
@@ -300,6 +302,56 @@ export default function PostEditor({ params }) {
                   className="w-full px-4 py-2 bg-[#0f172a] border border-[#1d293a] rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#60A5FA] focus:border-[#60A5FA]"
                   placeholder="web, development, tutorial"
                 />
+              </div>
+
+              {/* YouTube Video */}
+              <div>
+                <label htmlFor="youtubeVideo" className="block text-sm font-medium text-gray-300 mb-1">
+                  YouTube Video URL (Optional)
+                </label>
+                <div className="flex">
+                  <input
+                    type="text"
+                    id="youtubeVideo"
+                    name="youtubeVideo"
+                    value={post.youtubeVideo}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 bg-[#0f172a] border border-[#1d293a] rounded-l-md text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#60A5FA] focus:border-[#60A5FA]"
+                    placeholder="https://youtu.be/xyz or https://youtube.com/watch?v=xyz"
+                  />
+                  <div className="px-3 py-2 bg-[#2d3250] border border-[#1d293a] border-l-0 rounded-r-md flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-red-500">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814ZM9.545 15.568V8.432L15.818 12l-6.273 3.568Z"/>
+                    </svg>
+                  </div>
+                </div>
+                {post.youtubeVideo && (() => {
+                  const getYouTubeId = (url) => {
+                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                    const match = url.match(regExp);
+                    return match && match[2].length === 11 ? match[2] : null;
+                  };
+                  const videoId = getYouTubeId(post.youtubeVideo);
+                  if (videoId) {
+                    return (
+                      <div className="mt-2 relative h-40 rounded-md overflow-hidden border border-[#1d293a]">
+                        <img 
+                          src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`} 
+                          alt="Video thumbnail" 
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                          <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-red-600 ml-1">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
 
               {/* Related Documents */}
