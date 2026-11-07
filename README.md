@@ -162,3 +162,9 @@ The admin overview includes first-party analytics with 7-, 30-, and 90-day UTC f
 - **Contact submissions:** generated on the server only after SMTP accepts the recipient. Validation failures, reCAPTCHA rejections, and email failures do not count. No message contents or sender details enter analytics, and an analytics outage does not fail a successful email submission.
 
 The lightweight tracker runs only on public pages, sends small same-origin keepalive requests, and respects Do Not Track and Global Privacy Control. Known crawler requests and authenticated administrator requests are skipped, including admin visits to public pages. Browser blockers, opt-outs, and network failures can reduce counts; contact-success totals are operational events without visitor identifiers. Existing visitor Discord notifications remain a separate integration.
+
+### Compact developer status
+
+The homepage strip above Contact shows availability and the latest public GitHub push/repository (cached for five minutes), with a relative timestamp and a profile link if GitHub is unavailable. Change availability and optional integrations in the admin overview's Developer status card. Settings persist in MongoDB; both integrations default off.
+
+Discord presence requires `DISCORD_USER_ID` (a numeric user ID, not a display name) and enrollment in Lanyard's Discord server so Lanyard can expose presence. Spotify requires `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, and an owner-authorized `SPOTIFY_REFRESH_TOKEN` with `user-read-currently-playing` permission. Store these only in Vercel environment settings, then redeploy and enable the relevant toggle in admin. Never paste credentials into the dashboard or chat. Account screenshots cannot supply API access. Missing or unavailable integrations degrade gracefully; they do not block the portfolio. No navigation item is added.
