@@ -15,11 +15,19 @@ import HeroSection from "./components/homepage/hero-section";
 // Lazy load heavy components and sections below the fold
 const AboutSection = dynamic(() => import("./components/homepage/about"), {
   ssr: false,
-  loading: () => <div className="min-h-screen animate-pulse bg-slate-900/20" />
+  loading: () => <div className="min-h-[520px] animate-pulse bg-slate-900/20" />
 });
 const Experience = dynamic(() => import("./components/homepage/experience"), {
   ssr: false,
   loading: () => <div className="min-h-screen animate-pulse bg-slate-900/20" />
+});
+const Projects = dynamic(() => import("./components/homepage/projects"), {
+  ssr: false,
+  loading: () => <div className="min-h-[400px] animate-pulse bg-slate-900/20" />
+});
+const Skills = dynamic(() => import("./components/homepage/skills"), {
+  ssr: false,
+  loading: () => <div className="min-h-[400px] animate-pulse bg-slate-900/20" />
 });
 const LinkedInSection = dynamic(() => import("./components/homepage/LinkedInSection"), {
   ssr: false,
@@ -41,6 +49,8 @@ const fadeIn = {
 
 export default function HomePage() {
   const { theme, setTheme } = useTheme();
+  // Treat "unset" theme as dark so SSR keeps the navy identity (no light flash)
+  const isDark = theme !== 'light';
   const [mounted, setMounted] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -48,6 +58,7 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const userMenuRef = useRef(null);
   const searchRef = useRef(null);
 
@@ -72,6 +83,28 @@ export default function HomePage() {
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // Scroll-spy: track the section currently in view for the active underline
+  useEffect(() => {
+    const sectionIds = ['about', 'blog', 'contact'];
+    const handleScrollSpy = () => {
+      const scrollPos = window.scrollY + 140;
+      let current = 'home';
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollPos) {
+          current = id;
+        }
+      }
+      setActiveSection(current);
+    };
+
+    handleScrollSpy();
+    window.addEventListener('scroll', handleScrollSpy, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScrollSpy);
     };
   }, []);
 
@@ -107,64 +140,66 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Enhanced Direct Navbar */}
+      {/* Refined Sticky Navbar */}
       <div
         id="homepage-navbar"
         className={`fixed top-0 left-0 right-0 w-full z-[9999] transition-all duration-300 ${
-          scrolled ? 'py-2 shadow-lg' : 'py-4'
+          scrolled ? 'py-2' : 'py-4'
         }`}
         style={{
-          backgroundColor: theme === 'dark' 
-            ? 'rgba(13, 18, 36, 0.95)' // Dark mode: deep navy blue (matches your site's dark theme)
-            : 'rgba(0, 0, 0, 0.3)', // Light mode: white with slight transparency
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          borderBottom: `4px solid ${theme === 'dark' ? '#16f2b3' : '#12c292' }`,
-          boxShadow: `0 4px 20px ${theme === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'}`,
+          backgroundColor: isDark ? 'rgba(13, 18, 36, 0.82)' : 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          borderBottom: `1px solid ${isDark ? 'rgba(22, 242, 179, 0.18)' : 'rgba(18, 194, 146, 0.25)'}`,
+          boxShadow: scrolled
+            ? (isDark ? '0 4px 20px rgba(0, 0, 0, 0.28)' : '0 4px 20px rgba(0, 0, 0, 0.08)')
+            : 'none',
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-4 sm:gap-6">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link 
               href="/" 
-              className="font-bold text-xl transition-colors duration-300 flex items-center"
-              style={{ color: theme === 'dark' ? '#16f2b3' : '#12c292' }}
+              className="font-bold text-lg sm:text-xl tracking-tight transition-colors duration-300 flex items-center"
+              style={{ color: isDark ? '#16f2b3' : '#12c292' }}
             >
               <span className="mr-2">Plan Ghimire</span>
-              <span className="bg-gradient-to-r from-teal-400 to-emerald-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">Portfolio</span>
+              <span className="bg-gradient-to-r from-teal-400 to-emerald-500 text-white text-[10px] sm:text-xs px-2 py-0.5 rounded-full shadow-sm">Portfolio</span>
             </Link>
           </div>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center gap-3 lg:gap-5">
             {/* Search Bar */}
             <div className="relative" ref={searchRef}>
+              <label htmlFor="homepage-search" className="sr-only">Search</label>
               <input
+                id="homepage-search"
                 type="text"
-                placeholder="Search..."
+                placeholder="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
-                className="pl-10 pr-4 py-2 rounded-full text-sm focus:outline-none focus:ring-2 w-40 focus:w-64 transition-all duration-300"
+                className="pl-9 pr-3 py-1.5 rounded-full text-sm focus:outline-none w-32 lg:w-40 focus:w-44 lg:focus:w-56 transition-all duration-300"
                 style={{
-                  backgroundColor: theme === 'dark' ? 'rgba(26, 34, 58, 0.8)' : 'rgba(247, 250, 252, 0.8)',
-                  color: theme === 'dark' ? '#fff' : '#1a202c',
-                  borderColor: theme === 'dark' ? '#2d3748' : '#e2e8f0',
-                  boxShadow: searchFocused ? `0 0 0 2px ${theme === 'dark' ? 'rgba(22, 242, 179, 0.3)' : 'rgba(18, 194, 146, 0.3)'}` : 'none'
+                  backgroundColor: isDark ? 'rgba(26, 34, 58, 0.8)' : 'rgba(247, 250, 252, 0.8)',
+                  color: isDark ? '#fff' : '#1a202c',
+                  border: `1px solid ${isDark ? '#2d3748' : '#e2e8f0'}`,
+                  boxShadow: searchFocused ? `0 0 0 2px ${isDark ? 'rgba(22, 242, 179, 0.3)' : 'rgba(18, 194, 146, 0.3)'}` : 'none'
                 }}
               />
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <FaSearch size={14} style={{ color: theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.4)' }} />
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <FaSearch size={13} style={{ color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.4)' }} />
               </div>
               
               {/* Search Suggestions */}
               {searchFocused && searchQuery.length > 0 && (
                 <div 
-                  className="absolute top-full left-0 mt-2 w-64 rounded-md shadow-lg overflow-hidden z-10"
+                  className="absolute top-full left-0 mt-2 w-56 rounded-md shadow-lg overflow-hidden z-10"
                   style={{
-                    backgroundColor: theme === 'dark' ? '#1a223a' : '#fff',
-                    border: `1px solid ${theme === 'dark' ? '#2d3748' : '#e2e8f0'}`,
+                    backgroundColor: isDark ? '#1a223a' : '#fff',
+                    border: `1px solid ${isDark ? '#2d3748' : '#e2e8f0'}`,
                   }}
                 >
                   <div className="py-1">
@@ -172,9 +207,9 @@ export default function HomePage() {
                       href="/blog/javascript-tips" 
                       className="block px-4 py-2 text-sm hover:bg-opacity-10 transition-colors duration-150"
                       style={{
-                        color: theme === 'dark' ? '#fff' : '#1a202c',
+                        color: isDark ? '#fff' : '#1a202c',
                         backgroundColor: searchQuery.toLowerCase().includes('javascript') ? 
-                          (theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)') : 'transparent'
+                          (isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)') : 'transparent'
                       }}
                     >
                       <FaBlog className="inline mr-2" size={12} />
@@ -184,9 +219,9 @@ export default function HomePage() {
                       href="/about" 
                       className="block px-4 py-2 text-sm hover:bg-opacity-10 transition-colors duration-150"
                       style={{
-                        color: theme === 'dark' ? '#fff' : '#1a202c',
+                        color: isDark ? '#fff' : '#1a202c',
                         backgroundColor: searchQuery.toLowerCase().includes('about') ? 
-                          (theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)') : 'transparent'
+                          (isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)') : 'transparent'
                       }}
                     >
                       <FaInfo className="inline mr-2" size={12} />
@@ -198,53 +233,56 @@ export default function HomePage() {
             </div>
             
             {/* Navigation Links */}
-            <div className="flex items-center space-x-1">
+            <nav aria-label="Primary" className="flex items-center gap-0.5">
               {['Home', 'About', 'Blog', 'Contact'].map((item, index) => {
-                const icons = [FaHome, FaInfo, FaCode, FaBlog, FaEnvelope];
+                const icons = [FaHome, FaInfo, FaBlog, FaEnvelope];
                 const Icon = icons[index];
                 const href = item === 'Home' ? '' : `#${item.toLowerCase()}`;
+                const isActive = item.toLowerCase() === activeSection;
                 
                 return (
                   <Link 
                     key={item} 
                     href={href}
-                    className="relative px-3 py-2 rounded-md text-sm font-medium group overflow-hidden"
+                    aria-current={isActive ? 'page' : undefined}
+                    className="relative px-3 py-2 rounded-md text-sm font-medium group"
                     style={{
-                      color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(224, 226, 231, 0.9)',
+                      color: isActive
+                        ? (isDark ? '#16f2b3' : '#12c292')
+                        : (isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(26, 32, 44, 0.85)'),
                     }}
                   >
                     <span className="relative z-10 flex items-center">
-                      <Icon className="mr-1" size={14} />
+                      <Icon className="mr-1.5" size={14} />
                       {item}
                     </span>
                     <span 
-                      className="absolute bottom-0 left-0 w-full h-0.5 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"
+                      className={`absolute bottom-0 left-0 w-full h-0.5 transform transition-transform duration-300 origin-left ${
+                        isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                      }`}
                       style={{ 
-                        backgroundColor: theme === 'dark' ? '#16f2b3' : '#12c292',
+                        backgroundColor: isDark ? '#16f2b3' : '#12c292',
                       }}
-                    />
-                    <span 
-                      className="absolute inset-0 w-full h-full bg-current transform scale-0 group-hover:scale-100 transition-transform duration-300 rounded-md z-0 opacity-10"
                     />
                   </Link>
                 );
               })}
-            </div>
+            </nav>
             
             {/* Theme Toggle */}
             <button 
               onClick={toggleTheme}
-              className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
+              className="w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/60"
               style={{
-                backgroundColor: theme === 'dark' ? 'rgba(26, 34, 58, 0.8)' : 'rgba(247, 250, 252, 0.8)',
-                boxShadow: `0 0 10px ${theme === 'dark' ? 'rgba(22, 242, 179, 0.2)' : 'rgba(18, 194, 146, 0.2)'}`
+                backgroundColor: isDark ? 'rgba(26, 34, 58, 0.8)' : 'rgba(247, 250, 252, 0.8)',
+                boxShadow: `0 0 10px ${isDark ? 'rgba(22, 242, 179, 0.2)' : 'rgba(18, 194, 146, 0.2)'}`
               }}
-              aria-label="Toggle theme"
+              aria-label="Toggle color theme"
             >
-              {mounted && theme === 'dark' ? (
-                <FaSun className="text-yellow-300" size={18} />
+              {mounted && isDark ? (
+                <FaSun className="text-yellow-300" size={16} />
               ) : (
-                <FaMoon className="text-blue-500" size={16} />
+                <FaMoon className="text-blue-500" size={15} />
               )}
             </button>
             
@@ -252,20 +290,22 @@ export default function HomePage() {
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center focus:outline-none"
+                className="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/60 rounded-full"
                 aria-label="User menu"
+                aria-haspopup="true"
+                aria-expanded={userMenuOpen}
               >
                 <div 
-                  className="w-10 h-10 rounded-full overflow-hidden border-2 transition-all duration-300 hover:scale-110 flex items-center justify-center"
+                  className="w-9 h-9 rounded-full overflow-hidden border-2 transition-all duration-300 hover:scale-110 flex items-center justify-center"
                   style={{ 
-                    borderColor: theme === 'dark' ? '#16f2b3' : '#12c292',
-                    backgroundColor: theme === 'dark' ? 'rgba(26, 34, 58, 0.8)' : 'rgba(247, 250, 252, 0.8)',
+                    borderColor: isDark ? '#16f2b3' : '#12c292',
+                    backgroundColor: isDark ? 'rgba(26, 34, 58, 0.8)' : 'rgba(247, 250, 252, 0.8)',
                   }}
                 >
                   {isAuthenticated ? (
                     <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
-                    <FaUser style={{ color: theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(26, 32, 44, 0.7)' }} />
+                    <FaUser size={14} style={{ color: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(26, 32, 44, 0.7)' }} />
                   )}
                 </div>
               </button>
@@ -276,8 +316,8 @@ export default function HomePage() {
                   userMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
                 }`}
                 style={{
-                  backgroundColor: theme === 'dark' ? '#1a223a' : '#fff',
-                  border: `1px solid ${theme === 'dark' ? '#2d3748' : '#e2e8f0'}`,
+                  backgroundColor: isDark ? '#1a223a' : '#fff',
+                  border: `1px solid ${isDark ? '#2d3748' : '#e2e8f0'}`,
                   zIndex: 50
                 }}
               >
@@ -285,55 +325,55 @@ export default function HomePage() {
                   <>
                     <div 
                       className="px-4 py-3 border-b"
-                      style={{ borderColor: theme === 'dark' ? '#2d3748' : '#e2e8f0' }}
+                      style={{ borderColor: isDark ? '#2d3748' : '#e2e8f0' }}
                     >
-                      <p className="text-sm font-medium" style={{ color: theme === 'dark' ? '#fff' : '#1a202c' }}>{user.name}</p>
-                      <p className="text-xs" style={{ color: theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(26, 32, 44, 0.6)' }}>{user.role}</p>
+                      <p className="text-sm font-medium" style={{ color: isDark ? '#fff' : '#1a202c' }}>{user.name}</p>
+                      <p className="text-xs" style={{ color: isDark ? 'rgba(255, 255, 255, 0.6)' : 'rgba(26, 32, 44, 0.6)' }}>{user.role}</p>
                     </div>
                     <a 
                       href="/profile" 
-                      className="block px-4 py-2 text-sm hover:bg-opacity-10 transition-colors duration-150"
+                      className="block px-4 py-2 text-sm transition-colors duration-150"
                       style={{
-                        color: theme === 'dark' ? '#fff' : '#1a202c',
+                        color: isDark ? '#fff' : '#1a202c',
                         backgroundColor: 'transparent',
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                       onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <FaUserCircle className="inline mr-2" /> My Profile
                     </a>
                     <a 
                       href="/dashboard" 
-                      className="block px-4 py-2 text-sm hover:bg-opacity-10 transition-colors duration-150"
+                      className="block px-4 py-2 text-sm transition-colors duration-150"
                       style={{
-                        color: theme === 'dark' ? '#fff' : '#1a202c',
+                        color: isDark ? '#fff' : '#1a202c',
                         backgroundColor: 'transparent',
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                       onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <FaChartBar className="inline mr-2" /> Dashboard
                     </a>
                     <a 
                       href="/settings" 
-                      className="block px-4 py-2 text-sm hover:bg-opacity-10 transition-colors duration-150"
+                      className="block px-4 py-2 text-sm transition-colors duration-150"
                       style={{
-                        color: theme === 'dark' ? '#fff' : '#1a202c',
+                        color: isDark ? '#fff' : '#1a202c',
                         backgroundColor: 'transparent',
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                       onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <FaCog className="inline mr-2" /> Settings
                     </a>
                     <button
                       onClick={() => setIsAuthenticated(false)}
-                      className="block w-full text-left px-4 py-2 text-sm hover:bg-opacity-10 transition-colors duration-150"
+                      className="block w-full text-left px-4 py-2 text-sm transition-colors duration-150"
                       style={{
-                        color: theme === 'dark' ? '#fff' : '#1a202c',
+                        color: isDark ? '#fff' : '#1a202c',
                         backgroundColor: 'transparent',
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                       onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <FaSignOutAlt className="inline mr-2" /> Logout
@@ -343,24 +383,24 @@ export default function HomePage() {
                   <>
                     <button
                       onClick={() => setIsAuthenticated(true)}
-                      className="block w-full text-left px-4 py-2 text-sm hover:bg-opacity-10 transition-colors duration-150"
+                      className="block w-full text-left px-4 py-2 text-sm transition-colors duration-150"
                       style={{
-                        color: theme === 'dark' ? '#fff' : '#1a202c',
+                        color: isDark ? '#fff' : '#1a202c',
                         backgroundColor: 'transparent',
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                       onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <FaSignInAlt className="inline mr-2" /> Sign In
                     </button>
                     <a 
                       href="/admin" 
-                      className="block px-4 py-2 text-sm hover:bg-opacity-10 transition-colors duration-150"
+                      className="block px-4 py-2 text-sm transition-colors duration-150"
                       style={{
-                        color: theme === 'dark' ? '#fff' : '#1a202c',
+                        color: isDark ? '#fff' : '#1a202c',
                         backgroundColor: 'transparent',
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                       onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <FaUserPlus className="inline mr-2" /> Register
@@ -375,19 +415,20 @@ export default function HomePage() {
           <div className="md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-md transition-colors duration-200"
+              className="p-2 rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/60"
               style={{
-                color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
+                color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
                 backgroundColor: mobileMenuOpen ? 
-                  (theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)') : 
+                  (isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)') : 
                   'transparent'
               }}
               aria-label="Toggle mobile menu"
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? (
-                <FaTimes size={24} />
+                <FaTimes size={22} />
               ) : (
-                <FaBars size={24} />
+                <FaBars size={22} />
               )}
             </button>
           </div>
@@ -399,28 +440,30 @@ export default function HomePage() {
             mobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
           }`}
           style={{
-            backgroundColor: theme === 'dark' ? 'rgba(13, 18, 36, 0.98)' : 'rgba(255, 255, 255, 0.98)',
-            borderTop: `1px solid ${theme === 'dark' ? 'rgba(45, 55, 72, 0.5)' : 'rgba(226, 232, 240, 0.8)'}`,
+            backgroundColor: isDark ? 'rgba(13, 18, 36, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+            borderTop: `1px solid ${isDark ? 'rgba(45, 55, 72, 0.5)' : 'rgba(226, 232, 240, 0.8)'}`,
           }}
         >
           <div className="px-4 pt-2 pb-4 space-y-1">
             {/* Mobile Search */}
             <div className="relative my-4">
+              <label htmlFor="mobile-search" className="sr-only">Search</label>
               <input
+                id="mobile-search"
                 type="text"
-                placeholder="Search..."
+                placeholder="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-full text-sm focus:outline-none focus:ring-2"
+                className="w-full pl-9 pr-4 py-2 rounded-full text-sm focus:outline-none"
                 style={{
-                  backgroundColor: theme === 'dark' ? 'rgba(26, 34, 58, 0.8)' : 'rgba(247, 250, 252, 0.8)',
-                  color: theme === 'dark' ? '#fff' : '#1a202c',
-                  borderColor: theme === 'dark' ? '#2d3748' : '#e2e8f0',
-                  boxShadow: `0 0 0 1px ${theme === 'dark' ? 'rgba(22, 242, 179, 0.3)' : 'rgba(18, 194, 146, 0.3)'}`
+                  backgroundColor: isDark ? 'rgba(26, 34, 58, 0.8)' : 'rgba(247, 250, 252, 0.8)',
+                  color: isDark ? '#fff' : '#1a202c',
+                  border: `1px solid ${isDark ? '#2d3748' : '#e2e8f0'}`,
+                  boxShadow: `0 0 0 1px ${isDark ? 'rgba(22, 242, 179, 0.3)' : 'rgba(18, 194, 146, 0.3)'}`
                 }}
               />
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <FaSearch size={14} style={{ color: theme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.4)' }} />
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <FaSearch size={13} style={{ color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.4)' }} />
               </div>
             </div>
             
@@ -429,17 +472,21 @@ export default function HomePage() {
               const icons = [FaHome, FaInfo, FaCode, FaBlog, FaEnvelope];
               const Icon = icons[index];
               const href = item === 'Home' ? '/' : `/${item.toLowerCase()}`;
+              const isActive = item.toLowerCase() === activeSection;
               
               return (
                 <a 
                   key={item} 
                   href={href}
+                  aria-current={isActive ? 'page' : undefined}
                   className="flex items-center px-3 py-3 rounded-md text-base font-medium transition-colors duration-150"
                   style={{
-                    color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
+                    color: isActive
+                      ? (isDark ? '#16f2b3' : '#12c292')
+                      : (isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)'),
                     backgroundColor: 'transparent',
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                   onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
                   <Icon className="mr-3" size={18} />
@@ -449,28 +496,28 @@ export default function HomePage() {
             })}
             
             {/* Mobile User Authentication */}
-            <div className="pt-4 border-t" style={{ borderColor: theme === 'dark' ? 'rgba(45, 55, 72, 0.5)' : 'rgba(226, 232, 240, 0.8)' }}>
+            <div className="pt-4 border-t" style={{ borderColor: isDark ? 'rgba(45, 55, 72, 0.5)' : 'rgba(226, 232, 240, 0.8)' }}>
               {isAuthenticated ? (
                 <div className="space-y-1">
                   <div className="flex items-center px-3 py-2">
                     <div className="w-10 h-10 rounded-full overflow-hidden border-2 mr-3 flex-shrink-0"
-                      style={{ borderColor: theme === 'dark' ? '#16f2b3' : '#12c292' }}
+                      style={{ borderColor: isDark ? '#16f2b3' : '#12c292' }}
                     >
                       <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
                     </div>
                     <div>
-                      <p className="font-medium" style={{ color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)' }}>{user.name}</p>
-                      <p className="text-xs" style={{ color: theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(26, 32, 44, 0.6)' }}>{user.role}</p>
+                      <p className="font-medium" style={{ color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)' }}>{user.name}</p>
+                      <p className="text-xs" style={{ color: isDark ? 'rgba(255, 255, 255, 0.6)' : 'rgba(26, 32, 44, 0.6)' }}>{user.role}</p>
                     </div>
                   </div>
                   <a 
                     href="/profile" 
                     className="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150"
                     style={{
-                      color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
+                      color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
                       backgroundColor: 'transparent',
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                     onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <FaUserCircle className="mr-3" size={16} /> My Profile
@@ -479,10 +526,10 @@ export default function HomePage() {
                     href="/dashboard" 
                     className="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150"
                     style={{
-                      color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
+                      color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
                       backgroundColor: 'transparent',
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                     onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <FaChartBar className="mr-3" size={16} /> Dashboard
@@ -491,10 +538,10 @@ export default function HomePage() {
                     onClick={() => setIsAuthenticated(false)}
                     className="flex items-center w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150"
                     style={{
-                      color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
+                      color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
                       backgroundColor: 'transparent',
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                     onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <FaSignOutAlt className="mr-3" size={16} /> Logout
@@ -506,10 +553,10 @@ export default function HomePage() {
                     onClick={() => setIsAuthenticated(true)}
                     className="flex items-center w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors duration-150"
                     style={{
-                      color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
+                      color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
                       backgroundColor: 'transparent',
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                     onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <FaSignInAlt className="mr-3" size={18} /> Sign In
@@ -518,10 +565,10 @@ export default function HomePage() {
                     href="/admin" 
                     className="flex items-center px-3 py-2 rounded-md text-base font-medium transition-colors duration-150"
                     style={{
-                      color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
+                      color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)',
                       backgroundColor: 'transparent',
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(22, 242, 179, 0.1)' : 'rgba(18, 194, 146, 0.1)'}
                     onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <FaUserPlus className="mr-3" size={18} /> Register
@@ -531,13 +578,14 @@ export default function HomePage() {
               
               {/* Mobile Theme Toggle */}
               <div className="flex items-center justify-between mt-4 px-3 py-3">
-                <span style={{ color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)' }}>Theme Mode</span>
+                <span style={{ color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(26, 32, 44, 0.9)' }}>Theme Mode</span>
                 <button 
                   onClick={toggleTheme}
                   className="flex items-center space-x-2 text-sm font-medium"
-                  style={{ color: theme === 'dark' ? '#16f2b3' : '#12c292' }}
+                  style={{ color: isDark ? '#16f2b3' : '#12c292' }}
+                  aria-label="Toggle color theme"
                 >
-                  {mounted && theme === 'dark' ? (
+                  {mounted && isDark ? (
                     <>
                       <span>Light Mode</span>
                       <FaSun size={16} />
@@ -560,11 +608,17 @@ export default function HomePage() {
 
       {/* Your existing homepage content */}
       <HeroSection />
-      <Suspense fallback={<div className="min-h-screen animate-pulse bg-slate-900/20" />}>
+      <Suspense fallback={<div className="min-h-[520px] animate-pulse bg-slate-900/20" />}>
         <AboutSection />
       </Suspense>
       <Suspense fallback={<div className="min-h-screen animate-pulse bg-slate-900/20" />}>
         <Experience />
+      </Suspense>
+      <Suspense fallback={<div className="min-h-[400px] animate-pulse bg-slate-900/20" />}>
+        <Projects />
+      </Suspense>
+      <Suspense fallback={<div className="min-h-[400px] animate-pulse bg-slate-900/20" />}>
+        <Skills />
       </Suspense>
       <Suspense fallback={<div className="min-h-[400px] animate-pulse bg-slate-900/20" />}>
         <Blog />

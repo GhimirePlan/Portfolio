@@ -3,10 +3,14 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import GlowCard from "../../helper/glow-card";
-import { personalData } from "@/utils/data/personal-data";
+import { mergePersonalData } from "@/utils/data/personal-data";
+import { useGithubData } from "@/utils/use-github-data";
 import { FaUser } from "react-icons/fa";
 
 function AboutSection() {
+  const { data } = useGithubData();
+  const profile = mergePersonalData(data?.profile);
+
   const containerVariants = {
     hidden: { opacity: 1 },
     visible: {
@@ -76,7 +80,7 @@ function AboutSection() {
               </motion.div>
 
               {/* Content Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                 {/* Text Section */}
                 <motion.div
                   className="order-2 lg:order-1"
@@ -95,13 +99,13 @@ function AboutSection() {
                     </h2>
                   </motion.div>
                   <motion.p
-                    className="text-gray-300 text-sm sm:text-base md:text-lg text-justify leading-relaxed"
+                    className="text-left text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.3 }}
                   >
-                    {personalData.description}
+                    {profile.aboutText}
                   </motion.p>
                 </motion.div>
 
@@ -116,7 +120,7 @@ function AboutSection() {
                     <div className="absolute -inset-1 bg-gradient-to-r from-[#60A5FA] to-[#34D399] rounded-lg opacity-0 group-hover:opacity-20 transition duration-1000 group-hover:duration-200"></div>
                     <div className="relative">
                       <Image
-                        src={personalData.profile}
+                        src={profile.profile}
                         width={280}
                         height={280}
                         alt="Plan Ghimire"

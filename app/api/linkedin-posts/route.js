@@ -7,6 +7,12 @@ import LinkedInPost from '@/models/LinkedInPost';
 // GET /api/linkedin-posts - Get all LinkedIn posts
 export async function GET(request) {
   try {
+    // When the database is not configured (e.g. local dev without MONGODB_URI),
+    // return an empty list instead of throwing a 500 so the section hides itself.
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json([]);
+    }
+
     await connectToDatabase();
     
     const { searchParams } = new URL(request.url);

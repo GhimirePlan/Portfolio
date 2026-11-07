@@ -1,50 +1,62 @@
 export const experiences = [
- 
- {
-  company: "AI & Data Initiatives",
-  role: "AI Explorer",
-  duration: "2023 - Present",
-  description: "Build AI tools with focus on EDA, data cleaning, and feature engineering.",
-  technologies: ["Python", "TensorFlow", "PyTorch", "BeautifulSoup", "Pandas"],
-  highlights: [
-    "Developed Nepali handwritten OCR and news authenticity detector.",
-    "Created web scrapers and an advanced forest fire prediction system."
-  ],
-  links: {
-    github: "https://github.com/PlanGhimire/ai-projects",
-    live: "https://plandot.tech"
-  }
-},
- { 
-    company: "Freelance Development", 
-    role: "Frontend & Game Developer", 
-    duration: "2021 - Present", 
-    description: "Build responsive web apps and 2D/3D games.", 
-    technologies: ["React", "C#", "JS", "C++", "Raylib", "Godot"], 
-    highlights: [
-      "Created web game platform.",
-      "Designed optimized UIs."
+  {
+    id: 1,
+    title: "Software Development",
+    tagline: "Building web and tooling solutions",
+    duration: "2022 - Present",
+    icon: "code",
+    description:
+      "Designing and building responsive web applications, developer tooling, and full-stack projects with a focus on clean architecture and great user experiences.",
+    activities: [
+      "Web application design and development",
+      "Developer tooling and automation scripts",
+      "Frontend architecture and component design",
+      "Performance optimization and debugging",
     ],
+    technologies: ["React", "Next.js", "TypeScript", "Node.js", "Tailwind", "Python"],
     links: {
-      github: "https://github.com/PlanGhimire/portfolio",
+      github: "https://github.com/PlanGhimire",
       live: "https://planghimire.com.np",
-      demo: "https://demo.planghimire.com.np"
-    }
+    },
   },
-  
-  { 
-    company: "Open Source", 
-    role: "Contributor", 
-    duration: "2024 - Present", 
-    description: "Improve open-source projects.", 
-    technologies: ["JS", "React", "CSS", "HTML"], 
-    highlights: [
-      "Enhanced docs and code.",
-      "Provided reviews."
+  {
+    id: 2,
+    title: "Embedded & Hardware",
+    tagline: "Working with microcontrollers, DSP, and real-world systems",
+    duration: "2024 - Present",
+    icon: "chip",
+    description:
+      "Designing and implementing embedded systems, working with microcontrollers, sensor interfaces, and signal processing for real-world applications.",
+    activities: [
+      "Embedded system design & implementation",
+      "Sensor integration and data acquisition",
+      "Signal processing & edge AI exploration",
+      "Hardware-software co-design and testing",
     ],
+    technologies: ["ESP32", "C/C++", "Embedded C", "DSP", "IoT", "Python"],
     links: {
-      github: "https://github.com/PlanGhimire/open-source",
-      live: "https://opensource.planghimire.com.np"
-    }
-  }
+      github: "https://github.com/PlanGhimire",
+      live: "https://planghimire.com.np",
+    },
+  },
+  {
+    id: 3,
+    title: "Networking & Systems",
+    tagline: "Exploring network automation and system validation",
+    duration: "2025 - Present",
+    icon: "network",
+    description:
+      "Exploring network automation, system validation, and digital twin modeling to support reliable and verifiable network operations.",
+    activities: [
+      "Network automation and policy validation",
+      "System modeling and digital twin concepts",
+      "Configuration evidence and verification",
+      "Collaborative engineering and research",
+    ],
+    technologies: ["Python", "Networking", "Linux", "Automation", "Docker", "Git"],
+    links: {
+      github: "https://github.com/PlanGhimire",
+      live: "https://planghimire.com.np",
+    },
+  },
 ];

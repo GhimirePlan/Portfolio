@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-label="Subtle abstract circuitry background in navy, teal and violet">
+<defs>
+ <linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#070d19"/><stop offset=".55" stop-color="#0a1425"/><stop offset="1" stop-color="#0c1126"/></linearGradient>
+ <radialGradient id="teal"><stop stop-color="#15b8a6" stop-opacity=".17"/><stop offset=".5" stop-color="#0b9eaf" stop-opacity=".065"/><stop offset="1" stop-color="#0b9eaf" stop-opacity="0"/></radialGradient>
+ <radialGradient id="blue"><stop stop-color="#306dc6" stop-opacity=".16"/><stop offset=".6" stop-color="#2354a5" stop-opacity=".055"/><stop offset="1" stop-color="#2354a5" stop-opacity="0"/></radialGradient>
+ <radialGradient id="violet"><stop stop-color="#7554bf" stop-opacity=".15"/><stop offset=".55" stop-color="#6244a9" stop-opacity=".055"/><stop offset="1" stop-color="#6244a9" stop-opacity="0"/></radialGradient>
+ <linearGradient id="fadeCircuit" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#39d8c5" stop-opacity=".32"/><stop offset=".9" stop-color="#38b9d7" stop-opacity=".06"/></linearGradient>
+ <linearGradient id="bottom" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#06101c" stop-opacity="0"/><stop offset="1" stop-color="#050d18" stop-opacity=".75"/></linearGradient>
+ <pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M 52 0 L 0 0 0 52" fill="none" stroke="#76b7ce" stroke-width=".5" opacity=".085"/></pattern>
+ <filter id="blur"><feGaussianBlur stdDeviation="28"/></filter>
+ <filter id="soft"><feGaussianBlur stdDeviation="5"/></filter>
+ <clipPath id="canvas"><rect width="1600" height="760"/></clipPath>
+</defs>
+<g clip-path="url(#canvas)">
+<rect width="1600" height="760" fill="url(#base)"/>
+<rect width="1600" height="760" fill="url(#grid)" opacity=".28"/>
+<ellipse cx="80" cy="530" rx="490" ry="370" fill="url(#teal)"/>
+<ellipse cx="1220" cy="250" rx="630" ry="460" fill="url(#blue)"/>
+<ellipse cx="1590" cy="640" rx="430" ry="370" fill="url(#violet)"/>
+<ellipse cx="790" cy="695" rx="460" ry="170" fill="url(#teal)" opacity=".35"/>
+<!-- top-edge understated PCB traces -->
+<g fill="none" stroke="#3eaeaf" stroke-width="1.2" opacity=".35" stroke-linejoin="round" stroke-linecap="round">
+<path d="M-8 45 H96 l34 34 h88 l24 24 h62"/><path d="M-8 67 H74 l43 43 h79 l33 33 h74"/>
+<path d="M-8 95 H46 l42 42 h96 l20 20"/><path d="M21 0 V21 l44 44"/>
+</g>
+<g fill="none" stroke="#4b8eba" stroke-width="1.25" opacity=".3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M1605 46 h-95 l-38 38 h-72 l-40 40 h-86"/><path d="M1605 75 h-64 l-43 43 h-80 l-24 24"/>
+<path d="M1605 111 h-35 l-35 35 h-62 l-37 37"/>
+</g>
+<!-- delicate corner nodes -->
+<g fill="#3ac8c1" opacity=".53"><circle cx="304" cy="103" r="3"/><circle cx="303" cy="143" r="2.6"/><circle cx="204" cy="157" r="2.4"/><circle cx="1274" cy="124" r="2.5"/></g>
+<g fill="#638dc8" opacity=".57"><circle cx="1400" cy="84" r="2.8"/><circle cx="1436" cy="183" r="2.6"/><circle cx="1360" cy="124" r="2.5"/></g>
+<!-- quiet technical framework on far-right boundary -->
+<g fill="none" stroke="#5b92a9" stroke-width="1" opacity=".16">
+ <path d="M1548 225 v88 l-38 38 v80 l38 38 v79"/>
+ <path d="M1580 288 h-60 l-38 38 v64"/>
+ <path d="M1512 474 h-72 l-28 28 h-77"/>
+</g>
+<g fill="#52c2cb" opacity=".32"><circle cx="1548" cy="225" r="3"/><circle cx="1548" cy="548" r="3"/><circle cx="1335" cy="502" r="3"/></g>
+<!-- fine sweeping arc: abstract engineering geometry -->
+<g fill="none" stroke-width="1" opacity=".2">
+ <circle cx="1220" cy="385" r="360" stroke="#5489a8" stroke-dasharray="1 13" />
+ <circle cx="1220" cy="385" r="410" stroke="#4e75ab" stroke-dasharray="150 26 8 36" opacity=".44"/>
+ <circle cx="1220" cy="385" r="480" stroke="#338b95" opacity=".3"/>
+</g>
+<!-- bottom circuit lines: graphical rather than illustrated equipment -->
+<g fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.4">
+ <path d="M-10 650 H120 l30 -28 h92 l25 -25 h85" stroke="#32afa4" opacity=".27"/>
+ <path d="M-10 681 H152 l24 -24 h130 l36 -36 h70" stroke="#32b2c3" opacity=".16"/>
+ <path d="M1609 630 h-132 l-28 -30 h-122 l-24 -24 h-73" stroke="#706ac2" opacity=".25"/>
+ <path d="M1609 658 h-135 l-45 -45 h-128" stroke="#3b94bd" opacity=".19"/>
+</g>
+<g fill="#25c4b5" opacity=".45"><circle cx="352" cy="597" r="3"/><circle cx="412" cy="621" r="2.5"/></g>
+<g fill="#7b76c8" opacity=".35"><circle cx="1230" cy="576" r="2.5"/><circle cx="1301" cy="613" r="2.5"/></g>
+<!-- darken busy edges and ease transition into next section -->
+<rect y="570" width="1600" height="190" fill="url(#bottom)"/>
+</g></svg>

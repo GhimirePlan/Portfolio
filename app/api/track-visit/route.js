@@ -25,11 +25,9 @@ export async function POST(request) {
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     
     if (!webhookUrl) {
-      console.error('Discord webhook URL not configured');
-      return NextResponse.json(
-        { error: 'Webhook not configured' },
-        { status: 500 }
-      );
+      // Visitor tracking is an optional integration. When it is not configured,
+      // skip the webhook silently instead of returning an error to the client.
+      return NextResponse.json({ success: true, skipped: true, count: visitCounter });
     }
     
     // Create Discord embed with direct link in description

@@ -7,14 +7,24 @@ import Blog from '@/models/Blog';
 // GET /api/blogs - Get all blogs
 export async function GET(request) {
   try {
-    // Connect to the database
-    await connectToDatabase();
-    
     const { searchParams } = new URL(request.url);
     const published = searchParams.get('published');
     const limit = parseInt(searchParams.get('limit') || '10');
     const page = parseInt(searchParams.get('page') || '1');
     const skip = (page - 1) * limit;
+
+    // When the database is not configured (e.g. local dev without MONGODB_URI),
+    // return an empty result set instead of throwing a 500. This lets the
+    // homepage render its empty state cleanly.
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json({
+        blogs: [],
+        pagination: { total: 0, page, limit, pages: 0 }
+      });
+    }
+
+    // Connect to the database
+    await connectToDatabase();
     
     // Build the query
     let query = {};

@@ -1,5 +1,5 @@
-import { personalData } from "@/utils/data/personal-data";
-import Image from "next/image";
+import { mergePersonalData } from "@/utils/data/personal-data";
+import { useGithubData } from "@/utils/use-github-data";
 import Link from "next/link";
 import { BsGithub, BsLinkedin } from "react-icons/bs";
 import { FaFacebook, FaTwitterSquare } from "react-icons/fa";
@@ -9,6 +9,9 @@ import Typed from "react-typed";
 import { useEffect } from 'react';
 
 function HeroSection({ onLoad }) {
+  const { data } = useGithubData();
+  const profile = mergePersonalData(data?.profile);
+
   useEffect(() => {
     // Call onLoad when the component mounts
     const handleLoad = () => {
@@ -32,47 +35,36 @@ function HeroSection({ onLoad }) {
   }, [onLoad]);
 
   return (
-    <div className="relative flex flex-col items-center justify-between w-full mt-10">
-      {/* Background Image */}
-      <Image
-        src="/hero.svg"
-        alt="Hero"
-        width={1572}
-        height={795}
-        priority
-        className="absolute -top-[100px] -z-10 opacity-80"
-      />
+    <div className="relative flex flex-col items-center justify-between w-full">
+      {/* ── Hero background: deep navy engineering workspace ── */}
+      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
+        {/* Deep navy foundation with layered gradient depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#070c18] via-[#080e1e] to-[#0f172a]" />
 
-      {/* Background Animated Nodes */}
-      <div className="absolute inset-0 -z-20">
-        <svg className="w-full h-full animate-spin-slow" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="grad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#ff6ec7" />
-              <stop offset="100%" stopColor="#5b68ff" />
-            </radialGradient>
-          </defs>
-          <circle cx="50%" cy="50%" r="200" fill="url(#grad)" opacity="0.1" />
-        </svg>
-        {Array.from({ length: 12 }).map((_, index) => (
-          <div
-            key={index}
-            className={`absolute rounded-full blur-xl opacity-75 animate-pulse-slow transition-transform duration-500 ${
-              index % 2 === 0 ? "bg-gradient-to-r from-pink-500 to-indigo-600" : "bg-gradient-to-r from-green-400 to-blue-500"
-            } ${index === 0 ? "top-10 left-20 w-32 h-32" : index === 1 ? "top-40 left-10 w-28 h-28" : index === 2 ? "bottom-20 right-10 w-24 h-24" : index === 3 ? "bottom-30 left-10 w-26 h-26" : index === 4 ? "top-40 right-20 w-30 h-30" : index === 5 ? "top-60 left-60 w-36 h-36" : index === 6 ? "top-30 right-30 w-26 h-26" : index === 7 ? "bottom-30 left-50 w-22 h-22" : index === 8 ? "top-50 left-10 w-28 h-28" : index === 9 ? "bottom-10 right-20 w-24 h-24" : index === 10 ? "top-5 right-5 w-30 h-30" : "bottom-20 right-40 w-24 h-24"}`}
-          ></div>
-        ))}
+        {/* Handcrafted PCB traces, network nodes, ambient light and subtle workspace detail */}
+        <div className="absolute inset-0 bg-[url('/svg/hero-bg.svg')] bg-cover bg-bottom bg-no-repeat" />
+
+        {/* Faint aura behind the code editor (preserves the original identity) */}
+        <div className="absolute right-[6%] top-[22%] h-[26rem] w-[26rem] rounded-full bg-cyan-400/5 blur-[120px]" />
+        <div className="absolute right-[22%] top-1/3 h-64 w-64 rounded-full bg-violet-500/5 blur-[130px]" />
+
+        {/* Readability: keep the left text column dark and high-contrast */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#060a14] via-[#060a14]/85 to-transparent" />
+
+        {/* Fade the top into the navbar area and the bottom into the page background */}
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#070c18] to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0f172a] to-transparent" />
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 items-start lg:grid-cols-2 lg:gap-12 gap-y-8">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-y-10 px-4 pt-10 pb-6 sm:px-6 sm:pt-12 sm:pb-8 lg:grid-cols-[45fr_55fr] lg:gap-12 lg:px-8 lg:pt-16 lg:pb-10 xl:gap-16">
         {/* Text Content */}
-        <div className="order-2 lg:order-1 flex flex-col items-start justify-center px-4 pb-20 md:pb-10 lg:pt-10">
-          <h1 className="text-3xl font-bold leading-10 text-white/95 md:font-extrabold lg:text-[2.6rem] lg:leading-[3.5rem]">
+        <div className="order-2 flex flex-col items-start justify-center lg:order-1">
+          <h1 className="text-3xl font-bold leading-10 tracking-tight text-white/95 md:font-extrabold lg:text-[2.6rem] lg:leading-[3.5rem]">
             Hello, <br />
             This is{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60A5FA] to-[#34D399] font-black">
-              {personalData.name}
+              {profile.name}
             </span>
             <div className="h-[2px] w-full bg-gradient-to-r from-[#60A5FA]/80 via-[#34D399]/80 to-[#3730A3]/80 my-4 rounded-full"></div>
             {`ECE `}
@@ -80,19 +72,23 @@ function HeroSection({ onLoad }) {
             <span className="text-[#60A5FA] font-semibold">  from Nepal</span>
           </h1>
 
+          <p className="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed max-w-lg">
+            {profile.description}
+          </p>
+
           {/* Social Links */}
           <div className="my-8 flex items-center gap-5">
             {[
-              { href: personalData.linkedIn, icon: <BsLinkedin size={28} /> },
-              { href: personalData.github, icon: <BsGithub size={28} /> },
-              { href: personalData.facebook, icon: <FaFacebook size={28} /> },
-              { href: personalData.twitter, icon: <FaTwitterSquare size={28} /> },
+              { href: profile.linkedIn, icon: <BsLinkedin size={28} /> },
+              { href: profile.github, icon: <BsGithub size={28} /> },
+              { href: profile.facebook, icon: <FaFacebook size={28} /> },
+              { href: profile.twitter, icon: <FaTwitterSquare size={28} /> },
             ].map(({ href, icon }, idx) => (
               <Link
                 key={idx}
                 href={href}
                 target="_blank"
-                className="transition-transform transform hover:scale-125 duration-400 text-red-300"
+                className="text-slate-400 hover:text-[#34D399] transition-all duration-300 transform hover:scale-110"
               >
                 {icon}
               </Link>
@@ -107,7 +103,7 @@ function HeroSection({ onLoad }) {
               </button>
             </Link>
 
-            <Link href={personalData.resume} target="_blank">
+            <Link href={profile.resume} target="_blank">
               <button className="flex items-center gap-2 bg-[#1E293B] border border-[#60A5FA]/20 px-6 py-3 rounded-lg text-white/90 font-medium tracking-wide hover:bg-[#1E293B]/80 hover:border-[#60A5FA]/30 hover:shadow-lg hover:shadow-[#60A5FA]/10 transition-all duration-300">
                 Get Resume <MdDownload size={20} />
               </button>
@@ -116,65 +112,66 @@ function HeroSection({ onLoad }) {
         </div>
 
         {/* Code-like Section */}
-        <div className="order-1 lg:order-2 relative bg-gradient-to-r from-[#0d1224] to-[#0a0d37] rounded-lg p-3 sm:p-4 md:p-6 w-full overflow-x-auto shadow-xl border border-[#60A5FA]/10">
-          <div className="flex items-center mb-2 sm:mb-4 space-x-2">
-            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-400 rounded-full hover:bg-red-500 transition-colors"></div>
-            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-orange-400 rounded-full hover:bg-orange-500 transition-colors"></div>
-            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full hover:bg-green-500 transition-colors"></div>
+        <div className="order-1 relative w-full overflow-hidden rounded-lg border border-[#60A5FA]/10 bg-gradient-to-r from-[#0d1224] to-[#0a0d37] p-3 shadow-xl sm:p-4 md:p-6 lg:order-2">
+          <div className="mb-3 flex items-center space-x-2 sm:mb-4">
+            <div className="h-2 w-2 rounded-full bg-red-400 transition-colors hover:bg-red-500 sm:h-3 sm:w-3"></div>
+            <div className="h-2 w-2 rounded-full bg-orange-400 transition-colors hover:bg-orange-500 sm:h-3 sm:w-3"></div>
+            <div className="h-2 w-2 rounded-full bg-green-400 transition-colors hover:bg-green-500 sm:h-3 sm:w-3"></div>
           </div>
 
-          <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-8 text-gray-500 select-none text-[10px] xs:text-xs sm:text-sm lg:text-base">
-              <div className="flex flex-col items-end pr-2 space-y-[0.3rem]">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+          <div className="overflow-x-auto overflow-y-hidden">
+            <div className="flex items-start font-mono text-[11px] leading-relaxed sm:text-xs md:text-sm lg:text-[13px]">
+              {/* Line numbers */}
+              <div className="flex select-none flex-col items-end pr-3 text-gray-500 sm:pr-4">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((num) => (
                   <span key={num}>{num}</span>
                 ))}
               </div>
-            </div>
 
-            <pre className="text-[10px] xs:text-xs sm:text-sm lg:text-base font-mono leading-relaxed text-white pl-10">
-              <code className="block">
-                <span className="text-[#60A5FA]">class</span>{" "}
-                <span className="text-[#34D399]">Coder</span>:
-                <br />
-                <span className="text-[#60A5FA]">    def</span>{" "}
-                <span className="text-[#34D399]">__init__</span>(
-                <span className="text-[#FCD34D]">self</span>, name, skills, hard_worker, quick_learner,
-                <br />
-                {"     problem_solver"})<span>:</span>
-                <br />
-                <span className="text-[#60A5FA]">        self</span>.name ={" "}
-                <span className="text-[#FCD34D]">Plan Ghimire</span>
-                <br />
-                <span className="text-[#60A5FA]">        self</span>.skills = [
-                <span className="text-[#FCD34D]">'JavaScript'</span>,{" "}
-                <span className="text-[#FCD34D]">'React'</span>,{" "}
-                <span className="text-[#FCD34D]">'Python'</span>,{" "}
-                <span className="text-[#FCD34D]">'C++'</span>,{" "}
-                <span className="text-[#FCD34D]">'C'</span>]
-                <br />
-                <span className="text-[#60A5FA]">        self</span>.hard_worker ={" "}
-                <span className="text-[#34D399]">true</span>
-                <br />
-                <span className="text-[#60A5FA]">        self</span>.quick_learner ={" "}
-                <span className="text-[#34D399]">true</span>
-                <br />
-                <span className="text-[#60A5FA]">        self</span>.problem_solver ={" "}
-                <span className="text-[#34D399]">true</span>
-                <br />
-                <br />
-                <span className="text-[#60A5FA]">    def</span>{" "}
-                <span className="text-[#34D399]">is_hireable</span>(
-                <span className="text-[#FCD34D]">self</span>):
-                <br />
-                <span className="text-[#60A5FA]">        return</span>{" "}
-                <span className="text-[#60A5FA]">self</span>.hard_worker{" "}
-                <span className="text-[#60A5FA]">and</span>{" "}
-                <span className="text-[#60A5FA]">self</span>.problem_solver{" "}
-                <span className="text-[#60A5FA]">&gt;=</span>{" "}
-                <span className="text-[#FCD34D]">5</span>
-              </code>
-            </pre>
+              {/* Code */}
+              <pre className="flex-1 text-white">
+                <code className="block">
+                  <span className="text-[#60A5FA]">class</span>{" "}
+                  <span className="text-[#34D399]">Engineer</span>:
+                  <br />
+                  <span className="text-[#60A5FA]">    def</span>{" "}
+                  <span className="text-[#34D399]">__init__</span>(
+                  <span className="text-[#FCD34D]">self</span>):
+                  <br />
+                  <span className="text-[#60A5FA]">        self</span>.name ={" "}
+                  <span className="text-[#FCD34D]">"Plan Ghimire"</span>
+                  <br />
+                  <span className="text-[#60A5FA]">        self</span>.role ={" "}
+                  <span className="text-[#FCD34D]">"ECE Student"</span>
+                  <br />
+                  <span className="text-[#60A5FA]">        self</span>.interests = [
+                  <br />
+                  {"            "}
+                  <span className="text-[#FCD34D]">"Embedded Systems"</span>,{" "}
+                  <span className="text-[#FCD34D]">"Networking"</span>,
+                  <br />
+                  {"            "}
+                  <span className="text-[#FCD34D]">"Machine Learning"</span>,{" "}
+                  <span className="text-[#FCD34D]">"AI (Applied)"</span>]
+                  <br />
+                  <span className="text-[#60A5FA]">        self</span>.goal ={" "}
+                  <span className="text-[#FCD34D]">"Build, Learn, and Solve"</span>
+                  <br />
+                  <br />
+                  <span className="text-[#60A5FA]">    def</span>{" "}
+                  <span className="text-[#34D399]">is_hirable</span>(
+                  <span className="text-[#FCD34D]">self</span>):
+                  <br />
+                  <span className="text-[#60A5FA]">        return</span>{" "}
+                  <span className="text-[#60A5FA]">self</span>.goal{" "}
+                  <span className="text-[#60A5FA]">and</span>{" "}
+                  <span className="text-[#60A5FA]">len</span>(
+                  <span className="text-[#60A5FA]">self</span>.interests){" "}
+                  <span className="text-[#60A5FA]">&gt;=</span>{" "}
+                  <span className="text-[#FCD34D]">3</span>
+                </code>
+              </pre>
+            </div>
           </div>
         </div>
       </div>
