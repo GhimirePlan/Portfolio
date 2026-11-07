@@ -148,3 +148,17 @@ Read history at **https://www.plan.com.np/admin/chats** (or `/admin/chats` on yo
 Open `/admin/login` with your existing administrator account. The responsive workspace includes blog publishing, LinkedIn management, conversation history, and a live overview of post counts, drafts, recent stories, recent chats, and seven days of new-conversation activity (UTC). Overview numbers come from MongoDB; unavailable data displays an error and retry action rather than placeholder counts. Service indicators show whether PlanBot, Discord, and contact settings are configured, not whether an external provider is currently healthy.
 
 The mobile navigation supports a modal drawer, keyboard focus, Escape, and automatic closure after navigation or switching to a laptop layout. Login includes password visibility, Caps Lock feedback, and safe return links to admin conversations. Admin pages are excluded from search indexing; overview and conversation APIs enforce the administrator role and disable caching. No additional environment variables are required.
+
+### Audience and conversion metrics
+
+The admin overview includes first-party analytics with 7-, 30-, and 90-day UTC filters. Data starts accumulating after this update; old Discord notifications are not backfilled. `MONGODB_URI` is the only storage requirement. Anonymous events use their own collection and survive server restarts. Reports require an administrator session and expose aggregate counts only.
+
+- **Unique visitors:** distinct random browser IDs stored locally. Different devices, cleared storage, or storage restrictions can count the same person again. This is a browser estimate, not an identified-person count.
+- **Sessions:** a random session ID renews after 30 minutes without a tracked interaction. Reloads and navigation keep the visitor ID; returning after the session timeout starts a new session. When storage is blocked, IDs last only in memory.
+- **Page views / popular pages:** initial public page loads and pathname changes; query-only changes, admin pages, and the visitor-test page are excluded.
+- **Traffic sources:** first source per session, using `utm_source`, otherwise the external referring domain, otherwise direct/unknown. Top sources include an Other bucket where needed. Full referrer URLs, query strings, names, emails, and IP addresses are not stored in analytics.
+- **Résumé clicks:** clicks on the existing Get Resume link. The Google Docs behavior is preserved. These are not confirmed PDF downloads or file saves.
+- **Project opens:** clicks to repositories owned by `GhimirePlan` (canonicalized server-side). The project section remains hidden. Links in blog posts and PlanBot replies can generate these events; external project-page views are not inferred.
+- **Contact submissions:** generated on the server only after SMTP accepts the recipient. Validation failures, reCAPTCHA rejections, and email failures do not count. No message contents or sender details enter analytics, and an analytics outage does not fail a successful email submission.
+
+The lightweight tracker runs only on public pages, sends small same-origin keepalive requests, and respects Do Not Track and Global Privacy Control. Known crawler requests and authenticated administrator requests are skipped, including admin visits to public pages. Browser blockers, opt-outs, and network failures can reduce counts; contact-success totals are operational events without visitor identifiers. Existing visitor Discord notifications remain a separate integration.

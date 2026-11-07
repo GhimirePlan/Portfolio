@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import Navbar from './components/navbar';
 import Footer from './components/footer';
 import FloatingChatbot from './components/FloatingChatbot';
+const AnalyticsTracker = dynamic(() => import('./components/AnalyticsTracker'), { ssr: false });
 const VisitorTracker = dynamic(() => import('./components/VisitorTracker'), { ssr: false });
 
 let cancelSectionWait = () => {};
@@ -67,6 +68,7 @@ export default function ClientLayout({ children }) {
       <Footer />
       {pathname !== '/planbot' && <FloatingChatbot />}
       <VisitorTracker showStatus={false} />
+      <AnalyticsTracker />
     </div>
   );
 }

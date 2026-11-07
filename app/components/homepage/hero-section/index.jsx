@@ -60,7 +60,7 @@ function HeroSection() {
                 Contact Me <RiContactsFill size={26} />
             </Link>
 
-            <Link href={profile.resume} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-[#1E293B] border border-[#60A5FA]/20 px-6 py-3 rounded-lg text-white/90 font-medium tracking-wide hover:bg-[#1E293B]/80 hover:border-[#60A5FA]/30 hover:shadow-lg hover:shadow-[#60A5FA]/10 transition-all duration-300">
+            <Link data-analytics="resume" href={profile.resume} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-[#1E293B] border border-[#60A5FA]/20 px-6 py-3 rounded-lg text-white/90 font-medium tracking-wide hover:bg-[#1E293B]/80 hover:border-[#60A5FA]/30 hover:shadow-lg hover:shadow-[#60A5FA]/10 transition-all duration-300">
                 Get Resume <MdDownload size={26} />
             </Link>
           </div>

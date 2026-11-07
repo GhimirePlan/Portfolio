@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { contactConfig } from '@/lib/contact-config';
+import { recordAnalytics } from '@/lib/analytics';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -39,6 +40,7 @@ export async function POST(request) {
   try {
     const info = await transporter.sendMail({ from: { name: 'Portfolio Contact', address: config.user }, to: process.env.CONTACT_EMAIL || 'contact@plan.com.np', replyTo: email.trim(), subject: `New Message From ${name.trim().replace(/[\r\n]/g, ' ')}`, text: `Name: ${name.trim()}\nEmail: ${email.trim()}\n\n${message.trim()}`, html: `<h2>New Message Received</h2><p><strong>Name:</strong> ${escapeHtml(name.trim())}</p><p><strong>Email:</strong> ${escapeHtml(email.trim())}</p><p style="white-space:pre-wrap">${escapeHtml(message.trim())}</p>` });
     if (!info.accepted?.length || info.rejected?.length) throw new Error('Recipient not accepted');
+    await recordAnalytics({ type: 'contact_submission', path: '/', source: 'contact-form' });
     return NextResponse.json({ success: true, message: 'Your message has been sent successfully!' });
   } catch (error) {
     console.error('Contact email delivery failed', { code: error.code || 'DELIVERY_FAILED' });
