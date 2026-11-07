@@ -22,14 +22,6 @@ const Experience = dynamic(() => import("./components/homepage/experience"), {
   ssr: false,
   loading: () => <div className="min-h-screen animate-pulse bg-slate-900/20" />
 });
-const Projects = dynamic(() => import("./components/homepage/projects"), {
-  ssr: false,
-  loading: () => <div className="min-h-[400px] animate-pulse bg-slate-900/20" />
-});
-const Skills = dynamic(() => import("./components/homepage/skills"), {
-  ssr: false,
-  loading: () => <div className="min-h-[400px] animate-pulse bg-slate-900/20" />
-});
 const LinkedInSection = dynamic(() => import("./components/homepage/LinkedInSection"), {
   ssr: false,
   loading: () => <div className="min-h-[400px] animate-pulse bg-slate-900/20" />
@@ -468,16 +460,17 @@ export default function HomePage() {
             </div>
             
             {/* Mobile Links */}
-            {['Home', 'About', 'Projects', 'Blog', 'Contact'].map((item, index) => {
-              const icons = [FaHome, FaInfo, FaCode, FaBlog, FaEnvelope];
+            {['Home', 'About', 'Blog', 'Contact'].map((item, index) => {
+              const icons = [FaHome, FaInfo, FaCode, FaEnvelope];
               const Icon = icons[index];
-              const href = item === 'Home' ? '/' : `/${item.toLowerCase()}`;
+              const href = item === 'Home' ? '#home' : `#${item.toLowerCase()}`;
               const isActive = item.toLowerCase() === activeSection;
               
               return (
                 <a 
                   key={item} 
                   href={href}
+                  onClick={() => setMobileMenuOpen(false)}
                   aria-current={isActive ? 'page' : undefined}
                   className="flex items-center px-3 py-3 rounded-md text-base font-medium transition-colors duration-150"
                   style={{
@@ -613,12 +606,6 @@ export default function HomePage() {
       </Suspense>
       <Suspense fallback={<div className="min-h-screen animate-pulse bg-slate-900/20" />}>
         <Experience />
-      </Suspense>
-      <Suspense fallback={<div className="min-h-[400px] animate-pulse bg-slate-900/20" />}>
-        <Projects />
-      </Suspense>
-      <Suspense fallback={<div className="min-h-[400px] animate-pulse bg-slate-900/20" />}>
-        <Skills />
       </Suspense>
       <Suspense fallback={<div className="min-h-[400px] animate-pulse bg-slate-900/20" />}>
         <Blog />

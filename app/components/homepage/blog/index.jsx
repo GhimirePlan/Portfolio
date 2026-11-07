@@ -1,82 +1,57 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { BsArrowRight } from 'react-icons/bs';
-import BlogCard from '../../blog/BlogCard';
+import { BsArrowRight, BsJournalText, BsClock } from 'react-icons/bs';
+import useHomeFeed, { formatFeedDate } from '../use-home-feed';
+import styles from '../editorial.module.css';
+
+function ArticleCard({ blog }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const href = `/blog/${blog.slug}`;
+  const date = formatFeedDate(blog.createdAt);
+  return (
+    <article className={styles.article}>
+      <Link href={href} className={styles.cover} aria-label={`Read ${blog.title}`} tabIndex={-1}>
+        {blog.coverImage && !imageFailed ? (
+          <Image src={blog.coverImage} width={960} height={540} alt="" loading="lazy" onError={() => setImageFailed(true)} />
+        ) : <span className={styles.coverFallback}><BsJournalText aria-hidden="true" /></span>}
+        <BsArrowRight className={styles.coverArrow} aria-hidden="true" />
+      </Link>
+      <div className={styles.articleBody}>
+        {blog.tags?.length > 0 && <div className={styles.tags}>{blog.tags.slice(0, 3).map((tag) => <span key={tag}>#{tag}</span>)}{blog.tags.length > 3 && <span>+{blog.tags.length - 3} more</span>}</div>}
+        <h3><Link href={href}>{blog.title}</Link></h3>
+        <p className={styles.excerpt}>{blog.description}</p>
+        <div className={styles.articleMeta}>
+          {date && <time dateTime={blog.createdAt}>{date}</time>}
+          <span><BsClock aria-hidden="true" />{blog.readingTime || 5} min read</span>
+        </div>
+        <Link href={href} className={styles.readLink}>Read Article <BsArrowRight aria-hidden="true" /></Link>
+      </div>
+    </article>
+  );
+}
 
 export default function Blog() {
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const res = await fetch('/api/blogs?published=true&limit=3');
-        if (!res.ok) {
-          throw new Error(`API responded with status: ${res.status}`);
-        }
-        const text = await res.text();
-        if (!text) {
-          throw new Error('Empty response from API');
-        }
-        try {
-          const data = JSON.parse(text);
-          setBlogs(data.blogs || []);
-        } catch (parseError) {
-          console.error('Error parsing JSON:', parseError);
-          setBlogs([]);
-        }
-      } catch (error) {
-        console.error('Error fetching blogs:', error);
-        setBlogs([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBlogs();
-  }, []);
-
+  const { items: blogs, loading, error, retry } = useHomeFeed('/api/blogs?published=true&limit=3', 'blogs');
   return (
-    <div id="blog" className="relative z-50 py-16">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-center my-5 lg:py-8">
-          <div className="flex items-center">
-            <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-            <span className="bg-[#1a1443] w-fit text-white p-2 px-5 text-2xl rounded-md">
-              Latest Blog Posts
-            </span>
-            <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-          </div>
+    <section id="blog" className={styles.section} aria-labelledby="homepage-blog-heading">
+      <header className={styles.heading}>
+        <div><p className={styles.eyebrow}><BsJournalText aria-hidden="true" />From the blog</p><h2 id="homepage-blog-heading">Latest Blog Posts</h2></div>
+        <Link href="/blog" className={styles.outlineLink}>View All Posts <BsArrowRight aria-hidden="true" /></Link>
+      </header>
+      {loading ? (
+        <div className={styles.articleGrid} role="status" aria-label="Loading blog posts" aria-busy="true">
+          {[0, 1, 2].map((index) => <div key={index} className={styles.skeletonCard} aria-hidden="true"><span /><span /><span /></div>)}
         </div>
-
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#60A5FA]"></div>
-          </div>
-        ) : blogs && blogs.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-              {blogs.map((blog) => (
-                <BlogCard key={blog._id} blog={blog} />
-              ))}
-            </div>
-            <div className="flex justify-center mt-8">
-              <Link 
-                href="/blog" 
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#60A5FA] to-[#34D399] text-white rounded-md hover:from-[#34D399] hover:to-[#60A5FA] transition-all duration-300"
-              >
-                View All Posts <BsArrowRight className="ml-2" />
-              </Link>
-            </div>
-          </>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-400 text-lg">No blog posts yet. Check back soon!</p>
-          </div>
-        )}
-      </div>
-    </div>
+      ) : error ? (
+        <div className={styles.empty} role="status"><BsJournalText aria-hidden="true" /><p>Blog posts could not be loaded.</p><button type="button" className={styles.outlineLink} onClick={retry}>Try again <BsArrowRight aria-hidden="true" /></button></div>
+      ) : blogs.length > 0 ? (
+        <div className={styles.articleGrid}>{blogs.slice(0, 3).map((blog) => <ArticleCard key={blog._id || blog.slug} blog={blog} />)}</div>
+      ) : (
+        <div className={styles.empty}><BsJournalText aria-hidden="true" /><p>No blog posts yet. Check back soon!</p></div>
+      )}
+    </section>
   );
 }
