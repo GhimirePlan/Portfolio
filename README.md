@@ -123,7 +123,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ### Contact form configuration
 
-Contact delivery uses deployment environment variables; no credentials are embedded in the application. Configure `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET_KEY` for reCAPTCHA v3. For Gmail, configure `EMAIL_ADDRESS` and `GMAIL_PASSKEY`; alternatively use `SMTP_USER`, `SMTP_PASS`, `SMTP_HOST`, and `SMTP_PORT`. `CONTACT_EMAIL` sets the recipient. See `.env.example` for the supported settings. Restart or redeploy after changing public environment variables.
+Contact delivery uses deployment environment variables; no credentials are embedded in the application. Configure `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET_KEY` for reCAPTCHA v3. For Gmail, configure `EMAIL_ADDRESS` and `GMAIL_PASSKEY`; alternatively use `SMTP_USER`, `SMTP_PASS`, `SMTP_HOST`, and `SMTP_PORT`. `CONTACT_EMAIL` sets the recipient. See `.env.example` for the supported settings. The public site key can alternatively be provided as `RECAPTCHA_SITE_KEY` at runtime. Restart or redeploy after changing environment variables.
+
+Use a **reCAPTCHA v3** site key and secret from the same registration. Add `plan.com.np` and `www.plan.com.np` to the Google reCAPTCHA domain list. If testing another domain, register it with Google and add it to `RECAPTCHA_ALLOWED_HOSTNAMES` (comma-separated); the configured app URL and Vercel deployment hostname are also accepted by the server. For Gmail, use the sender account's app password, not its login password. The authenticated sender must be allowed to send email through the chosen SMTP provider.
+
+`GET /api/contact` exposes only the public site key and readiness status. `CAPTCHA_NOT_CONFIGURED` means the site key or secret is missing; `EMAIL_NOT_CONFIGURED` means sender credentials or SMTP port are missing/invalid. Check these in the active hosting environment, then redeploy. Actual key validity and SMTP authentication are checked during submission. Tokens must pass Google's score, action, hostname, and two-minute expiry checks; missing configuration never skips verification. The form generates a new token on each attempt, blocks duplicate sends, and retains typed text after errors. A success message means the SMTP server accepted the recipient; inbox delivery depends on the mail provider.
 
 Without contact-service configuration, visitors can still use the direct email link. Missing configuration never bypasses reCAPTCHA or reports a message as delivered.
 
