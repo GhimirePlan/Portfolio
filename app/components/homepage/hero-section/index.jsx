@@ -5,56 +5,14 @@ import { BsGithub, BsLinkedin } from "react-icons/bs";
 import { FaFacebook, FaTwitterSquare } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
 import { RiContactsFill } from "react-icons/ri";
-import { useEffect } from 'react';
 
-function HeroSection({ onLoad }) {
+function HeroSection() {
   const { data } = useGithubData();
   const profile = mergePersonalData(data?.profile);
 
-  useEffect(() => {
-    // Call onLoad when the component mounts
-    const handleLoad = () => {
-      if (onLoad) onLoad();
-    };
-
-    // Check if the hero image is loaded
-    const heroImage = document.querySelector('img[src="/hero.svg"]');
-    
-    if (heroImage) {
-      if (heroImage.complete) {
-        handleLoad();
-      } else {
-        heroImage.addEventListener('load', handleLoad);
-        return () => heroImage.removeEventListener('load', handleLoad);
-      }
-    } else {
-      // If no hero image found, just call onLoad
-      handleLoad();
-    }
-  }, [onLoad]);
 
   return (
     <section id="home" className="reference-hero relative flex flex-col items-center justify-between w-full">
-      {/* ── Hero background: deep navy engineering workspace ── */}
-      <div className="hero-old-background absolute inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
-        {/* Deep navy foundation with layered gradient depth */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#070c18] via-[#080e1e] to-[#0f172a]" />
-
-        {/* Handcrafted PCB traces, network nodes, ambient light and subtle workspace detail */}
-        <div className="absolute inset-0 bg-[url('/svg/hero-bg.svg')] bg-cover bg-bottom bg-no-repeat" />
-
-        {/* Faint aura behind the code editor (preserves the original identity) */}
-        <div className="absolute right-[6%] top-[22%] h-[26rem] w-[26rem] rounded-full bg-cyan-400/5 blur-[120px]" />
-        <div className="absolute right-[22%] top-1/3 h-64 w-64 rounded-full bg-violet-500/5 blur-[130px]" />
-
-        {/* Readability: keep the left text column dark and high-contrast */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#060a14] via-[#060a14]/85 to-transparent" />
-
-        {/* Fade the top into the navbar area and the bottom into the page background */}
-        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#070c18] to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0f172a] to-transparent" />
-      </div>
-
       {/* Main Content */}
       <div className="hero-grid mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-y-10 px-4 pt-10 pb-6 sm:px-6 sm:pt-12 sm:pb-8 lg:grid-cols-[45fr_55fr] lg:gap-12 lg:px-8 lg:pt-16 lg:pb-10 xl:gap-16">
         {/* Text Content */}

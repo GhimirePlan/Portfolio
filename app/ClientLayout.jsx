@@ -1,78 +1,72 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import Navbar from './components/navbar';
+import Footer from './components/footer';
 import FloatingChatbot from './components/FloatingChatbot';
-import VisitorTracker from './components/VisitorTracker';
+const VisitorTracker = dynamic(() => import('./components/VisitorTracker'), { ssr: false });
+
+let cancelSectionWait = () => {};
+
+function scrollToSection(hash) {
+  cancelSectionWait();
+  let id;
+  try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
+  const move = () => {
+    const target = document.getElementById(id);
+    if (!target) return false;
+    window.scrollTo({ top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - 88), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    return true;
+  };
+  if (move()) return;
+  // Wait only when a route's section has not mounted yet.
+  const container = document.getElementById('main-content');
+  if (!container) return;
+  const observer = new MutationObserver(() => { if (move()) cancelSectionWait(); });
+  const timeout = setTimeout(() => observer.disconnect(), 10000);
+  cancelSectionWait = () => { observer.disconnect(); clearTimeout(timeout); };
+  observer.observe(container, { childList: true, subtree: true });
+}
+
+function handleSectionLink(event) {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const anchor = event.target.closest('a[href]');
+  if (!anchor || anchor.target === '_blank' || anchor.getAttribute('href') === '#main-content') return;
+  const url = new URL(anchor.href, location.href);
+  if (url.origin !== location.origin || url.pathname !== location.pathname || !url.hash) return;
+  event.preventDefault();
+  if (location.hash !== url.hash) window.history.pushState(null, '', url.pathname + url.search + url.hash);
+  scrollToSection(url.hash);
+}
 
 export default function ClientLayout({ children }) {
-  const [isOnline, setIsOnline] = useState(true);
-  const [isBot, setIsBot] = useState(false);
-
+  const pathname = usePathname();
+  const isAdmin = pathname.startsWith('/admin');
   useEffect(() => {
-    // Set initial online status
-    try {
-      setIsOnline(navigator.onLine);
-      setIsBot(/bot|crawler|spider|crawling/i.test(navigator.userAgent || ''));
-    } catch {}
-
-    // Register service worker
-    const registerServiceWorker = async () => {
-      if ('serviceWorker' in navigator) {
-        try {
-          const registration = await navigator.serviceWorker.register('/sw.js');
-          console.log('ServiceWorker registration successful');
-        } catch (err) {
-          console.log('ServiceWorker registration failed: ', err);
-        }
-      }
-    };
-
-    // Track online status
-    const updateOnlineStatus = () => {
-      const isNavigatorOnline = navigator.onLine;
-      setIsOnline(isNavigatorOnline);
-      
-      if (isNavigatorOnline) {
-        try {
-          localStorage.setItem('lastOnlineTime', new Date().toISOString());
-        } catch {}
-      }
-    };
-
-    // Add event listeners
-    if (!isBot) {
-      window.addEventListener('online', updateOnlineStatus);
-      window.addEventListener('offline', updateOnlineStatus);
-      window.addEventListener('load', registerServiceWorker);
-    }
-    
-    // Set initial online time
-    if (navigator.onLine) {
-      try {
-        localStorage.setItem('lastOnlineTime', new Date().toISOString());
-      } catch {}
-    }
-
-    // Cleanup
-    return () => {
-      if (!isBot) {
-        window.removeEventListener('online', updateOnlineStatus);
-        window.removeEventListener('offline', updateOnlineStatus);
-        window.removeEventListener('load', registerServiceWorker);
-      }
-    };
+    cancelSectionWait();
+    if (!location.hash) return;
+    const frame = requestAnimationFrame(() => scrollToSection(location.hash));
+    return () => { cancelAnimationFrame(frame); cancelSectionWait(); };
+  }, [pathname]);
+  useEffect(() => {
+    const updateOnline = () => { try { if (navigator.onLine) localStorage.setItem('lastOnlineTime', new Date().toISOString()); } catch {} };
+    updateOnline();
+    window.addEventListener('online', updateOnline);
+    return () => window.removeEventListener('online', updateOnline);
   }, []);
-
+  if (isAdmin) return <div className="admin-site">{children}</div>;
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-background-dark">
-        <div className="animate-bounce text-primary">Loading...</div>
-      </div>
-    }>
-      {children}
-      {!isBot && <FloatingChatbot />}
-      {!isBot && <VisitorTracker showStatus={false} />}
-    </Suspense>
+    <div className="public-site" onClickCapture={handleSectionLink}>
+      <a href="#main-content" className="skip-link">Skip to content</a>
+      <Navbar />
+      <Suspense fallback={<div className="site-loading" role="status">Loading…</div>}>
+        <main id="main-content" tabIndex={-1}>{children}</main>
+      </Suspense>
+      <Footer />
+      {pathname !== '/planbot' && <FloatingChatbot />}
+      <VisitorTracker showStatus={false} />
+    </div>
   );
 }

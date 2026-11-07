@@ -120,3 +120,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Next.js team for the amazing framework
 - Vercel for the deployment platform
 - MongoDB for the database solution
+
+### Contact form configuration
+
+Contact delivery uses deployment environment variables; no credentials are embedded in the application. Configure `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET_KEY` for reCAPTCHA v3. For Gmail, configure `EMAIL_ADDRESS` and `GMAIL_PASSKEY`; alternatively use `SMTP_USER`, `SMTP_PASS`, `SMTP_HOST`, and `SMTP_PORT`. `CONTACT_EMAIL` sets the recipient. See `.env.example` for the supported settings. Restart or redeploy after changing public environment variables.
+
+Without contact-service configuration, visitors can still use the direct email link. Missing configuration never bypasses reCAPTCHA or reports a message as delivered.

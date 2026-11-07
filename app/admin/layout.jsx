@@ -13,20 +13,18 @@ import {
   BsList, 
   BsX 
 } from 'react-icons/bs';
-import { AdminProviders } from './providers';
 
 export default function AdminLayout({ children }) {
   // If the path is /admin/login, render the children without the admin layout
-  // but still wrap it in the AdminProviders
   const pathname = usePathname();
   if (pathname === '/admin/login') {
-    return <AdminProviders>{children}</AdminProviders>;
+    return <>{children}</>;
   }
 
   return (
-    <AdminProviders>
+    <>
       <AdminDashboard>{children}</AdminDashboard>
-    </AdminProviders>
+    </>
   );
 }
 

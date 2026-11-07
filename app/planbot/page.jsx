@@ -19,23 +19,7 @@ const getSessionId = () => {
 };
 
 // Typing animation component
-const TypingAnimation = ({ text }) => {
-  const [displayedText, setDisplayedText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
-  useEffect(() => {
-    if (currentIndex < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayedText(prev => prev + text[currentIndex]);
-        setCurrentIndex(currentIndex + 1);
-      }, 15); // Speed of typing
-      
-      return () => clearTimeout(timeout);
-    }
-  }, [currentIndex, text]);
-  
-  return displayedText || ' ';
-};
+const TypingAnimation = ({ text }) => text;
 
 export default function PlanBot() {
   const [messages, setMessages] = useState([]);
@@ -47,7 +31,8 @@ export default function PlanBot() {
 
   // Scroll to bottom of messages
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = messagesEndRef.current?.parentElement;
+    container?.scrollTo({ top: container.scrollHeight, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   };
 
   useEffect(() => {
@@ -209,7 +194,7 @@ export default function PlanBot() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="site-planbot min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">PlanBot</h1>
@@ -264,6 +249,7 @@ export default function PlanBot() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              aria-label="Your message"
               placeholder="Type your message..."
               className="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-gray-900"
               disabled={isLoading}

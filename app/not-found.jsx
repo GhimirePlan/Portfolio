@@ -95,11 +95,11 @@ export default function NotFound() {
           transition={{ delay: 0.4 }}
           className="relative w-full h-[400px] mb-8 rounded-2xl overflow-hidden border border-[#60A5FA]/20 bg-[#1E293B]/50 backdrop-blur-sm"
         >
-          <DinoGame3D 
+          {(isPlaying || gameOver) && <DinoGame3D
             isPlaying={isPlaying} 
             onScoreUpdate={handleScoreUpdate}
             onGameOver={handleGameOver}
-          />
+          />}
           
           {(!isPlaying || gameOver) && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0f172a]/80 backdrop-blur-sm">

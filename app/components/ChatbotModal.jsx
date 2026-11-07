@@ -19,23 +19,7 @@ const getSessionId = () => {
 };
 
 // Typing animation component
-const TypingAnimation = ({ text }) => {
-  const [displayedText, setDisplayedText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
-  useEffect(() => {
-    if (currentIndex < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayedText(prev => prev + text[currentIndex]);
-        setCurrentIndex(currentIndex + 1);
-      }, 15); // Speed of typing
-      
-      return () => clearTimeout(timeout);
-    }
-  }, [currentIndex, text]);
-  
-  return displayedText || ' ';
-};
+const TypingAnimation = ({ text }) => text;
 
 export default function ChatbotModal({ isOpen, onClose }) {
   const [messages, setMessages] = useState([]);
@@ -45,6 +29,24 @@ export default function ChatbotModal({ isOpen, onClose }) {
   const [sessionId, setSessionId] = useState(null);
   const messagesEndRef = useRef(null);
   const modalRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousFocus = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    modalRef.current?.querySelector('input')?.focus();
+    const handleKey = (event) => {
+      if (event.key === 'Escape') onClose();
+      if (event.key !== 'Tab') return;
+      const elements = [...modalRef.current.querySelectorAll('button:not(:disabled), input:not(:disabled), a[href]')];
+      const first = elements[0], last = elements[elements.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => { document.body.style.overflow = previousOverflow; document.removeEventListener('keydown', handleKey); previousFocus?.focus(); };
+  }, [isOpen, onClose]);
 
   // Handle click outside to close modal
   useEffect(() => {
@@ -65,7 +67,8 @@ export default function ChatbotModal({ isOpen, onClose }) {
 
   // Scroll to bottom of messages
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = messagesEndRef.current?.parentElement;
+    container?.scrollTo({ top: container.scrollHeight, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   };
 
   useEffect(() => {
@@ -255,9 +258,10 @@ export default function ChatbotModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-[fadeIn_0.3s_ease-in-out]">
+    <div className="site-chat-overlay fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-[fadeIn_0.3s_ease-in-out]">
       <div 
         ref={modalRef}
+        role="dialog" aria-modal="true" aria-label="PlanBot"
         className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl overflow-hidden w-full max-w-md md:max-w-lg lg:max-w-xl h-[600px] flex flex-col transform transition-all duration-300 ease-in-out animate-[scaleIn_0.3s_ease-in-out]"
         style={{
           boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 15px 5px rgba(96, 165, 250, 0.1)'
@@ -331,6 +335,7 @@ export default function ChatbotModal({ isOpen, onClose }) {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              aria-label="Your message"
               placeholder="Type your message..."
               className="w-full p-3 pl-4 pr-12 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white text-gray-900 transition-all duration-300 shadow-sm"
               disabled={isLoading}

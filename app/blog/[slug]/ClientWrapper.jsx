@@ -1,13 +1,12 @@
 'use client';
 
-import { SessionProvider } from 'next-auth/react';
 import CommentSection from '@/app/components/blog/CommentSection';
 import ShareButton from '@/app/components/blog/ShareButton';
 import { BsShare, BsHeart } from 'react-icons/bs';
 
 export default function ClientWrapper({ blogSlug }) {
   return (
-    <SessionProvider>
+    <>
       <div className="mt-12 space-y-8">
         {/* Share Section */}
         <div className="bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-2xl p-6 md:p-8 shadow-lg">
@@ -48,6 +47,6 @@ export default function ClientWrapper({ blogSlug }) {
           </div>
         </div>
       </div>
-    </SessionProvider>
+    </>
   );
 } 
