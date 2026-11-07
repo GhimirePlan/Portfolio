@@ -21,6 +21,7 @@ export async function GET(request) {
       }, { status: 400 });
     }
 
+    if (!process.env.MONGODB_URI) return NextResponse.json({ success: true, data: { messages: [] } });
     await connectToDatabase();
     
     const chatHistory = await ChatHistory.findOne({ sessionId });

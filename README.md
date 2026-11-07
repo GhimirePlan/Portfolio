@@ -126,3 +126,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 Contact delivery uses deployment environment variables; no credentials are embedded in the application. Configure `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET_KEY` for reCAPTCHA v3. For Gmail, configure `EMAIL_ADDRESS` and `GMAIL_PASSKEY`; alternatively use `SMTP_USER`, `SMTP_PASS`, `SMTP_HOST`, and `SMTP_PORT`. `CONTACT_EMAIL` sets the recipient. See `.env.example` for the supported settings. Restart or redeploy after changing public environment variables.
 
 Without contact-service configuration, visitors can still use the direct email link. Missing configuration never bypasses reCAPTCHA or reports a message as delivered.
+
+### PlanBot configuration
+
+Set a valid server-side `GROQ_API_KEY` in the hosting environment and redeploy. Never use a `NEXT_PUBLIC_` variable for this key. `GROQ_MODEL` optionally selects a preferred model (default `openai/gpt-oss-20b`); verify account model access in the Groq console. Missing or invalid credentials cannot be fixed by frontend changes.
+
+`MONGODB_URI` enables persistent chat history. Replies still work during a history database outage, and recent turns are sent with the chat request to preserve conversational context without requiring database access. Provider failures are reported honestly; PlanBot never substitutes canned responses for AI replies.

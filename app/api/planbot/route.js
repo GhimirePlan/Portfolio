@@ -1,46 +1,36 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
+import { readFile } from 'fs/promises';
 import path from 'path';
+import { randomUUID } from 'crypto';
 import connectToDatabase from '@/lib/mongodb';
 import ChatHistory from '@/models/ChatHistory';
 
-// Function to read mydata.txt file
-function readMyDataFile() {
-  try {
-    const filePath = path.join(process.cwd(), 'mydata.txt');
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    return fileContent;
-  } catch (error) {
-    console.error('Error reading mydata.txt:', error);
-    return 'Error reading personal data file.';
-  }
+export const runtime = 'nodejs';
+export const maxDuration = 60;
+let knowledge;
+const fail = (code, message, status) => NextResponse.json({ success: false, code, message }, { status });
+async function bounded(operation, milliseconds) {
+  let timer;
+  try { return await Promise.race([operation(), new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Operation timed out')), milliseconds); })]); }
+  finally { clearTimeout(timer); }
 }
-
+function context(messages) {
+  if (!Array.isArray(messages)) return [];
+  return messages.filter(item => item && ['user', 'assistant'].includes(item.role) && typeof item.content === 'string' && item.content.trim()).slice(-12).map(item => ({ role: item.role, content: item.content.slice(0, 3000) }));
+}
 export async function POST(request) {
+  let body;
+  try { body = await request.json(); } catch { return fail('INVALID_MESSAGE', 'Please enter a valid message.', 400); }
+  if (!body || typeof body.message !== 'string' || !body.message.trim() || body.message.length > 4000) return fail('INVALID_MESSAGE', 'Please enter a message of up to 4,000 characters.', 400);
+  if (body.sessionId != null && (typeof body.sessionId !== 'string' || !/^[a-zA-Z0-9_-]{1,128}$/.test(body.sessionId))) return fail('INVALID_SESSION', 'Please start a new chat session.', 400);
+  const apiKey = process.env.GROQ_API_KEY?.trim();
+  if (!apiKey) return fail('NOT_CONFIGURED', 'PlanBot is not connected yet. Please contact Plan directly while the chat service is being configured.', 503);
+  const sessionId = body.sessionId || randomUUID();
+  const message = body.message.trim();
+  const deadline = Date.now() + 40000;
   try {
-    // Get the user's message and session ID from the request body
-    const { message, sessionId } = await request.json();
-    
-    if (!message) {
-      return NextResponse.json({
-        success: false,
-        message: 'Message is required',
-      }, { status: 400 });
-    }
-
-    // Read the personal data file
-    const personalData = readMyDataFile();
-
-    // Prepare the API request to Groq
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({
-        success: false,
-        message: 'API key is not configured',
-      }, { status: 500 });
-    }
-
-    // Construct the system message with the personal data
+    if (!knowledge) knowledge = readFile(path.join(process.cwd(), 'mydata.txt'), 'utf8').catch(error => { knowledge = null; throw error; });
+    const personalData = await knowledge;
     const systemMessage = `You are the personal AI assistant of Plan Ghimire, an engineering student and developer. You represent him on his portfolio website. Your job is to talk like a real human — not like a robot, not like a textbook.
 
 Here is the data about Plan you have access to:
@@ -82,139 +72,41 @@ Focus on being clear, confident, and human-like.
 Goal
 When someone chats with you, it should feel like they’re talking to a chill but skilled tech person — not a bot.`;
 
-    // Get previous messages if a session ID is provided
-    let previousMessages = [];
-    if (sessionId) {
+    let previousMessages = context(body.history);
+    if (!previousMessages.length && process.env.MONGODB_URI && body.sessionId) {
       try {
-        await connectToDatabase();
-        const chatHistory = await ChatHistory.findOne({ sessionId });
-        if (chatHistory && chatHistory.messages) {
-          // Convert chat history to the format expected by the API
-          previousMessages = chatHistory.messages.map(msg => ({
-            role: msg.sender === 'user' ? 'user' : 'assistant',
-            content: msg.text
-          }));
-        }
-      } catch (error) {
-        console.error('Error retrieving chat history:', error);
-        // Continue without history if there's an error
-      }
+        const record = await bounded(async () => { await connectToDatabase(); return ChatHistory.findOne({ sessionId }, { messages: { $slice: -12 } }, { maxTimeMS: 1500 }).lean(); }, 2000);
+        previousMessages = context(record?.messages?.map(item => ({ role: item.sender === 'user' ? 'user' : 'assistant', content: item.text })));
+      } catch { /* A history outage must not prevent a reply. */ }
     }
-
-    // Prepare messages array with system message, previous messages, and the new user message
-    const messagesForAPI = [
-      { role: 'system', content: systemMessage },
-      ...previousMessages,
-      { role: 'user', content: message }
-    ];
-
-    const candidateModels = ['llama-3.3-70b-versatile', 'openai/gpt-oss-120b', 'llama-3.1-8b-instant'];
-    let botResponse = null;
-    let lastError = null;
-    
-    for (const model of candidateModels) {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model,
-          messages: messagesForAPI,
-          temperature: 0.7,
-          max_tokens: 1024,
-        }),
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        botResponse = data.choices[0].message.content;
-        break;
-      } else {
-        try {
-          const errorData = await response.json();
-          lastError = errorData;
-          const code = errorData?.error?.code;
-          if (code !== 'model_decommissioned' && code !== 'invalid_request_error') {
-            return NextResponse.json({
-              success: false,
-              message: 'Failed to get response from Groq API',
-              error: errorData
-            }, { status: response.status });
-          }
-        } catch (e) {
-          lastError = { message: 'Unknown error' };
-        }
-      }
-    }
-    
-    if (!botResponse) {
-      return NextResponse.json({
-        success: false,
-        message: 'Failed to get response from Groq API',
-        error: lastError
-      }, { status: 500 });
-    }
-
-    // Save the conversation to the database if a session ID is provided
-    if (sessionId) {
+    const messages = [{ role: 'system', content: systemMessage }, ...previousMessages, { role: 'user', content: message }];
+    const models = [...new Set([process.env.GROQ_MODEL?.trim(), 'openai/gpt-oss-20b', 'openai/gpt-oss-120b', 'llama-3.3-70b-versatile'].filter(Boolean))];
+    let answer, lastStatus = 502;
+    for (const model of models) {
+      const remaining = deadline - Date.now();
+      if (remaining < 1000) break;
+      let response;
       try {
-        // Get the base URL
-        const origin = request.headers.get('origin') || 'http://localhost:3000';
-        
-        // Save user message
-        await fetch(`${origin}/api/chatbot/history`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            sessionId,
-            message: {
-              text: message,
-              sender: 'user',
-              timestamp: new Date()
-            }
-          }),
+        response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model, messages, temperature: 0.7, max_completion_tokens: 1024, ...(model.startsWith('openai/gpt-oss') ? { reasoning_effort: 'low' } : {}) }),
+          signal: AbortSignal.timeout(Math.min(12000, remaining)), cache: 'no-store',
         });
-
-        // Save bot response
-        await fetch(`${origin}/api/chatbot/history`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            sessionId,
-            message: {
-              text: botResponse,
-              sender: 'bot',
-              timestamp: new Date()
-            }
-          }),
-        });
-      } catch (error) {
-        console.error('Error saving chat history:', error);
-        // Continue even if saving history fails
-      }
+      } catch { lastStatus = 504; continue; }
+      lastStatus = response.status;
+      if (response.status === 401) return fail('PROVIDER_AUTH', 'PlanBot cannot connect to its AI service right now. Please contact Plan directly.', 503);
+      let json;
+      try { json = await response.json(); } catch { continue; }
+      if (response.ok && typeof json.choices?.[0]?.message?.content === 'string' && json.choices[0].message.content.trim()) { answer = json.choices[0].message.content.trim(); break; }
+      if (response.status === 400 && !['model_decommissioned', 'model_not_found', 'invalid_request_error'].includes(json.error?.code)) break;
     }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Response generated successfully',
-      data: {
-        response: botResponse,
-        sessionId: sessionId // Return the session ID for client-side storage
-      }
-    }, { status: 200 });
-
-  } catch (error) {
-    console.error('PlanBot error:', error);
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to process your request',
-      error: error.message
-    }, { status: 500 });
-  }
+    if (!answer) return lastStatus === 429 ? fail('RATE_LIMITED', 'PlanBot is busy right now. Please wait a moment and try again.', 429) : fail('PROVIDER_UNAVAILABLE', 'PlanBot could not reach its AI service. Please try again in a moment.', 503);
+    if (process.env.MONGODB_URI) {
+      try {
+        const now = new Date();
+        await bounded(async () => { await connectToDatabase(); return ChatHistory.updateOne({ sessionId }, { $setOnInsert: { sessionId, createdAt: now }, $set: { updatedAt: now }, $push: { messages: { $each: [{ text: message, sender: 'user', timestamp: now }, { text: answer, sender: 'bot', timestamp: now }] } } }, { upsert: true, maxTimeMS: 1500 }); }, 1500);
+      } catch { /* Return the generated reply even if persistence is unavailable. */ }
+    }
+    return NextResponse.json({ success: true, message: 'Response generated successfully', data: { response: answer, sessionId } });
+  } catch { return fail('SERVICE_UNAVAILABLE', 'PlanBot is temporarily unavailable. Please try again in a moment.', 503); }
 }

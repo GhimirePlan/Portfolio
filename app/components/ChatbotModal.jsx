@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { FaRobot, FaPaperPlane, FaTimes } from 'react-icons/fa';
 import axios from 'axios';
+import { chatContext, chatError } from '@/utils/planbot-client';
 
 // Function to get or create a session ID
 const getSessionId = () => {
@@ -194,8 +195,11 @@ export default function ChatbotModal({ isOpen, onClose }) {
       // Call the PlanBot API with session ID
       const response = await axios.post('/api/planbot', {
         message: input,
-        sessionId: sessionId
-      });
+        sessionId: sessionId,
+        history: chatContext(messages),
+      }, { timeout: 45000 });
+
+      if (!response.data?.success || typeof response.data?.data?.response !== 'string') throw new Error('Invalid chat response');
 
       // Store the session ID if it was returned
       if (response.data.data.sessionId) {
@@ -233,7 +237,8 @@ export default function ChatbotModal({ isOpen, onClose }) {
         ...prev,
         {
           id: errorMessageId,
-          text: 'Sorry, I encountered an error. Please try again later.',
+          text: chatError(error),
+          isError: true,
           sender: 'bot',
           timestamp: new Date(),
           animate: true,
