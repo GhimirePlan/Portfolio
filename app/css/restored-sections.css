@@ -42,3 +42,18 @@ html.light .about-copy p { color: #102234; }
 }
 .portfolio-home > #contact { max-width: 1280px; margin-left: auto; margin-right: auto; }
 .public-site .restored-contact [class~="text-white"] { color: #fff; }
+
+.restored-contact { width: calc(100% - 64px); max-width: 1280px; margin-left: auto; margin-right: auto; }
+.restored-contact > .container { max-width: none; padding: 0; }
+.contact-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 48px; align-items: center; }
+.contact-form-column, .contact-details-column { min-width: 0; width: 100%; }
+.contact-details-column > div:first-child { gap: 24px; }
+.contact-details-column > div:first-child > p { font-size: 17px; overflow-wrap: anywhere; }
+.contact-details-column > div:first-child > button { min-height: 48px; align-self: flex-start; }
+.restored-contact .contact-socials { flex-wrap: wrap; gap: 16px; margin-top: 32px; }
+@media (min-width: 768px) and (max-width: 1023px) { .contact-layout { gap: 32px; } .contact-details-column > div:first-child > p { font-size: 15px; } }
+@media (max-width: 767px) {
+  .restored-contact { width: calc(100% - 40px); }
+  .contact-layout { grid-template-columns: 1fr; gap: 32px; }
+  .contact-details-column > div:first-child > p { font-size: 16px; }
+}

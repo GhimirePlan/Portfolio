@@ -36,7 +36,7 @@ export default function LinkedInSection() {
   const postLabel = (post, number) => `${post.tag || 'other'} · ${formatFeedDate(post.createdAt) || `Post ${number + 1}`}`;
 
   return (
-    <section id="linkedin" className={styles.section} aria-labelledby="homepage-linkedin-heading">
+    <section id="linkedin" className={`${styles.section} ${styles.spotlight}`} aria-labelledby="homepage-linkedin-heading">
       <header className={styles.heading}>
         <div><p className={styles.eyebrow}><BsLinkedin aria-hidden="true" />Beyond the blog</p><h2 id="homepage-linkedin-heading">LinkedIn Spotlights</h2></div>
         <a href={personalData.linkedIn} target="_blank" rel="noopener noreferrer" className={styles.outlineLink}>View LinkedIn <BsArrowUpRight aria-hidden="true" /></a>
@@ -57,7 +57,7 @@ export default function LinkedInSection() {
           </aside>
           <div id="linkedin-post" className={styles.linkedinPanel}>
             <div className={styles.embedHeader}><span>{selected.featured ? <><BsStarFill aria-hidden="true" /> Featured</> : <><BsLinkedin aria-hidden="true" /> LinkedIn</>}</span><a href={selected.urls.original} target="_blank" rel="noopener noreferrer">Open post <BsArrowUpRight aria-hidden="true" /></a></div>
-            <div className={styles.embedFrame}><iframe key={selected.urls.embed} src={selected.urls.embed} width="504" height="627" loading="lazy" title={`LinkedIn post: ${postLabel(selected, index)}`} allowFullScreen /></div>
+            <div className={styles.embedFrame}><iframe key={selected.urls.embed} src={selected.urls.embed} width="380" height="400" loading="lazy" title={`LinkedIn post: ${postLabel(selected, index)}`} allowFullScreen /></div>
             <footer className={styles.postControls}><span aria-live="polite" aria-atomic="true">Post {index + 1} of {posts.length}</span>{posts.length > 1 && <div><button type="button" onClick={() => changePost(-1)} aria-label="Previous LinkedIn post"><BsChevronLeft aria-hidden="true" /></button><button type="button" onClick={() => changePost(1)} aria-label="Next LinkedIn post"><BsChevronRight aria-hidden="true" /></button></div>}</footer>
           </div>
         </div>
