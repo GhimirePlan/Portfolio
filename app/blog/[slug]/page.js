@@ -202,11 +202,11 @@ export default async function BlogDetails({ params }) {
       {/* Reading Progress Bar */}
       <ReadingProgress />
       
-      <div className="min-h-screen">
+      <div className="compact-article-page min-h-screen">
         {/* Hero Section with Cover Image */}
-        <div className="relative w-full h-[50vh] min-h-[400px] max-h-[600px]">
+        <div className="compact-article-cover relative w-full">
           <Image
-            src={blog.coverImage}
+            src={blog.coverImage || "/images/plan-ghimire.jpg"}
             alt={blog.title}
             fill
             className="object-cover"
@@ -229,11 +229,11 @@ export default async function BlogDetails({ params }) {
         </div>
 
         {/* Main Content Area */}
-        <div className="container mx-auto px-4 -mt-32 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="compact-article-layout relative">
+          <div className="compact-article-columns">
             
             {/* Main Article Column */}
-            <article className="lg:col-span-8 xl:col-span-8">
+            <article className="compact-article-main">
               {/* Article Header Card */}
               <div className="bg-gradient-to-br from-[#1b203e] to-[#0f172a] border border-[#1d293a] rounded-2xl overflow-hidden shadow-2xl mb-8">
                 <div className="p-6 md:p-10">
@@ -302,7 +302,7 @@ export default async function BlogDetails({ params }) {
                     <div className="blog-content">
                       <div dangerouslySetInnerHTML={{ __html: before }} />
                       
-                      {after && youtubeVideoId && (
+                      {youtubeVideoId && (
                         <>
                           <div className="my-12 sm:my-16 -mx-4 sm:-mx-6 md:-mx-10 lg:-mx-12 animate-scale-in animation-delay-300">
                             <div className="px-4 sm:px-6 md:px-10 lg:px-12 mb-4 sm:mb-6 flex items-center gap-2">
@@ -326,7 +326,7 @@ export default async function BlogDetails({ params }) {
                         </>
                       )}
                       
-                      {!after && <div dangerouslySetInnerHTML={{ __html: before }} />}
+
                     </div>
                   </BlogAnimate>
                 </div>
@@ -412,7 +412,7 @@ export default async function BlogDetails({ params }) {
             </article>
 
             {/* Sidebar Column */}
-            <aside className="lg:col-span-4">
+            <aside className="compact-article-aside">
               <div className="sticky top-24 space-y-6">
                 {/* Table of Contents */}
                 <TableOfContents content={blog.content || ''} />

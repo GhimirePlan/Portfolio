@@ -9,11 +9,10 @@ export default function TableOfContents({ content }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   useEffect(() => {
-    // Parse headings from content
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(content, 'text/html');
-    const headingElements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    
+    const contentDiv = document.querySelector('.blog-content');
+    if (!contentDiv) return;
+    const headingElements = contentDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
     const headingsData = Array.from(headingElements).map((heading, index) => ({
       id: `heading-${index}`,
       text: heading.textContent,
@@ -23,7 +22,6 @@ export default function TableOfContents({ content }) {
     setHeadings(headingsData);
 
     // Add IDs to headings in the actual content
-    const contentDiv = document.querySelector('.blog-content');
     if (contentDiv) {
       const contentHeadings = contentDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
       contentHeadings.forEach((heading, index) => {
@@ -65,6 +63,8 @@ export default function TableOfContents({ content }) {
         {/* Header */}
         <button 
           onClick={() => setIsExpanded(!isExpanded)}
+          aria-expanded={isExpanded}
+          aria-controls="article-contents"
           className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-[#16f2b3]/10 to-[#60A5FA]/10 border-b border-[#1d293a] hover:from-[#16f2b3]/15 hover:to-[#60A5FA]/15 transition-all"
         >
           <div className="flex items-center gap-2">
@@ -77,7 +77,7 @@ export default function TableOfContents({ content }) {
         </button>
         
         {/* Content */}
-        <nav className={`transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[60vh] opacity-100' : 'max-h-0 opacity-0'} overflow-y-auto`}>
+        <nav id="article-contents" aria-label="Article contents" hidden={!isExpanded} className={`transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[60vh] opacity-100' : 'max-h-0 opacity-0'} overflow-y-auto`}>
           <ul className="p-4 space-y-1">
             {headings.map((heading, index) => (
               <li 
