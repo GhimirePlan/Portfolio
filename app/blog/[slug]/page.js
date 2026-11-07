@@ -76,6 +76,13 @@ async function getBlog(slug) {
   }
 }
 
+function getYouTubeId(url) {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+}
+
 async function getRelatedBlogs(tags, currentId) {
   try {
     if (!process.env.MONGODB_URI || !tags || tags.length === 0) {
@@ -134,6 +141,7 @@ export default async function BlogDetails({ params }) {
   const relatedBlogs = await getRelatedBlogs(blog.tags, blog._id);
   const sanitizedContent = sanitizeBlogContent(blog.content);
   const wordCount = blog.content ? blog.content.replace(/<[^>]*>/g, '').split(/\s+/).length : 0;
+  const youtubeVideoId = getYouTubeId(blog.youtubeVideo);
 
   const getEmbedUrl = (url) => {
     try {
@@ -158,22 +166,32 @@ export default async function BlogDetails({ params }) {
     }
   };
 
-  // Split content to insert video before "Why This Research Matters"
+  // Split content to insert video before the first heading or at the beginning
   const getContentParts = () => {
-    if (blog.slug !== 'bridging-gap-low-resource-nlp-fake-news-detection') {
+    if (!youtubeVideoId) {
       return { before: sanitizedContent, after: null };
     }
 
-    const target = '--';
-    const index = sanitizedContent.indexOf(target);
+    // Try to find the first h2 or h3 heading to insert before
+    const targetHeadings = ['<h2', '<h3'];
+    let insertIndex = -1;
     
-    if (index === -1) {
-      return { before: sanitizedContent, after: null };
+    for (const heading of targetHeadings) {
+      const index = sanitizedContent.indexOf(heading);
+      if (index !== -1 && (insertIndex === -1 || index < insertIndex)) {
+        insertIndex = index;
+      }
+    }
+    
+    if (insertIndex === -1) {
+      // If no heading found, insert after the first paragraph or at beginning
+      const firstParaEnd = sanitizedContent.indexOf('</p>');
+      insertIndex = firstParaEnd !== -1 ? firstParaEnd + 4 : 0;
     }
 
     return {
-      before: sanitizedContent.substring(0, index),
-      after: sanitizedContent.substring(index)
+      before: sanitizedContent.substring(0, insertIndex),
+      after: sanitizedContent.substring(insertIndex)
     };
   };
 
@@ -284,7 +302,7 @@ export default async function BlogDetails({ params }) {
                     <div className="blog-content">
                       <div dangerouslySetInnerHTML={{ __html: before }} />
                       
-                      {after && (
+                      {after && youtubeVideoId && (
                         <>
                           <div className="my-12 sm:my-16 -mx-4 sm:-mx-6 md:-mx-10 lg:-mx-12 animate-scale-in animation-delay-300">
                             <div className="px-4 sm:px-6 md:px-10 lg:px-12 mb-4 sm:mb-6 flex items-center gap-2">
@@ -294,12 +312,12 @@ export default async function BlogDetails({ params }) {
                             <div className="relative w-full">
                               <div className="relative w-full pb-[56.25%] sm:rounded-xl md:rounded-2xl overflow-hidden border border-[#1d293a] shadow-xl sm:shadow-2xl bg-[#0d1224]">
                                 <iframe
-                                  src="https://www.youtube.com/embed/BhmyHWwM_HM?controls=1&modestbranding=1&rel=0"
+                                  src={`https://www.youtube.com/embed/${youtubeVideoId}?controls=1&modestbranding=1&rel=0`}
                                   className="absolute inset-0 w-full h-full border-0"
                                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                   allowFullScreen
                                   loading="lazy"
-                                  title="Bridging Gap Project Demo"
+                                  title="Video Demo"
                                 />
                               </div>
                             </div>

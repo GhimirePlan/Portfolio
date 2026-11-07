@@ -28,6 +28,10 @@ const BlogSchema = new mongoose.Schema({
     type: [String],
     default: []
   },
+  youtubeVideo: {
+    type: String,
+    default: ''
+  },
   relatedDocs: {
     type: [
       {
