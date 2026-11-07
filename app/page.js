@@ -8,6 +8,7 @@ import { FaSun, FaMoon, FaSearch, FaUser, FaBars, FaTimes,
          FaHome, FaInfo, FaCode, FaBlog, FaEnvelope, 
          FaUserCircle, FaChartBar, FaCog, FaSignOutAlt, FaSignInAlt, FaUserPlus } from "react-icons/fa";
 import Link from 'next/link';
+import './css/homepage.css';
 
 // Eagerly load Hero as it's above the fold
 import HeroSection from "./components/homepage/hero-section";
@@ -139,7 +140,7 @@ export default function HomePage() {
   };
 
   return (
-    <>
+    <div className="portfolio-home">
       {/* Refined Sticky Navbar */}
       <div
         id="homepage-navbar"
@@ -164,8 +165,7 @@ export default function HomePage() {
               className="font-bold text-lg sm:text-xl tracking-tight transition-colors duration-300 flex items-center"
               style={{ color: isDark ? '#16f2b3' : '#12c292' }}
             >
-              <span className="mr-2">Plan Ghimire</span>
-              <span className="bg-gradient-to-r from-teal-400 to-emerald-500 text-white text-[10px] sm:text-xs px-2 py-0.5 rounded-full shadow-sm">Portfolio</span>
+              <span className="homepage-signature">Plan Ghimire</span>
             </Link>
           </div>
           
@@ -177,7 +177,7 @@ export default function HomePage() {
               <input
                 id="homepage-search"
                 type="text"
-                placeholder="Search"
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
@@ -235,9 +235,9 @@ export default function HomePage() {
             {/* Navigation Links */}
             <nav aria-label="Primary" className="flex items-center gap-0.5">
               {['Home', 'About', 'Blog', 'Contact'].map((item, index) => {
-                const icons = [FaHome, FaInfo, FaBlog, FaEnvelope];
+                const icons = [FaHome, FaInfo, FaCode, FaEnvelope];
                 const Icon = icons[index];
-                const href = item === 'Home' ? '' : `#${item.toLowerCase()}`;
+                const href = item === 'Home' ? '#home' : `#${item.toLowerCase()}`;
                 const isActive = item.toLowerCase() === activeSection;
                 
                 return (
@@ -280,9 +280,9 @@ export default function HomePage() {
               aria-label="Toggle color theme"
             >
               {mounted && isDark ? (
-                <FaSun className="text-yellow-300" size={16} />
+                <FaMoon className="text-blue-500" size={20} />
               ) : (
-                <FaMoon className="text-blue-500" size={15} />
+                <FaSun className="text-yellow-500" size={20} />
               )}
             </button>
             
@@ -451,7 +451,7 @@ export default function HomePage() {
               <input
                 id="mobile-search"
                 type="text"
-                placeholder="Search"
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 rounded-full text-sm focus:outline-none"
@@ -604,7 +604,7 @@ export default function HomePage() {
       </div>
       
       {/* Spacer for fixed navbar */}
-      <div className="h-[88px] md:h-[80px]"></div>
+      <div className="homepage-nav-spacer"></div>
 
       {/* Your existing homepage content */}
       <HeroSection />
@@ -629,6 +629,6 @@ export default function HomePage() {
       <Suspense fallback={<div className="min-h-screen animate-pulse bg-slate-900/20" />}>
         <ContactSection />
       </Suspense>
-    </>
+    </div>
   );
 }

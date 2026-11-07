@@ -1,5 +1,6 @@
 import './globals.css';
 import ClientLayout from './ClientLayout';
+import Providers from './providers';
 
 export const metadata = {
   title: 'Plan Ghimire',
@@ -33,7 +34,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.png" />
       </head>
       <body suppressHydrationWarning>
-        <ClientLayout>{children}</ClientLayout>
+        <Providers><ClientLayout>{children}</ClientLayout></Providers>
       </body>
     </html>
   );

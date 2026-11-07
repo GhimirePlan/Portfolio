@@ -49,7 +49,7 @@ function AboutSection() {
   return (
     <motion.div
       id="about"
-      className="relative z-50 py-16"
+      className="reference-about relative z-50 py-16"
       initial="visible"
       animate="visible"
       whileInView="visible"
@@ -63,10 +63,10 @@ function AboutSection() {
           <div className="absolute -inset-1 bg-gradient-to-r from-[#60A5FA] via-[#34D399] to-[#60A5FA] rounded-lg opacity-0 group-hover:opacity-20 transition duration-1000 group-hover:duration-200"></div>
           
           <GlowCard key={1} identifier={1}>
-            <div className="relative p-6 sm:p-8 lg:p-12">
+            <div className="about-inner relative p-6 sm:p-8 lg:p-12">
               {/* About Me Ribbon */}
               <motion.div
-                className="hidden lg:flex flex-col items-center absolute top-10 -right-8"
+                className="about-ribbon hidden lg:flex flex-col items-center absolute top-10 -right-8"
                 initial={{ opacity: 1, x: 0 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -80,10 +80,10 @@ function AboutSection() {
               </motion.div>
 
               {/* Content Grid */}
-              <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+              <div className="about-grid grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
                 {/* Text Section */}
                 <motion.div
-                  className="order-2 lg:order-1"
+                  className="about-copy order-2 lg:order-1"
                   variants={textVariants}
                 >
                   <motion.div
@@ -111,7 +111,7 @@ function AboutSection() {
 
                 {/* Profile Image Section */}
                 <motion.div
-                  className="flex justify-center order-1 lg:order-2"
+                  className="about-photo flex justify-center order-1 lg:order-2"
                   variants={imageVariants}
                 >
                   <div className="relative group">

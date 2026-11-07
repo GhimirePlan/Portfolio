@@ -1,6 +1,6 @@
 export const personalData = {
   name: "Plan Ghimire",
-  profile: '/bg.gif',
+  profile: '/images/plan-ghimire.jpg',
   Designations: "Curiosity",
   description: "An engineering student passionate about embedded systems, network automation, and building practical tech solutions.",
   aboutText: "A self-motivated Electronics Communication & Information Engineering Student with a strong problem-solving mindset and a constant desire to explore new technologies. Always eager to embrace challenges and open to exciting opportunities! 🌟",
