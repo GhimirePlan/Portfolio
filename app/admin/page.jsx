@@ -1,174 +1,38 @@
 'use client';
-
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { BsFilePost, BsPlus, BsEye } from 'react-icons/bs';
-
+import { FiArrowUpRight, FiArrowRight, FiPlus, FiRefreshCw, FiFileText, FiCheckCircle, FiEdit3, FiMessageSquare, FiLinkedin, FiZap, FiActivity } from 'react-icons/fi';
+const dateLabel = value => new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({
-    totalPosts: 0,
-    publishedPosts: 0,
-    draftPosts: 0
-  });
-  const [loading, setLoading] = useState(true);
-
+  const { data: session } = useSession();
+  const [state, setState] = useState({ loading: true }); const [refresh, setRefresh] = useState(0);
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        // In a real app, you would fetch these stats from an API
-        // For now, we'll just simulate a delay and set some dummy data
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        setStats({
-          totalPosts: 0,
-          publishedPosts: 0,
-          draftPosts: 0
-        });
-      } catch (error) {
-        console.error('Error fetching stats:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#60A5FA]"></div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
-        <div className="bg-[#1b203e] border border-[#1d293a] rounded-lg px-4 py-2">
-          <p className="text-gray-400 text-sm">Welcome, <span className="text-[#60A5FA] font-medium">Admin</span></p>
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {/* Total Posts */}
-        <div className="bg-gradient-to-br from-[#1b203e] to-[#2d3250] border border-[#1d293a] rounded-lg p-6 shadow-lg hover:shadow-[#60A5FA]/10 transition-all duration-300 hover:-translate-y-1">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-400 text-sm font-medium">Total Posts</p>
-              <h2 className="text-3xl font-bold text-white mt-1">{stats.totalPosts}</h2>
-              <div className="h-1 w-16 bg-[#60A5FA] rounded-full mt-3"></div>
-            </div>
-            <div className="p-4 bg-[#2d3250]/70 rounded-full shadow-inner border border-[#60A5FA]/20">
-              <BsFilePost className="text-[#60A5FA]" size={28} />
-            </div>
-          </div>
-        </div>
-        
-        {/* Published Posts */}
-        <div className="bg-gradient-to-br from-[#1b203e] to-[#2d3250] border border-[#1d293a] rounded-lg p-6 shadow-lg hover:shadow-[#34D399]/10 transition-all duration-300 hover:-translate-y-1">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-400 text-sm font-medium">Published</p>
-              <h2 className="text-3xl font-bold text-white mt-1">{stats.publishedPosts}</h2>
-              <div className="h-1 w-16 bg-[#34D399] rounded-full mt-3"></div>
-            </div>
-            <div className="p-4 bg-[#2d3250]/70 rounded-full shadow-inner border border-[#34D399]/20">
-              <BsEye className="text-[#34D399]" size={28} />
-            </div>
-          </div>
-        </div>
-        
-        {/* Draft Posts */}
-        <div className="bg-gradient-to-br from-[#1b203e] to-[#2d3250] border border-[#1d293a] rounded-lg p-6 shadow-lg hover:shadow-[#F87171]/10 transition-all duration-300 hover:-translate-y-1">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-400 text-sm font-medium">Drafts</p>
-              <h2 className="text-3xl font-bold text-white mt-1">{stats.draftPosts}</h2>
-              <div className="h-1 w-16 bg-[#F87171] rounded-full mt-3"></div>
-            </div>
-            <div className="p-4 bg-[#2d3250]/70 rounded-full shadow-inner border border-[#F87171]/20">
-              <BsFilePost className="text-[#F87171]" size={28} />
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="bg-gradient-to-br from-[#1b203e] to-[#2d3250] border border-[#1d293a] rounded-lg p-6 mb-8 shadow-lg">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-bold text-white">Quick Actions</h2>
-            <div className="h-1 w-20 bg-[#60A5FA] rounded-full mt-2"></div>
-          </div>
-          <div className="p-2 bg-[#2d3250]/70 rounded-full border border-[#1d293a]">
-            <BsPlus className="text-[#60A5FA]" size={20} />
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Link 
-            href="/admin/posts/new" 
-            className="flex items-center p-5 bg-gradient-to-r from-[#2d3250] to-[#3d4260] rounded-lg hover:from-[#3d4260] hover:to-[#2d3250] transition-all duration-300 shadow-md hover:shadow-[#60A5FA]/10 hover:-translate-y-1 border border-[#1d293a]/50 group"
-          >
-            <div className="p-4 bg-[#1b203e] rounded-full mr-5 shadow-inner border border-[#60A5FA]/20 group-hover:bg-[#60A5FA]/10 transition-all duration-300">
-              <BsPlus className="text-[#60A5FA]" size={28} />
-            </div>
-            <div>
-              <h3 className="font-medium text-white text-lg">Create New Post</h3>
-              <p className="text-sm text-gray-400 mt-1">Start writing a new blog post</p>
-            </div>
-          </Link>
-          
-          <Link 
-            href="/admin/posts" 
-            className="flex items-center p-5 bg-gradient-to-r from-[#2d3250] to-[#3d4260] rounded-lg hover:from-[#3d4260] hover:to-[#2d3250] transition-all duration-300 shadow-md hover:shadow-[#34D399]/10 hover:-translate-y-1 border border-[#1d293a]/50 group"
-          >
-            <div className="p-4 bg-[#1b203e] rounded-full mr-5 shadow-inner border border-[#34D399]/20 group-hover:bg-[#34D399]/10 transition-all duration-300">
-              <BsFilePost className="text-[#34D399]" size={28} />
-            </div>
-            <div>
-              <h3 className="font-medium text-white text-lg">Manage Posts</h3>
-              <p className="text-sm text-gray-400 mt-1">Edit or delete existing posts</p>
-            </div>
-          </Link>
-        </div>
-      </div>
-      
-      <div className="bg-gradient-to-br from-[#1b203e] to-[#2d3250] border border-[#1d293a] rounded-lg p-6 shadow-lg">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-bold text-white">Recent Activity</h2>
-            <div className="h-1 w-20 bg-[#F87171] rounded-full mt-2"></div>
-          </div>
-          <div className="p-2 bg-[#2d3250]/70 rounded-full border border-[#1d293a]">
-            <BsEye className="text-[#F87171]" size={20} />
-          </div>
-        </div>
-        
-        {stats.totalPosts > 0 ? (
-          <div className="space-y-4">
-            {/* This would be populated with actual data in a real app */}
-            <div className="bg-[#2d3250]/50 p-4 rounded-lg border border-[#1d293a]/50">
-              <p className="text-gray-300">No recent activity to display.</p>
-            </div>
-          </div>
-        ) : (
-          <div className="text-center py-10 bg-[#2d3250]/30 rounded-lg border border-[#1d293a]/50">
-            <div className="inline-flex items-center justify-center p-4 bg-[#1b203e] rounded-full mb-4 border border-[#F87171]/20">
-              <BsFilePost className="text-[#F87171]" size={28} />
-            </div>
-            <p className="text-gray-300 mb-6 text-lg">No blog posts yet</p>
-            <Link 
-              href="/admin/posts/new" 
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#60A5FA] to-[#34D399] text-white rounded-md hover:from-[#34D399] hover:to-[#60A5FA] transition-all duration-300 shadow-md hover:shadow-[#60A5FA]/20"
-            >
-              <BsPlus className="mr-2" size={24} />
-              Create Your First Post
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    const controller = new AbortController(); setState({ loading: true });
+    fetch('/api/admin/overview', { cache: 'no-store', signal: controller.signal }).then(async response => { const data = await response.json(); if (!response.ok) throw new Error(data.message || 'Unable to load overview.'); return data; }).then(data => setState({ data })).catch(error => { if (!controller.signal.aborted) setState({ error: error.message }); });
+    return () => controller.abort();
+  }, [refresh]);
+  const data = state.data;
+  const stats = [
+    { label: 'Total stories', key: 'totalPosts', icon: FiFileText, hint: 'All your blog posts', href: '/admin/posts', color: 'blue' },
+    { label: 'Published', key: 'publishedPosts', icon: FiCheckCircle, hint: 'Out there in the world', href: '/admin/posts', color: 'mint' },
+    { label: 'Drafts', key: 'draftPosts', icon: FiEdit3, hint: 'Ideas in the making', href: '/admin/posts', color: 'amber' },
+    { label: 'Conversations', key: 'conversations', icon: FiMessageSquare, hint: 'Chats with PlanBot', href: '/admin/chats', color: 'lilac' },
+  ];
+  const weekTotal = data?.activity.reduce((sum, day) => sum + day.count, 0) || 0;
+  const max = Math.max(1, ...(data?.activity.map(day => day.count) || []));
+  return <div className="portal-overview">
+    <div className="portal-page-heading"><div><p className="portal-eyebrow">YOUR SPACE, AT A GLANCE</p><h1>Hello, {session?.user?.name?.split(' ')[0] || 'Plan'}<span className="portal-greeting-dot">.</span></h1><p>Here’s what’s happening with your portfolio.</p></div><div className="portal-heading-actions"><button className="portal-icon-button" title="Refresh overview" aria-label="Refresh overview" disabled={state.loading} onClick={() => setRefresh(value => value + 1)}><FiRefreshCw className={state.loading ? 'portal-spin' : ''} /></button><Link href="/admin/posts/new" className="portal-button portal-button-primary"><FiPlus /> New post</Link></div></div>
+    {state.error && <div className="portal-error" role="alert"><FiActivity /><p>{state.error} <button type="button" onClick={() => setRefresh(value => value + 1)}>Try again</button></p></div>}
+    <div className="portal-stats" aria-live="polite">{stats.map(({ label, key, icon: Icon, hint, href, color }) => <Link href={href} key={key} className={`portal-stat portal-stat-${color}`}><div><span className="portal-stat-icon"><Icon /></span><FiArrowUpRight /></div><span className="portal-stat-value">{data ? data.stats[key].toLocaleString() : state.loading ? <span className="portal-skeleton" /> : '—'}</span><h2>{label}</h2><p>{hint}</p></Link>)}</div>
+    <div className="portal-overview-middle"><section className="portal-write-card"><div className="portal-write-grid" aria-hidden="true" /><p className="portal-eyebrow"><FiZap /> KEEP THE IDEAS FLOWING</p><h2>Good stories<br />start with a thought<span>.</span></h2><p>A new discovery, a project, a lesson learned.<br />Your next post is waiting to happen.</p><Link href="/admin/posts/new" className="portal-button portal-button-primary">Write something <FiArrowUpRight /></Link><span className="portal-write-star" aria-hidden="true">✧</span></section>
+      <section className="portal-panel portal-activity"><div className="portal-panel-heading"><h2>Conversation activity</h2><span className="portal-tag">Last 7 days · UTC</span></div><div className="portal-activity-total"><strong>{data ? weekTotal : '—'}</strong><span>new conversation{weekTotal === 1 ? '' : 's'}</span></div>
+        <div className="portal-bars" role="img" aria-label={data ? `New conversations by day (UTC): ${data.activity.map(day => `${day.date}: ${day.count}`).join(', ')}` : 'Conversation activity is not available yet'}>{data ? data.activity.map(day => <div key={day.date} className="portal-bar-column"><span className="portal-bar-count">{day.count}</span><div className={`portal-bar ${day.count ? '' : 'is-empty'}`} style={{ height: `${Math.max(4, day.count / max * 100)}%` }} title={`${day.date}: ${day.count} new conversations`} /><span>{new Date(`${day.date}T12:00:00Z`).toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' })}</span></div>) : Array.from({ length: 7 }, (_, i) => <div key={i} className="portal-bar-placeholder" />)}</div>
+        <p className="portal-panel-caption">{data ? weekTotal ? 'Every conversation is a new connection.' : 'New chats will appear here as visitors start talking.' : state.loading ? 'Loading your activity…' : 'Refresh to load your activity.'}</p>
+      </section></div>
+    <div className="portal-overview-lists"><section className="portal-panel"><div className="portal-panel-heading"><h2><FiFileText /> Recent stories</h2><Link href="/admin/posts">View all <FiArrowRight /></Link></div><div className="portal-recent-list">{data ? data.posts.length ? data.posts.map(post => <Link className="portal-recent-item" key={post._id} href={`/admin/posts/${post.slug}`}><span className="portal-item-icon"><FiFileText /></span><div><h3 title={post.title}>{post.title}</h3><p>{dateLabel(post.updatedAt)}</p></div><span className={`portal-badge ${post.published ? 'is-published' : ''}`}>{post.published ? 'Published' : 'Draft'}</span></Link>) : <div className="portal-empty"><FiEdit3 /><p>Your first story starts here.</p><Link href="/admin/posts/new">Create a post <FiArrowRight /></Link></div> : <p className="portal-list-placeholder">{state.loading ? 'Loading your stories…' : 'Your stories will appear when the overview is available.'}</p>}</div></section>
+      <section className="portal-panel"><div className="portal-panel-heading"><h2><FiMessageSquare /> Recent conversations</h2><Link href="/admin/chats">View all <FiArrowRight /></Link></div><div className="portal-recent-list">{data ? data.chats.length ? data.chats.map(chat => <Link className="portal-recent-item" key={chat._id} href={`/admin/chats/${encodeURIComponent(chat.sessionId)}`}><span className="portal-item-icon is-chat"><FiMessageSquare /></span><div><h3 title={chat.messages[0]?.text}>{chat.messages[0]?.text || 'New conversation'}</h3><p>{dateLabel(chat.updatedAt)} · Read conversation</p></div><FiArrowUpRight /></Link>) : <div className="portal-empty"><FiMessageSquare /><p>A quiet space, for now.</p><span>Visitor conversations will appear here.</span></div> : <p className="portal-list-placeholder">{state.loading ? 'Loading your conversations…' : 'Your conversations will appear when the overview is available.'}</p>}</div></section></div>
+    <section className="portal-services"><div><span className="portal-service-icon"><FiZap /></span><span><strong>Behind the scenes</strong><small>Service configuration</small></span></div><div className="portal-service-list">{[['planbot', 'PlanBot'], ['discord', 'Discord alerts'], ['contact', 'Contact form']].map(([key, label]) => <span className="portal-service" key={key}><i className={data ? data.services[key] ? 'is-ready' : 'needs-setup' : ''} />{label}<small>{data ? data.services[key] ? 'Configured' : 'Needs setup' : '—'}</small></span>)}</div><Link href="/admin/linkedin-posts" className="portal-linkedin-shortcut"><FiLinkedin /><span>{data ? data.stats.linkedInPosts : '—'} spotlights</span><FiArrowUpRight /></Link></section>
+    {data && <p className="portal-updated">Updated {new Date(data.updatedAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })} · Service status indicates configuration, not delivery health.</p>}
+  </div>;
 }

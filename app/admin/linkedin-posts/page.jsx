@@ -131,8 +131,8 @@ export default function LinkedInPostsPage() {
   };
 
   return (
-    <div className="p-6 text-white w-full">
-      <div className="flex justify-between items-center mb-6">
+    <div className="portal-legacy-page text-white w-full">
+      <div className="portal-legacy-header flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">LinkedIn Embed Management</h1>
         <button
           onClick={() => handleOpenModal()}

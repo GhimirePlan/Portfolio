@@ -117,7 +117,7 @@ export default function PostsPage() {
   
   return (
     <div>
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+      <div className="portal-legacy-header flex flex-col md:flex-row md:items-center md:justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-white">Blog Posts</h1>
           <p className="text-gray-400 mt-2">

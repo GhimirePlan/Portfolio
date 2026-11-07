@@ -155,8 +155,8 @@ export default function PostEditor({ params }) {
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-8">
+    <div className="portal-editor-page">
+      <div className="portal-legacy-header flex items-center justify-between mb-8">
         <div className="flex items-center">
           <Link 
             href="/admin/posts" 
@@ -190,8 +190,8 @@ export default function PostEditor({ params }) {
       
       <div className="bg-[#1b203e] border border-[#1d293a] rounded-lg shadow-lg p-6">
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 gap-6">
+            <div className="min-w-0 space-y-6">
               {/* Title */}
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-1">
@@ -380,7 +380,7 @@ export default function PostEditor({ params }) {
                           className="w-full px-3 py-1.5 bg-[#1b203e] border border-[#1d293a] rounded text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#60A5FA]"
                           placeholder="Document Name (e.g., Research Paper PDF)"
                         />
-                        <div className="flex items-center gap-4">
+                        <div className="portal-document-options flex items-center gap-4">
                           <div className="flex-1 flex items-center">
                             <div className="pl-3 pr-2 py-1.5 bg-[#1b203e] border border-[#1d293a] border-r-0 rounded-l flex items-center">
                               <BsLink45Deg className="text-gray-400" />
