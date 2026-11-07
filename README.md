@@ -136,3 +136,9 @@ Without contact-service configuration, visitors can still use the direct email l
 Set a valid server-side `GROQ_API_KEY` in the hosting environment and redeploy. Never use a `NEXT_PUBLIC_` variable for this key. `GROQ_MODEL` optionally selects a preferred model (default `openai/gpt-oss-20b`); verify account model access in the Groq console. Missing or invalid credentials cannot be fixed by frontend changes.
 
 `MONGODB_URI` enables persistent chat history. Replies still work during a history database outage, and recent turns are sent with the chat request to preserve conversational context without requiring database access. Provider failures are reported honestly; PlanBot never substitutes canned responses for AI replies.
+
+### Discord notifications and PlanBot history
+
+Set `DISCORD_WEBHOOK_URL` in Vercel Production to the channel's Discord webhook URL. The existing visitor alert runs once per browser-tab session; the first sent PlanBot message is saved and triggers a separate new-chat alert with a clickable admin conversation link. Opening the chat widget alone does not trigger a chat alert. Messages are recorded even if the AI service cannot reply. Subsequent messages update the same conversation without repeated alerts. Failed notifications are retried on a later message; Discord delivery is best effort during outages.
+
+Read history at **https://www.plan.com.np/admin/chats** (or `/admin/chats` on your configured `NEXT_PUBLIC_APP_URL`). Sign in with your existing **admin** account. Discord links open `/admin/chats/<sessionId>` and return there after login. The list is paginated; a conversation displays its latest 500 messages. Use Refresh to see new messages. `MONGODB_URI` and `NEXTAUTH_SECRET` must be configured, and an admin account must exist. The history API enforces the admin role and never caches transcripts. Discord receives the session link, not the transcript. No separate Discord bot token is needed.

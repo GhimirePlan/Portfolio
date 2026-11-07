@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
+import { sendDiscordEmbed } from '@/lib/discord';
 
 // Counter for total visits (this will reset on server restart)
 let visitCounter = 0;
@@ -30,41 +31,26 @@ export async function POST(request) {
       return NextResponse.json({ success: true, skipped: true, count: visitCounter });
     }
     
+    const field = value => String(value || 'Unknown').slice(0, 1024);
     // Create Discord embed with direct link in description
     const embed = {
       title: "🚨 Footprints detected! 🐾",
       color: 5814783,
       fields: [
-        { name: "🌐 IP Address", value: ip || "Unknown", inline: true },
-        { name: "💻 Device", value: device || "Unknown", inline: true },
-        { name: "🔍 Browser", value: browser || "Unknown", inline: true },
-        { name: "⏰ Time", value: timestamp || new Date().toISOString(), inline: true },
+        { name: "🌐 IP Address", value: field(ip), inline: true },
+        { name: "💻 Device", value: field(device), inline: true },
+        { name: "🔍 Browser", value: field(browser), inline: true },
+        { name: "⏰ Time", value: new Date().toISOString(), inline: true },
         { name: "📊 Total Visits", value: visitCounter.toString(), inline: true },
-        { name: "🔗 Page URL", value: url || "Unknown", inline: false }
+        { name: "🔗 Page URL", value: field(url), inline: false }
       ],
-      description: `**[View more](https://ipinfo.io/${ip})**`
+      description: `**[View more](https://ipinfo.io/${encodeURIComponent(ip)})**`
     };
     
     // Send webhook to Discord with embed only (no components)
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        embeds: [embed]
-      }),
-    });
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Discord webhook failed:', errorText);
-      return NextResponse.json(
-        { error: 'Failed to send webhook' },
-        { status: 500 }
-      );
-    }
-    
+    const delivered = await sendDiscordEmbed(embed);
+    if (!delivered) return NextResponse.json({ success: false, message: 'Visit notification could not be sent.' }, { status: 502 });
+
     // Return success response
     return NextResponse.json({ success: true, count: visitCounter });
     

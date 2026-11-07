@@ -28,6 +28,8 @@ const ChatHistorySchema = new mongoose.Schema({
     index: true
   },
   messages: [MessageSchema],
+  discordNotifiedAt: Date,
+  discordNotificationClaimedAt: Date,
   createdAt: {
     type: Date,
     default: Date.now

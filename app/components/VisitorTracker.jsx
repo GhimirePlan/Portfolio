@@ -9,7 +9,8 @@ const VisitorTracker = ({ showStatus = false }) => {
 
   useEffect(() => {
     // Use sessionStorage to prevent duplicate notifications on page reload
-    const hasVisited = sessionStorage.getItem('hasVisited');
+    let hasVisited = false;
+    try { hasVisited = sessionStorage.getItem('hasVisited'); } catch { /* Storage may be disabled. */ }
     
     const trackVisit = async () => {
       try {
@@ -23,7 +24,7 @@ const VisitorTracker = ({ showStatus = false }) => {
         }
         
         // Mark as visited for this session
-        sessionStorage.setItem('hasVisited', 'true');
+        try { sessionStorage.setItem('hasVisited', 'true'); } catch {}
         
         // Set initial loading state
         setStatus('loading');
@@ -73,6 +74,7 @@ const VisitorTracker = ({ showStatus = false }) => {
         setStatus('success');
         setMessage('Visit tracked successfully');
       } catch (error) {
+        try { sessionStorage.removeItem('hasVisited'); } catch {}
         console.error('Error tracking visit:', error);
         setStatus('error');
         setMessage(`Error: ${error.message || 'Failed to track visit'}`);
