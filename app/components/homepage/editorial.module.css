@@ -30,7 +30,7 @@
 .skeletonCard > span:first-child { height: 170px; }
 .skeletonCard > span:last-child { width: 65%; }
 .feedSkeleton { padding: 24px; border: 1px solid var(--line); border-radius: 14px; }
-.linkedinLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 24px; align-items: center; max-width: 760px; margin: 0 auto; padding: 20px; border: 1px solid #31c2ef50; border-radius: 16px; background: linear-gradient(110deg, #08142565, #090e2345); box-shadow: 0 0 24px #00b6e508; }
+.linkedinLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 24px; align-items: center; max-width: 760px; margin: 0 auto; padding: 20px; border: 1px solid #31c2ef50; border-radius: 16px; background: transparent; box-shadow: none; }
 .linkedinSidebar { min-width: 0; }
 .profile { display: flex; align-items: center; gap: 12px; padding: 0 0 16px; margin-bottom: 12px; border-bottom: 1px solid var(--line); }
 .linkedinIcon { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 11px; color: #8bc1ff; border: 1px solid #4479b855; background: #0a66c210; }
@@ -44,7 +44,7 @@
 .postTag { display: block; font-size: 13px; font-weight: 600; text-transform: capitalize; color: var(--ink); }
 .postDate { display: block; font-size: 11px; margin-top: 4px; line-height: 1.5; }
 .postButton > svg { width: 13px; height: 13px; flex-shrink: 0; }
-.activePost { border-color: #35e0c150; background: #35e0c109; }
+.activePost { border-color: #35e0c150; background: transparent; }
 .activePost .postNumber { color: var(--accent); }
 .featuredStar { color: #e8c36c; }
 .linkedinPanel { width: 100%; max-width: 380px; justify-self: end; min-width: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: transparent; }
@@ -64,7 +64,7 @@
   .article:hover .cover > img { transform: scale(1.025); }
   .article:hover .coverArrow { opacity: 1; transform: translateY(0); }
   .outlineLink:hover { transform: translateY(-2px); border-color: var(--accent); }
-  .postButton:hover { border-color: #35e0c150; background: #35e0c109; }
+  .postButton:hover { border-color: #35e0c150; background: transparent; }
 }
 @media (max-width: 1023px) {
   .articleGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
@@ -93,7 +93,7 @@
 .spotlight .outlineLink { background: transparent; font-size: 12px; padding: 8px 12px; }
 .spotlight .empty, .spotlight .feedSkeleton { max-width: 760px; margin: auto; background: transparent; }
 .spotlight .feedSkeleton .skeletonCard { min-height: 400px; background: transparent; }
-:global(html.light) .spotlight .linkedinLayout { background: linear-gradient(110deg, #f6fbff65, #eff7fb45); border-color: #2988a950; }
+:global(html.light) .spotlight .linkedinLayout { background: transparent; border-color: #2988a950; }
 @media (max-width: 767px) {
   .spotlight .heading { max-width: 420px; flex-direction: row; align-items: center; gap: 12px; }
   .spotlight .heading .outlineLink { font-size: 11px; gap: 6px; }
