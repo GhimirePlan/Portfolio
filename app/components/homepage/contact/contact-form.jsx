@@ -403,8 +403,10 @@ function ContactForm() {
         appendTo: 'head',
       }}
     >
-      <ContactFormContent />
-      <ToastContainer />
+      <div>
+        <ContactFormContent />
+        <ToastContainer />
+      </div>
     </GoogleReCaptchaProvider>
   );
 }
