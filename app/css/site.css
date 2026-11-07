@@ -1,4 +1,4 @@
-@font-face { font-family: 'Homepage Signature'; src: url('/fonts/yellowtail.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Homepage Signature'; src: url('/fonts/yellowtail-v1.woff2') format('woff2'), url('/fonts/yellowtail.ttf') format('truetype'); font-display: swap; }
 :root { --site-bg: #041121; --site-surface: #091827; --site-raised: #0d2031; --site-text: #f0f5fa; --site-muted: #a2b5c8; --site-line: #203548; --site-accent: #35e0c1; --site-on-accent: #04231d; color-scheme: dark; }
 html.light { --site-bg: #edf6fb; --site-surface: #f8fbfd; --site-raised: #e5eff5; --site-text: #132b3a; --site-muted: #4b6273; --site-line: #cbdce4; --site-accent: #087e6d; --site-on-accent: #fff; color-scheme: light; }
 html { scroll-padding-top: 96px; }

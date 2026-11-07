@@ -209,6 +209,7 @@ export default async function BlogDetails({ params }) {
             src={blog.coverImage || "/images/plan-ghimire.jpg"}
             alt={blog.title}
             fill
+            sizes="(max-width: 1104px) calc(100vw - 64px), 1040px"
             className="object-cover"
             priority
           />
@@ -467,6 +468,7 @@ export default async function BlogDetails({ params }) {
                               src={rBlog.coverImage}
                               alt={rBlog.title}
                               fill
+                              sizes="64px"
                               className="object-cover group-hover:scale-110 transition-transform duration-500"
                             />
                           </div>

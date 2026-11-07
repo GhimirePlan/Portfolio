@@ -5,7 +5,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { FaHome, FaKeyboard, FaMobileAlt } from 'react-icons/fa';
 import { BiGame } from 'react-icons/bi';
 

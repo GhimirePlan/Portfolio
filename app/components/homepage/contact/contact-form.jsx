@@ -1,13 +1,12 @@
 "use client";
 // @flow strict
 import { isValidEmail } from "@/utils/check-email";
-import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { TbMailForward } from "react-icons/tb";
 import { FiUser, FiMail, FiMessageSquare, FiSend, FiCheck, FiShield } from "react-icons/fi";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { personalData } from '@/utils/data/personal-data';
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
@@ -124,6 +123,7 @@ function ContactFormContent() {
         recaptchaToken: token
       };
 
+      const { default: axios } = await import("axios");
       const response = await axios.post(
         `/api/contact`,
         payload

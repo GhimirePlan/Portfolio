@@ -14,7 +14,7 @@ export default function BlogCard({ blog }) {
     <article className={styles.article}>
       <Link href={href} className={styles.cover} aria-label={`Read ${blog.title}`} tabIndex={-1}>
         {blog.coverImage && !imageFailed ? (
-          <Image src={blog.coverImage} width={960} height={540} alt="" loading="lazy" onError={() => setImageFailed(true)} />
+          <Image src={blog.coverImage} width={960} height={540} sizes="(max-width: 767px) 340px, 300px" alt="" loading="lazy" onError={() => setImageFailed(true)} />
         ) : <span className={styles.coverFallback}><BsJournalText aria-hidden="true" /></span>}
         <BsArrowRight className={styles.coverArrow} aria-hidden="true" />
       </Link>

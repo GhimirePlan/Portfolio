@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { FaWifi, FaGamepad, FaTrophy, FaHistory } from 'react-icons/fa';
 import { BiRefresh } from 'react-icons/bi';
 

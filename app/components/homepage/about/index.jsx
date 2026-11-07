@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import "@/app/css/restored-sections.css";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import GlowCard from "../../helper/glow-card";
 import { mergePersonalData } from "@/utils/data/personal-data";
 import { useGithubData } from "@/utils/use-github-data";
@@ -129,7 +129,7 @@ function AboutSection() {
                         onDragStart={(e) => e.preventDefault()}
                         onContextMenu={(e) => e.preventDefault()}
                         loading="lazy"
-                        unoptimized={true}
+                        sizes="(max-width: 1023px) 240px, 280px"
                         style={{ width: "280px", height: "auto" }}
                       />
                     </div>
