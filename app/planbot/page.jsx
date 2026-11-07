@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { FaRobot, FaPaperPlane } from 'react-icons/fa';
 import axios from 'axios';
-import { chatContext, chatError } from '@/utils/planbot-client';
+import ChatMessageText from '@/app/components/ChatMessageText';
+import { chatContext, chatError, PLANBOT_WELCOME } from '@/utils/planbot-client';
 
 // Function to get or create a session ID
 const getSessionId = () => {
@@ -20,7 +21,7 @@ const getSessionId = () => {
 };
 
 // Typing animation component
-const TypingAnimation = ({ text }) => text;
+const TypingAnimation = ({ text }) => <ChatMessageText text={text} />;
 
 export default function PlanBot() {
   const [messages, setMessages] = useState([]);
@@ -74,7 +75,7 @@ export default function PlanBot() {
         setMessages([
           {
             id: welcomeMessageId,
-            text: "Hey! PlanBot here 😏 Powered by Plan Ghimire's brain and way too many late nights. Ask me anything — I dare you.",
+            text: PLANBOT_WELCOME,
             sender: 'bot',
             timestamp: new Date(),
             animate: true,
@@ -83,7 +84,7 @@ export default function PlanBot() {
         setNewMessageId(welcomeMessageId);
         
         // After animation completes, remove the animation flag
-        const welcomeText = "Hey! PlanBot here 😏 Powered by Plan Ghimire's brain and way too many late nights. Ask me anything — I dare you.";
+        const welcomeText = PLANBOT_WELCOME;
         setTimeout(() => {
           setNewMessageId(null);
           setMessages(prev => 
@@ -100,7 +101,7 @@ export default function PlanBot() {
       setMessages([
         {
           id: welcomeMessageId,
-          text: "Hey! PlanBot here 😏 Powered by Plan Ghimire's brain and way too many late nights. Ask me anything — I dare you.",
+          text: PLANBOT_WELCOME,
           sender: 'bot',
           timestamp: new Date(),
           animate: true,
@@ -203,7 +204,7 @@ export default function PlanBot() {
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">PlanBot</h1>
-          <p className="text-gray-600 dark:text-gray-300">Don’t be shy — I can handle your weirdest questions and still keep my circuits cool. ❄️🤖</p>
+          <p className="text-gray-600 dark:text-gray-300">Ask about Plan’s projects, skills, studies, or getting in touch.</p>
         </div>
         
         {/* Chat container */}
@@ -222,7 +223,7 @@ export default function PlanBot() {
                      {message.animate && message.id === newMessageId ? (
                        <TypingAnimation text={message.text} />
                      ) : (
-                       message.text
+                       <ChatMessageText text={message.text} />
                      )}
                    </p>
                    <p className="text-xs mt-1 opacity-70">

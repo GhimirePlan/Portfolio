@@ -1,3 +1,5 @@
+export const PLANBOT_WELCOME = "Hey! I’m PlanBot, Plan’s assistant. What would you like to know about his work?";
+
 export function chatContext(messages) {
   return messages.filter(message => !message.isError && typeof message.text === 'string').slice(-12).map(message => ({ role: message.sender === 'user' ? 'user' : 'assistant', content: message.text.slice(0, 3000) }));
 }
