@@ -35,7 +35,9 @@ export async function middleware(request) {
   response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
 
   // Add caching headers for static assets
-  if (pathname.match(/\.(jpg|jpeg|png|gif|ico|css|js)$/)) {
+  if (pathname === '/fonts/yellowtail-v1.woff2') {
+    response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+  } else if (pathname.match(/\.(jpg|jpeg|png|gif|ico|css|js)$/)) {
     response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
   } else {
     // Default caching for other pages
