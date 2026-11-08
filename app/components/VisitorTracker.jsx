@@ -44,10 +44,14 @@ const VisitorTracker = ({ showStatus = false }) => {
         const browserInfo = `${browserResult.name || 'Unknown'} ${browserResult.version || ''}`.trim();
         
         // Get timestamp
-        const timestamp = new Date().toLocaleString();
+        const os = parser.getOS();
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        const query = new URLSearchParams(location.search);
+        const campaign = Object.fromEntries(['source','medium','campaign'].map(key=>[key,query.get(`utm_${key}`)||'']));
+        const network = connection ? [connection.effectiveType,typeof connection.downlink==='number'?`~${connection.downlink} Mbps`:null,typeof connection.rtt==='number'?`~${connection.rtt} ms RTT`:null,connection.saveData?'Data saver on':null].filter(Boolean).join(' · ') : 'Not exposed by browser';
         
         // Get current URL
-        const currentUrl = window.location.href;
+        const currentUrl = window.location.origin + window.location.pathname;
         
         // Send data to API (IP will be detected server-side)
         const response = await fetch('/api/track-visit', {
@@ -56,10 +60,17 @@ const VisitorTracker = ({ showStatus = false }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            ip: 'Client IP',
+
             device: deviceType,
             browser: browserInfo,
-            timestamp: timestamp,
+            os: [os.name,os.version].filter(Boolean).join(' '),
+            model: [deviceResult.vendor,deviceResult.model].filter(Boolean).join(' '),
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            languages: (navigator.languages||[navigator.language]).slice(0,4).join(', '),
+            display: `${screen.width}×${screen.height} screen · ${innerWidth}×${innerHeight} viewport · ${devicePixelRatio}× scale`,
+            connection: network,
+            referrer: (()=>{try{const r=new URL(document.referrer);return r.origin+r.pathname}catch{return ''}})(),
+            campaign,
             url: currentUrl
           }),
         });
