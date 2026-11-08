@@ -8,7 +8,7 @@ const metrics = [
   { key: 'pageViews', title: 'Page views', hint: 'Public page loads & navigation', icon: FiEye, color: 'lilac' },
   { key: 'resumeClicks', title: 'Résumé clicks', hint: 'Opens of your Google Docs résumé', icon: FiFileText, color: 'blue' },
   { key: 'projectOpens', title: 'Project opens', hint: 'Clicks to your GitHub repositories', icon: FiLayers, color: 'amber' },
-  { key: 'contactSubmissions', title: 'Contact submissions', hint: 'Messages accepted by your mail server', icon: FiMail, color: 'mint' },
+  { key: 'contactSubmissions', title: 'Contact submissions', hint: 'Messages received in inbox or email', icon: FiMail, color: 'mint' },
 ];
 const names = { direct: 'Direct / unknown', __other__: 'Other sources', google: 'Google', linkedin: 'LinkedIn', github: 'GitHub', facebook: 'Facebook', x: 'X / Twitter', 'google.com': 'Google', 'linkedin.com': 'LinkedIn', 'l.linkedin.com': 'LinkedIn', 'github.com': 'GitHub', 't.co': 'X / Twitter', 'facebook.com': 'Facebook' };
 const sourceName = value => Object.prototype.hasOwnProperty.call(names, value) ? names[value] : value;
@@ -35,6 +35,6 @@ export default function AudienceAnalytics({ refreshKey = 0 }) {
       <section className="portal-panel"><div className="portal-panel-heading"><h3><FiLayers /> Most opened projects</h3><span className="portal-tag">Link opens</span></div><div className="portal-analytics-rows">{data ? data.projects.length ? data.projects.map((project, index) => <a className="portal-ranked-row" href={project.url} key={project.url} target="_blank" rel="noreferrer"><span className="portal-rank">{String(index + 1).padStart(2, '0')}</span><span title={project.name}>{project.name}</span><strong>{project.opens.toLocaleString()}</strong><FiArrowUpRight /></a>) : empty('Repository-link opens from your blog and PlanBot will appear here. Your projects section stays hidden.') : empty(state.loading ? 'Loading projects…' : 'Refresh analytics to load project opens.')}</div></section>
       <section className="portal-panel"><div className="portal-panel-heading"><h3><FiEye /> Most visited pages</h3><span className="portal-tag">Page views</span></div><div className="portal-analytics-rows">{data ? data.pages.length ? data.pages.map((page, index) => <div className="portal-ranked-row" key={page.path}><span className="portal-rank">{String(index + 1).padStart(2, '0')}</span><span title={page.path}>{page.path === '/' ? 'Homepage' : page.path}</span><strong>{page.views.toLocaleString()}</strong></div>) : empty('Popular pages will appear as visitors explore your site.') : empty(state.loading ? 'Loading pages…' : 'Refresh analytics to load page views.')}</div></section>
     </div>
-    <p className="portal-analytics-note">Visitors are anonymous browser estimates, not identified people. Résumé and project figures measure link clicks, not confirmed file saves or destination-page views. Successful contact submissions are counted server-side; failed sends are excluded.</p>
+    <p className="portal-analytics-note">Visitors are anonymous browser estimates, not identified people. Résumé and project figures measure link clicks, not confirmed file saves or destination-page views. Contact submissions are counted server-side after inbox storage or email acceptance; failed receipts are excluded.</p>
   </section>;
 }

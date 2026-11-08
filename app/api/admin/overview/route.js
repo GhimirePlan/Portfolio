@@ -28,7 +28,7 @@ export async function GET() {
       ]);
       const days = Array.from({ length: 7 }, (_, index) => { const date = new Date(start); date.setUTCDate(date.getUTCDate() + index); const key = date.toISOString().slice(0, 10); return { date: key, count: activity.find(day => day._id === key)?.count || 0 }; });
       return json({ stats: { totalPosts, publishedPosts, draftPosts: totalPosts - publishedPosts, conversations, linkedInPosts }, posts, chats, activity: days,
-        services: { planbot: Boolean(process.env.GROQ_API_KEY?.trim()), discord: Boolean(process.env.DISCORD_WEBHOOK_URL?.trim()), contact: contactConfig().ready }, updatedAt: new Date().toISOString() });
+        services: { planbot: Boolean(process.env.GROQ_API_KEY?.trim()), discord: Boolean(process.env.DISCORD_WEBHOOK_URL?.trim()), contact: contactConfig().captchaReady && (contactConfig().emailReady || Boolean(process.env.MONGODB_URI)) }, updatedAt: new Date().toISOString() });
     }, 6000);
   } catch { return json({ message: 'The overview could not be loaded. Please try refreshing.' }, 503); }
 }

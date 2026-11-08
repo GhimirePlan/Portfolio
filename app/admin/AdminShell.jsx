@@ -9,6 +9,7 @@ import './admin.css';
 const navigation = [
   { name: 'Overview', href: '/admin', icon: FiGrid },
   { name: 'Blog posts', href: '/admin/posts', icon: FiFileText },
+  { name: 'Contact inbox', href: '/admin/inbox', icon: FiMessageSquare },
   { name: 'Conversations', href: '/admin/chats', icon: FiMessageSquare },
   { name: 'LinkedIn spotlight', href: '/admin/linkedin-posts', icon: FiLinkedin },
 ];

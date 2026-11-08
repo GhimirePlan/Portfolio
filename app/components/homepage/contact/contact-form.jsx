@@ -207,7 +207,7 @@ function ContactFormContent({ executeRecaptcha, configuration, configurationLoad
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
               >
-                Your message has been sent successfully to {personalData.email}. I'll get back to you as soon as possible.
+                Your message has been received. I'll get back to you as soon as possible.
               </motion.p>
             </motion.div>
           ) : (
