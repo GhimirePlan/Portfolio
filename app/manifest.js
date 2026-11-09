@@ -1,1 +1,3 @@
-export default function manifest() { return { name: 'Plan Ghimire Portfolio', short_name: 'PG Portfolio', description: 'Personal portfolio of Plan Ghimire', start_url: '/', display: 'standalone', background_color: '#041121', theme_color: '#041121', icons: [{ src: '/favicon.png', sizes: '856x856', type: 'image/png' }, { src: '/apple-touch-icon.png', sizes: 'any', type: 'image/png' }] }; }
+import manifestData from '../public/manifest.json';
+
+export default function manifest() { return manifestData; }
