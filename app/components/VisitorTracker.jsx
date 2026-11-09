@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import * as UAParser from 'ua-parser-js';
 
 const VisitorTracker = ({ showStatus = false }) => {
   const [status, setStatus] = useState(null); // null, 'success', 'error'
@@ -31,7 +30,8 @@ const VisitorTracker = ({ showStatus = false }) => {
         setMessage('Tracking visit...');
         
         // Parse user agent
-        const parser = new UAParser.UAParser(window.navigator.userAgent);
+        const { UAParser } = await import('ua-parser-js');
+        const parser = new UAParser(window.navigator.userAgent);
         const browserResult = parser.getBrowser();
         const deviceResult = parser.getDevice();
         
