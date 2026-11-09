@@ -69,6 +69,6 @@ export async function POST(request) {
         await bounded(async () => { await connectToDatabase(); return ChatHistory.updateOne({ sessionId }, { $setOnInsert: { sessionId, createdAt: now }, $set: { updatedAt: now }, $push: { messages: { text: answer, sender: 'bot', timestamp: now } } }, { upsert: true, maxTimeMS: 1500 }); }, 1500);
       } catch { /* Return the generated reply even if persistence is unavailable. */ }
     }
-    return NextResponse.json({ success: true, message: 'Response generated successfully', data: { response: answer, sessionId } });
+    return NextResponse.json({ success: true, message: 'Response generated successfully', data: { response: answer, sessionId, sources: liveContent.blogs.articles.map(article=>({title:article.title,url:article.url})), grounding: { blogsAvailable:liveContent.blogs.available, blogCount:liveContent.blogs.catalog.length, githubAvailable:liveContent.github.available } } });
   } catch { await recording; return fail('SERVICE_UNAVAILABLE', 'PlanBot is temporarily unavailable. Please try again in a moment.', 503); }
 }
