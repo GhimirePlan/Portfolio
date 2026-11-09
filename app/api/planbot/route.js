@@ -4,6 +4,7 @@ import path from 'path';
 import { randomUUID } from 'crypto';
 import connectToDatabase from '@/lib/mongodb';
 import ChatHistory from '@/models/ChatHistory';
+import { loadPortfolioContent } from '@/lib/planbot-content';
 import { buildPlanBotPrompt } from '@/lib/planbot-prompt';
 import { bounded, recordChatStart } from '@/lib/chat-recording';
 
@@ -28,8 +29,8 @@ export async function POST(request) {
   let recording;
   try {
     if (!knowledge) knowledge = readFile(path.join(process.cwd(), 'mydata.txt'), 'utf8').catch(error => { knowledge = null; throw error; });
-    const personalData = await knowledge;
-    const systemMessage = buildPlanBotPrompt(personalData);
+    const [personalData, liveContent] = await Promise.all([knowledge, loadPortfolioContent([message, ...context(body.history).filter(item=>item.role==='user').slice(-2).map(item=>item.content)].join(' '))]);
+    const systemMessage = buildPlanBotPrompt(personalData, liveContent);
 
     let previousMessages = context(body.history);
     if (!previousMessages.length && process.env.MONGODB_URI && body.sessionId) {
@@ -49,7 +50,7 @@ export async function POST(request) {
       try {
         response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model, messages, temperature: 0.7, max_completion_tokens: 1024, ...(model.startsWith('openai/gpt-oss') ? { reasoning_effort: 'low' } : {}) }),
+          body: JSON.stringify({ model, messages, temperature: 0.35, max_completion_tokens: 1024, ...(model.startsWith('openai/gpt-oss') ? { reasoning_effort: 'low' } : {}) }),
           signal: AbortSignal.timeout(Math.min(12000, remaining)), cache: 'no-store',
         });
       } catch { lastStatus = 504; continue; }
