@@ -7,6 +7,7 @@ import ChatMessageText from '@/app/components/ChatMessageText';
 import { chatContext, chatError, PLANBOT_WELCOME } from '@/utils/planbot-client';
 
 import './planbot.css';
+import OwnerAvailability from './OwnerAvailability';
 const getSessionId = () => {
   let stored; try { stored = localStorage.getItem('chatSessionId'); } catch {}
   if (stored) return stored;
@@ -59,6 +60,7 @@ export default function PlanBot() {
   };
   return <section className="site-planbot planbot-page">
     <header className="planbot-heading"><span className="planbot-mark"><FaRobot /></span><div><h1>PlanBot</h1><p>Plan’s portfolio assistant</p></div><span className="planbot-heading-note">A little curiosity goes a long way.</span></header>
+    <OwnerAvailability />
     <div className="planbot-window">
       <div className="planbot-messages" role="log" aria-label="Conversation" aria-live="polite" aria-busy={isLoading}>
         {messages.map((message,index)=><article key={index} className={`planbot-message ${message.sender==='user'?'from-user':'from-bot'} ${message.isError?'is-error':''}`}><div className="planbot-message-meta"><strong>{message.sender==='user'?'You':'PlanBot'}</strong><time>{message.timestamp.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</time></div><div className="planbot-message-text"><ChatMessageText text={message.text}/></div></article>)}
