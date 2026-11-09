@@ -1,186 +1,102 @@
-# Portfolio Website with Blog
+# Plan Ghimire · Portfolio
 
-A modern portfolio website with an integrated blog system built with Next.js, MongoDB, and NextAuth.js.
+A personal portfolio and publishing platform by **Plan Ghimire**, an Electronics, Communication & Information Engineering student from Nepal exploring embedded systems, networking, and applied AI.
 
-## Features
+The site brings together engineering interests, research writing, and an AI portfolio assistant in a responsive interface—with a private workspace for publishing, conversations, and contact messages.
 
-- Responsive portfolio showcase
-- Blog system with rich text editor
-- Admin panel for content management
-- Authentication with NextAuth.js
-- MongoDB integration for data storage
-- Image optimization with Next.js Image component
-- PlanBot - AI assistant powered by Groq's LLaMA3-70b model
+**[Visit the portfolio](https://www.plan.com.np)** · **[Read the blog](https://www.plan.com.np/blog)** · **[Talk to PlanBot](https://www.plan.com.np/planbot)**
 
-## Getting Started
+## What’s inside
 
-### Prerequisites
+### Portfolio & writing
 
-- Node.js 14.x or later
-- npm or yarn
-- MongoDB database (local or Atlas)
+- Responsive homepage with an introduction, engineering journey, LinkedIn spotlight, and contact form.
+- Rich-text blog articles with support for images, videos, related documents, and reading-time estimates.
+- A compact developer-status strip with GitHub activity and optional Discord presence and Spotify listening activity through Lanyard.
+- Light and dark themes, keyboard navigation, and reduced-motion support.
 
-### Installation
+### PlanBot
 
-1. Clone the repository
-```bash
-git clone https://github.com/yourusername/portfolio.git
-cd portfolio
-```
+A conversational assistant for questions about Plan’s work, studies, research, and published articles. PlanBot retrieves relevant public portfolio and blog content, includes article links, and supports follow-up questions and saved conversations.
 
-2. Install dependencies
-```bash
-npm install
-# or
-yarn install
-```
-
-3. Set up environment variables
-```bash
-cp .env.example .env.local
-```
-Edit `.env.local` with your MongoDB connection string and NextAuth secret.
-
-4. Run the development server
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## Deployment to Vercel
-
-### Method 1: Using the Deployment Script
-
-1. Create a production environment file
-```bash
-cp .env.production.example .env.production
-```
-Edit `.env.production` with your production environment variables.
-
-2. Run the deployment script
-```bash
-node deploy.js
-```
-Follow the prompts to complete the deployment.
-
-### Method 2: Manual Deployment
-
-1. Install Vercel CLI
-```bash
-npm install -g vercel
-```
-
-2. Build the project
-```bash
-npm run build
-```
-
-3. Deploy to Vercel
-```bash
-vercel --prod
-```
-
-4. Configure environment variables in the Vercel dashboard:
-   - MONGODB_URI
-   - NEXTAUTH_SECRET
-   - NEXTAUTH_URL (set to your deployment URL)
-
-## Environment Variables
-
-- `MONGODB_URI`: MongoDB connection string
-- `NEXTAUTH_SECRET`: Secret for NextAuth.js
-- `NEXTAUTH_URL`: URL of your application (in production, this should be your deployment URL)
-- `GROQ_API_KEY`: API key for Groq AI (used by PlanBot)
-
-## Admin Setup
-
-After deployment, visit `/admin/setup` to create your admin account. This page is only accessible once when no admin users exist.
-
-## Project Structure
-
-- `/app`: Next.js app directory
-  - `/admin`: Admin panel pages
-  - `/api`: API routes
-    - `/planbot`: PlanBot API endpoint
-  - `/blog`: Blog pages
-  - `/planbot`: PlanBot chat interface
-  - `/components`: Reusable components
-- `/public`: Static assets
-- `/lib`: Utility functions and database connection
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- Next.js team for the amazing framework
-- Vercel for the deployment platform
-- MongoDB for the database solution
-
-### Contact form configuration
-
-Contact delivery uses deployment environment variables; no credentials are embedded in the application. Configure `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET_KEY` for reCAPTCHA v3. For Gmail, configure `EMAIL_ADDRESS` and `GMAIL_PASSKEY`; alternatively use `SMTP_USER`, `SMTP_PASS`, `SMTP_HOST`, and `SMTP_PORT`. `CONTACT_EMAIL` sets the recipient. See `.env.example` for the supported settings. The public site key can alternatively be provided as `RECAPTCHA_SITE_KEY` at runtime. Restart or redeploy after changing environment variables.
-
-Use a **reCAPTCHA v3** site key and secret from the same registration. Add `plan.com.np` and `www.plan.com.np` to the Google reCAPTCHA domain list. If testing another domain, register it with Google and add it to `RECAPTCHA_ALLOWED_HOSTNAMES` (comma-separated); the configured app URL and Vercel deployment hostname are also accepted by the server. For Gmail, use the sender account's app password, not its login password. The authenticated sender must be allowed to send email through the chosen SMTP provider.
-
-`GET /api/contact` exposes only the public site key and readiness status. `CAPTCHA_NOT_CONFIGURED` means the site key or secret is missing; `EMAIL_NOT_CONFIGURED` means sender credentials or SMTP port are missing/invalid. Check these in the active hosting environment, then redeploy. Actual key validity and SMTP authentication are checked during submission. Tokens must pass Google's score, action, hostname, and two-minute expiry checks; missing configuration never skips verification. The form generates a new token on each attempt, blocks duplicate sends, and retains typed text after errors. A success message means the SMTP server accepted the recipient; inbox delivery depends on the mail provider.
-
-Without contact-service configuration, visitors can still use the direct email link. Missing configuration never bypasses reCAPTCHA or reports a message as delivered.
-
-### PlanBot configuration
-
-Set a valid server-side `GROQ_API_KEY` in the hosting environment and redeploy. Never use a `NEXT_PUBLIC_` variable for this key. `GROQ_MODEL` optionally selects a preferred model (default `openai/gpt-oss-20b`); verify account model access in the Groq console. Missing or invalid credentials cannot be fixed by frontend changes.
-
-`MONGODB_URI` enables persistent chat history. Replies still work during a history database outage, and recent turns are sent with the chat request to preserve conversational context without requiring database access. Provider failures are reported honestly; PlanBot never substitutes canned responses for AI replies.
-
-### Discord notifications and PlanBot history
-
-Set `DISCORD_WEBHOOK_URL` in Vercel Production to the channel's Discord webhook URL. The existing visitor alert runs once per browser-tab session; the first sent PlanBot message is saved and triggers a separate new-chat alert with a clickable admin conversation link. Opening the chat widget alone does not trigger a chat alert. Messages are recorded even if the AI service cannot reply. Subsequent messages update the same conversation without repeated alerts. Failed notifications are retried on a later message; Discord delivery is best effort during outages.
-
-Read history at **https://www.plan.com.np/admin/chats** (or `/admin/chats` on your configured `NEXT_PUBLIC_APP_URL`). Sign in with your existing **admin** account. Discord links open `/admin/chats/<sessionId>` and return there after login. The list is paginated; a conversation displays its latest 500 messages. Use Refresh to see new messages. `MONGODB_URI` and `NEXTAUTH_SECRET` must be configured, and an admin account must exist. The history API enforces the admin role and never caches transcripts. Discord receives the session link, not the transcript. No separate Discord bot token is needed.
+The assistant uses Groq for responses. Retrieval is limited to public sources; answers can be checked against the linked articles. Private admin content and contact submissions are excluded from its knowledge retrieval.
 
 ### Admin workspace
 
-Open `/admin/login` with your existing administrator account. The responsive workspace includes blog publishing, LinkedIn management, conversation history, and a live overview of post counts, drafts, recent stories, recent chats, and seven days of new-conversation activity (UTC). Overview numbers come from MongoDB; unavailable data displays an error and retry action rather than placeholder counts. Service indicators show whether PlanBot, Discord, and contact settings are configured, not whether an external provider is currently healthy.
+- Blog publishing and LinkedIn spotlight management.
+- Conversation history and a contact inbox with delivery status and email reply links.
+- Anonymous browser-based audience metrics, traffic sources, popular pages, résumé clicks, project-link opens, and received contact submissions.
+- Date filters and developer-status controls.
 
-The mobile navigation supports a modal drawer, keyboard focus, Escape, and automatic closure after navigation or switching to a laptop layout. Login includes password visibility, Caps Lock feedback, and safe return links to admin conversations. Admin pages are excluded from search indexing; overview and conversation APIs enforce the administrator role and disable caching. No additional environment variables are required.
+### Contact & notifications
 
-### Audience and conversion metrics
+Contact submissions are verified with reCAPTCHA and can be received in the admin inbox or by email. Discord webhook alerts cover portfolio visits, new conversations, and contact submissions, with protected links to the relevant admin records.
 
-The admin overview includes first-party analytics with 7-, 30-, and 90-day UTC filters. Data starts accumulating after this update; old Discord notifications are not backfilled. `MONGODB_URI` is the only storage requirement. Anonymous events use their own collection and survive server restarts. Reports require an administrator session and expose aggregate counts only.
+## Technology
 
-- **Unique visitors:** distinct random browser IDs stored locally. Different devices, cleared storage, or storage restrictions can count the same person again. This is a browser estimate, not an identified-person count.
-- **Sessions:** a random session ID renews after 30 minutes without a tracked interaction. Reloads and navigation keep the visitor ID; returning after the session timeout starts a new session. When storage is blocked, IDs last only in memory.
-- **Page views / popular pages:** initial public page loads and pathname changes; query-only changes, admin pages, and the visitor-test page are excluded.
-- **Traffic sources:** first source per session, using `utm_source`, otherwise the external referring domain, otherwise direct/unknown. Top sources include an Other bucket where needed. Full referrer URLs, query strings, names, emails, and IP addresses are not stored in analytics.
-- **Résumé clicks:** clicks on the existing Get Resume link. The Google Docs behavior is preserved. These are not confirmed PDF downloads or file saves.
-- **Project opens:** clicks to repositories owned by `GhimirePlan` (canonicalized server-side). The project section remains hidden. Links in blog posts and PlanBot replies can generate these events; external project-page views are not inferred.
-- **Contact submissions:** generated on the server after inbox storage or SMTP acceptance. Validation failures, reCAPTCHA rejections, and requests that reach neither inbox nor email do not count. No message contents or sender details enter analytics, and an analytics outage does not fail a successful email submission.
+| Area | Technologies |
+| --- | --- |
+| Application | Next.js 14 App Router, React 18, JavaScript |
+| Interface | Tailwind CSS, CSS modules, Framer Motion, React Icons |
+| Data & authentication | MongoDB, Mongoose, NextAuth.js |
+| AI assistant | Groq, published-content retrieval |
+| Integrations | GitHub API, Lanyard, Discord webhooks, reCAPTCHA v3, SMTP |
+| Hosting | Vercel |
 
-The lightweight tracker runs only on public pages, sends small same-origin keepalive requests, and respects Do Not Track and Global Privacy Control. Known crawler requests and authenticated administrator requests are skipped, including admin visits to public pages. Browser blockers, opt-outs, and network failures can reduce counts; contact-success totals are operational events without visitor identifiers. Existing visitor Discord notifications remain a separate integration.
+## Run locally
 
-### Compact developer status
+Use **Node.js 22 or newer** and npm. MongoDB and integration credentials enable the corresponding dynamic features.
 
-The homepage strip above Contact shows availability and the latest public GitHub push/repository (cached for five minutes), with a relative timestamp and a profile link if GitHub is unavailable. Change availability and optional integrations in the admin overview's Developer status card. Settings persist in MongoDB; both integrations default off.
+```bash
+git clone https://github.com/GhimirePlan/Portfolio.git
+cd Portfolio
+npm ci
+cp .env.example .env.local
+```
 
-Discord presence and Spotify activity both use `DISCORD_USER_ID` and Lanyard (`https://api.lanyard.rest/v1/users/{id}`). Keep the numeric ID in Vercel environment settings and enroll that account in Lanyard's Discord server. For Spotify, connect Spotify under Discord Connections and enable displaying Spotify as your status. The independent admin toggles remain off by default. A single server request handles either or both enabled integrations; no Spotify OAuth credentials are used. Spotify appears only when Lanyard reports `listening_to_spotify: true` with a valid track, showing the song, artist, album artwork, and Spotify track link. Idle, unavailable, and malformed responses hide Spotify gracefully. The visible homepage polls approximately every 60 seconds; the public response and presence request are not cached. Existing availability and GitHub behavior are preserved.
+Configure the required services using the [configuration guide](docs/configuration.md), then start the development server:
 
-### Contact inbox
+```bash
+npm run dev
+```
 
-Open `/admin/inbox` with your existing admin account. Valid reCAPTCHA-verified submissions are saved in MongoDB and trigger a Discord alert through the existing `DISCORD_WEBHOOK_URL`. Alerts contain a protected submission link, not sender details or message content. The inbox lists recent messages, paginates older entries, shows email/Discord delivery status, and offers a mailto reply action. Replies open your email application; the portal does not send replies automatically.
+Open **http://localhost:3000**.
 
-SMTP delivery remains independent: an inbox receipt is successful even if SMTP fails or is unconfigured. If storage fails, SMTP can still deliver; if both fail, the visitor receives an error and retains their text. Analytics count a received submission once if either channel accepts it. No historical emails are imported. The inbox API enforces the admin role and disables caching.
+For a production build:
 
-### Discord alert details
+```bash
+npm run build
+npm run start
+```
 
-Footprints alerts include request IP and approximate city/region/country when the hosting platform supplies them, browser/device/OS/model, reported timezone and languages, screen/viewport sizes, and optional browser connection estimates. Unsupported information is omitted or marked unavailable. No geolocation permission, precise GPS lookup, or external enrichment service is used. Page/referrer query strings and fragments are stripped; only source/medium/campaign UTM labels are included. Browser-supplied values are unverified. The old per-server visit counter is removed because it reset on restarts; use the admin analytics report for persisted counts.
+For lint checks:
 
-All Discord alerts share bounded field/total lengths, mention suppression, ISO timestamps, and consistent footers. Explicit rate-limit responses can retry once when the provider requests a wait of at most one second; uncertain network failures are not retried automatically, avoiding duplicate sends. Visitor alerts remain best effort per tab; chat alerts retain their conversation lease, and contact alerts retain their protected inbox links without message contents.
+```bash
+npm run lint
+```
 
-### PlanBot current-content grounding
+## Repository structure
 
-Each chat request retrieves current public website data, published blog metadata, and relevant published article excerpts directly from MongoDB. A capped text search can find older matching articles beyond the latest-50-post catalog; metadata matching remains available if the text index is unavailable. Up to three bounded excerpts are supplied with canonical article URLs. GitHub uses the homepage's existing public data source and upstream caching. Background notes remain secondary to current website sources. Retrieval failures are reported as unavailable, not as empty content. Drafts, contact submissions, admin records, credentials, and other visitors' history are never part of the retrieval context. Public content is treated as evidence rather than instructions; answers remain concise and may still require verification against linked sources.
+```text
+app/
+  admin/        Publishing, inbox, conversations, and analytics
+  api/          Server endpoints and integration handlers
+  blog/         Blog listing and article pages
+  components/   Portfolio and shared interface components
+  planbot/      Dedicated assistant page
+lib/            Retrieval, database, notification, and service utilities
+models/         MongoDB schemas
+utils/          Public portfolio data and client utilities
+public/         Images, fonts, and static assets
+docs/           Configuration and architecture documentation
+```
+
+## Documentation
+
+- [Configuration & deployment](docs/configuration.md)
+- [Architecture & data flows](docs/architecture.md)
+- [Contributing](CONTRIBUTING.md)
+
+## Connect
+
+[Portfolio](https://www.plan.com.np) · [GitHub](https://github.com/GhimirePlan) · [LinkedIn](https://www.linkedin.com/in/plan-ghimire/) · [Email](mailto:contact@plan.com.np)

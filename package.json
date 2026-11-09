@@ -1,6 +1,6 @@
 {
   "name": "developer-portfolio",
-  "description": "Portfolio of Abu Said",
+  "description": "Plan Ghimire's portfolio, research blog, and content-grounded AI assistant, built with Next.js and MongoDB.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
