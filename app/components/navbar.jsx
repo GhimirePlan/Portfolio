@@ -41,7 +41,7 @@ export default function Navbar() {
           <button type="button" className="site-icon-button" aria-label="Toggle color theme" onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}>{mounted && resolvedTheme === 'light' ? <FaSun /> : <FaMoon />}</button>
           <div ref={account} className="site-account">
             <button type="button" className="site-icon-button" aria-label="User menu" aria-expanded={accountOpen} aria-controls="site-account-menu" onClick={() => setAccountOpen((open) => !open)}><FaUser /></button>
-            {accountOpen && <div id="site-account-menu" className="site-account-menu">{session ? <><p>{session.user?.name}</p><Link href="/profile" onClick={() => setAccountOpen(false)}>My profile</Link>{session.user?.role === 'admin' && <Link href="/admin">Admin dashboard</Link>}<button type="button" onClick={() => signOut({ callbackUrl: '/' })}>Sign out</button></> : <Link href="/admin/login" onClick={() => setAccountOpen(false)}>Sign in</Link>}</div>}
+            {accountOpen && <div id="site-account-menu" className="site-account-menu">{session ? <><p>{session.user?.name}</p><Link href="/profile" onClick={() => setAccountOpen(false)}>My profile</Link>{session.user?.role === 'admin' && <Link href="/admin">Admin dashboard</Link>}<button type="button" onClick={() => signOut({ callbackUrl: '/' })}>Sign out</button></> : <Link href="/login" onClick={() => setAccountOpen(false)}>Sign in</Link>}</div>}
           </div>
           <button ref={mobileToggle} type="button" className="site-icon-button site-menu-toggle" aria-label="Toggle mobile menu" aria-expanded={menuOpen} aria-controls="site-mobile-menu" onClick={() => setMenuOpen((open) => !open)}>{menuOpen ? <FaTimes /> : <FaBars />}</button>
         </div>

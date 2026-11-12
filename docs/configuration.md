@@ -38,7 +38,7 @@ Discord contact alerts link to the protected inbox record without including send
 
 | Route | Purpose |
 | --- | --- |
-| `/admin/login` | Administrator sign-in |
+| `/login` | Administrator sign-in (`/admin/login` remains an alias) |
 | `/admin` | Overview, audience metrics, and developer-status controls |
 | `/admin/posts` | Blog management |
 | `/admin/linkedin-posts` | LinkedIn spotlight management |
@@ -55,3 +55,7 @@ An administrator account must exist in MongoDB. The repository includes bootstra
 4. Redeploy after changing environment settings so the application receives the new configuration.
 
 The application needs server-side route handlers for authentication, MongoDB, AI responses, notifications, and contact delivery. A static export or GitHub Pages deployment does not provide these services. `npm run build` and `npm run start` are the supported application build/run workflow; legacy deployment helper scripts are not the primary deployment path.
+
+## Login verification
+
+/login is the compact sign-in page. Unauthenticated /admin requests redirect there, and /admin/login remains a redirect alias preserving admin return links. Credentials login requires a fresh reCAPTCHA v3 token with the admin_login action, accepted score, registered hostname, and valid timestamp. It reuses the contact form's site/secret key configuration; missing configuration fails closed. The small right-aligned reCAPTCHA disclosure includes Google's Privacy and Terms links. Admin password verification and role checks remain in place.

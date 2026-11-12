@@ -15,7 +15,7 @@ const navigation = [
 ];
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
-  if (pathname === '/admin/login') return children;
+  if (pathname === '/login' || pathname === '/admin/login') return children;
   return <AdminWorkspace>{children}</AdminWorkspace>;
 }
 function Sidebar({ session, pathname, close }) {
@@ -28,7 +28,7 @@ function Sidebar({ session, pathname, close }) {
     })}</nav>
     <Link href="/admin/posts/new" onClick={close} className="portal-compose"><FiPlus /> Create a post <FiArrowUpRight /></Link>
     <div className="portal-sidebar-note"><span className="portal-orbit-icon">✧</span><strong>A space for what’s next.</strong><p>Keep your ideas, stories, and conversations moving.</p><Link href="/" target="_blank" rel="noreferrer">See your portfolio <FiArrowUpRight /></Link></div>
-    <div className="portal-account"><span className="portal-avatar">{session.user.name?.charAt(0) || 'P'}</span><div><strong>{session.user.name || 'Administrator'}</strong><small title={session.user.email}>{session.user.email}</small></div><button type="button" aria-label="Sign out" title="Sign out" onClick={() => signOut({ callbackUrl: '/admin/login' })}><FiLogOut /></button></div>
+    <div className="portal-account"><span className="portal-avatar">{session.user.name?.charAt(0) || 'P'}</span><div><strong>{session.user.name || 'Administrator'}</strong><small title={session.user.email}>{session.user.email}</small></div><button type="button" aria-label="Sign out" title="Sign out" onClick={() => signOut({ callbackUrl: '/login' })}><FiLogOut /></button></div>
   </>;
 }
 function trapDrawerFocus(event) {
@@ -43,7 +43,7 @@ function AdminWorkspace({ children }) {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false); const dialog = useRef(null);
   const admin = status === 'authenticated' && session?.user?.role === 'admin';
-  useEffect(() => { if (status === 'unauthenticated' || (status === 'authenticated' && !admin)) router.replace(`/admin/login?callbackUrl=${encodeURIComponent(pathname)}${status === 'authenticated' ? '&error=AccessDenied' : ''}`); }, [status, admin, pathname, router]);
+  useEffect(() => { if (status === 'unauthenticated' || (status === 'authenticated' && !admin)) router.replace(`/login?callbackUrl=${encodeURIComponent(pathname)}${status === 'authenticated' ? '&error=AccessDenied' : ''}`); }, [status, admin, pathname, router]);
   useEffect(() => { setOpen(false); }, [pathname]);
   useEffect(() => {
     const desktop = window.matchMedia('(min-width: 768px)');

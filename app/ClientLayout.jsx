@@ -44,7 +44,7 @@ function handleSectionLink(event) {
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
-  const isAdmin = pathname.startsWith('/admin');
+  const isAdmin = pathname.startsWith('/admin') || pathname === '/login';
   useEffect(() => {
     cancelSectionWait();
     if (!location.hash) return;

@@ -17,7 +17,7 @@ export async function middleware(request) {
 
     // If the user is not authenticated or not an admin, redirect to login
     if (!token || token.role !== 'admin') {
-      const url = new URL('/admin/login', request.url);
+      const url = new URL('/login', request.url);
       url.searchParams.set('callbackUrl', encodeURI(pathname));
       return NextResponse.redirect(url);
     }
@@ -35,7 +35,7 @@ export async function middleware(request) {
   response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
 
   // Add caching headers for static assets
-  if (pathname.startsWith('/admin')) {
+  if (pathname.startsWith('/admin') || pathname === '/login') {
     response.headers.set('Cache-Control', 'private, no-store');
   } else if (pathname === '/fonts/yellowtail-v1.woff2') {
     response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');

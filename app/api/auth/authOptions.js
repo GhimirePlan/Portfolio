@@ -3,6 +3,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 import connectToDatabase from '@/lib/mongodb';
 import User from '@/models/User';
+import { verifyLoginCaptcha } from '@/lib/login-captcha';
 
 export const authOptions = {
   providers: [
@@ -14,13 +15,15 @@ export const authOptions = {
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' }
+        password: { label: 'Password', type: 'password' },
+        recaptchaToken: { label: 'Verification', type: 'text' }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Please provide email and password');
         }
 
+        if (!await verifyLoginCaptcha(credentials.recaptchaToken)) throw new Error('CAPTCHA verification failed');
         try {
           // Connect to the database
           await connectToDatabase();
@@ -80,8 +83,8 @@ export const authOptions = {
     }
   },
   pages: {
-    signIn: '/admin/login',
-    error: '/admin/login',
+    signIn: '/login',
+    error: '/login',
   },
   session: {
     strategy: 'jwt',
